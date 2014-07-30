@@ -1,0 +1,38 @@
+\chapter{System architecture}
+CERMINE workflowed is composed of a multi-part pipeline, out of which every stage is treated as a separate module and can be maintained and developped independently. For implementation of the majority of non-trivial problems we used supervised and unsupervised machine learning algorithms, that gave a lot of elasticity and allow to adapt to new document layouts.
+
+CERMINE workflow is composed of four main parts:
+\begin{enumerate}
+    \item Basic structure extraction takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labelled with one of four general categories: METADATA, REFERENCES, BODY and OTHER.
+    \item Metadata extraction part analyses parts of the geometric hierarchical structure labelled as METADATA and extracts a rich set of document's metadata from it.
+    \item References extraction part analyses parts of the geometric hierarchical structure labelled as REFERENCES and the result is a list of document's parsed bibliographic references.
+    \item Text extraction part analyses parts of the geometric hierarchical structure labelled as BODY and extracts document's body structure composed of sections, subsections and paragraphs. 
+\end{enumerate}
+\section{Structure extraction}
+\subsection{Character extraction}
+\subsection{Page segmentation}
+\subsection{Reading order resolving}
+Resolution of Reading Order is a process aiming to transform text zones from a two-dimensional space (as they are laid out on the paper) to a single-dimensional space, i.e. as they are read by a human. Usually this is done by going from left to right and from top to bottom, but there are a lot of cases that made this na\"\i ve approach less efficient. This includes multi-column layout, page numbers, textual elements of figures, figures' and equations' labels.
+\qquad
+As already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, a PDF file contains a stream of characters that undergoes processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements need to be put together in the same order as that would be done by a human reader.\\
+To this end, a bottom-up strategy is applied: firstly characters are sortedwithin words and words within lines in ascending order according to X coordinate value. Afterwards, lines are sorted with Y coordinate as tge key. As next we need to figure out zones' order. Below we describe a heuristic responsible for setting order of text zones Its fundamental principle was taken from \cite{ROR_source}. A schematic diagram of this phase can be found in the figure \ref{fig:reading_order}.
+\section{Initial zone classification}
+\section{Metadata extraction}
+\section{References extraction}
+\section{Text extraction}
+\section{Feature selection}
+In both stages of classification we employed a set of features including almost one hundred elements. In appendix \ref{appendix:features} there is a detailed description of how their values are calculated. Briefly, they can be divided into following groups:
+\subsubsection{Sequence features}
+This group contains only two features: \textit{PreviousZoneFeature} and \textit{LastButOneZoneFeature}. It leverages the fact that the zones are classified after the process of reading order resolution is done. The features contain numerical value of two previous labels. In turn, this allows to incorporate sequence information into classification, which is not done in SVM by design (as opposed to for instance Hidden Markov Model).
+\subsubsection{Formatting features}
+This group of features contains information about graphical properties of text. It can be very helpful while certain elements in scholarly publications are usually typed with bigger font size
+\subsubsection{Layout features}
+These features encode information about graphical layout on the page. This includes properties of the zone itself (e.g. \textit{WidthFeature}, \textit{HeightFeature}, \textit{LineMeanWidthFeature}) as well as features of the area between text zones (e.g. \textit{HorizontalRelativeProminenceFeature},\textit{VerticalRelativeProminenceFeature}, \textit{IsHighestOnThePage}, \textit{IsGreatestOnThePage}, \textit{DistanceFromNearestNeighbourFeature}). 
+\subsubsection{Semantic features}
+This group of features encodes appearence of certain key-words that very often characterize certain parts of articles written with scientific english, e.g. ``keywords'', ``terms'', ``distributed'', ``reproduction'', ``open'', ``commons'', ``license'', ``creative'', ``copyright'', ``cited'', ``distribution'', ``access'', ``references'', ``author'', ``bibliography'', ``figure'', ``table'', ``editor'', ``email'', ``correspondence'', ``address'', ``abstract'', ``author details'', ``university'', ``department'', ``school'', ``institute'', ``affiliation'', ``affiliation'', ``research article'', ``review article'', ``editorial'', ``review'', ``debate'', ``case report'', ``research'', ``original research'', ``methodology'', ``clinical study'', ``commentary'', ``article'', 
+ ``hypothesis'', .
+\subsubsection{Special features}
+This group contains features that do not fit other groups described above. This includes e.g. \textit{IsAnywhereElseFeature}, \text{BracketCountFeature}, \text{CharCountFeature}, \text{CommaCountFeature}.
+
+\section{Learning process}
+\subsection{Model cross-validation}

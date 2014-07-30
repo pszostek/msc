@@ -1,0 +1,93 @@
+\begin{appendices}
+%\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+
+\chapter{Description of classification features}
+\label{appendix:features}
+\newgeometry{left=2cm,right=2cm}
+%\begin{landscape}
+
+\begin{longtable}[t!]{l|l|p{9cm}}
+\hline
+\# & \textbf{Feature Name} & \textbf{Description} \\ \hline
+\rownumber & AffiliationFeature & Tells if the zone contains one of the \{``author details'', ``university'', ``department'', ``school'', ``institute'', ``affiliation''\}\\ \hline
+\rownumber & AuthorFeature & Tells if a text zone contains a word starting with ``author''\\ \hline
+\rownumber & BibinfoFeature & Number of occurences of \{``cite'', ``pages'', ``article'', ``volume'', ``publishing'', ``journal'', ``doi'', ``cite this article'', ``citation'', ``issue'', ``issn''\} \\ \hline
+\rownumber & BracketRelativeCount & Ratio of the number of brackets to the number of all characters \\ \hline
+\rownumber & BracketedLineRelativeCount & Ratio of number of lines starting with a bracket to the number of all lines\\ \hline
+\rownumber & CharCountFeature & Counts number of characters in a zone\\ \hline
+\rownumber & CharCountRelativeFeature & Ratio of number of characters in a zone to the number of character on its page\\ \hline
+\rownumber & CommaCountFeature & Counts number of commas in a zone\\ \hline
+\rownumber & CommaRelativeCountFeature & Ratio of commas to all characters in a zone \\ \hline
+\rownumber & ContainsPageNumberFeature & Tells consists of a number or is like ``Page \%d'' or ``page \%d'', where \%d is a number \\ \hline
+\rownumber & CuePhrasesRelativeCountFeature & Ratio of cue phrases from \{``although'', ``therefore'', ``therein'', ``hereby'', ``nevertheless'', ``to this end'', ``however'', ``moreover'', ``nonetheles''\} to all words\\ \hline
+\rownumber & DateFeature & Tells if the zone contains a string being a date with months expressed as text or as a number, with either European or American order\\ \hline
+\rownumber & DigitCountFeature & Number of digits is in the zone\\ \hline
+\rownumber & DigitRelativeCountFeature & Ratio of digits to all characters in the zone \\ \hline
+\rownumber & DistanceFromNearestNeighbourFeature & Distance to the nearest neighbour zone or returns Double.MAX\_VALUE if there is no other zone on the page\\ \hline
+\rownumber & DotCountFeature & Counts number of dots (``.'') in the zone\\ \hline
+\rownumber & DotRelativeCountFeature & Ratio of number of dots to all characters in the zone \\ \hline
+\rownumber & EmailFeature & Tells if the zone contains a valid e-mail address\\ \hline
+\rownumber & EmptySpaceRelativeFeature & Calculates a ratio of the surface taken by the characters' bounding boxes to the area of the zone \\ \hline
+\rownumber & FontHeightMeanFeature & Calculates average font size in the zone \\ \hline
+\rownumber & FreeSpaceWithinZoneFeature & Difference between zone's area and total area taken by the characters\\ \hline
+\rownumber & HeightFeature & Height of a zone\\ \hline
+\rownumber & HeightRelativeFeature & Ratio of zone's height to the page's height\\ \hline
+\rownumber & HorizontalRelativeProminenceFeature & Area taken by the zone and free area to the West and East of the page. This features tries to fit into the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in E and W\\ \hline
+\rownumber & IsAnywhereElseFeature & Tells if this zone is duplicated anywhere in the investigated document \\ \hline
+\rownumber & IsFirstPageFeature & Tells if the zone is located on the first page of the document \\ \hline
+\rownumber & IsFontBiggerThanNeighboursFeature & Tells whether the font of the zone is bigger than in neighbour zones\\ \hline
+\rownumber & IsGreatestFontOnPageFeature & Tells if the zone has the greatest font on the page \\ \hline
+\rownumber & IsHighestOnThePageFeature & Tells if the zone is the highest on the page \\ \hline
+\rownumber & IsItemizeFeature & Tells if the zone contains any kind of indexing charactersic for section or enumeration numbering \\ \hline
+\rownumber & IsWidestOnThePageFeature & Tells if the zone is the widest on the page\\ \hline
+\rownumber & IsLastButOnePageFeature & Tells if the zone is located on the last but one page\\ \hline
+\rownumber & IsLastPageFeature & Tells if the zone is located on the last page\\ \hline
+\rownumber & IsLeftFeature & Tells if the zone is in the left part of the page\\ \hline
+\rownumber & IsLongestOnThePageFeature & Tells if the zone contains maximal number of characters among all the zones in the page\\ \hline
+\rownumber & IsLowestOnThePageFeature & Tells if the zone is most southern on the page (southern bounding box border is taken into account) \\ \hline
+\rownumber & IsOnSurroundingPagesFeature & Tells if the same zone is on the previous or on the next page \\ \hline
+\rownumber & IsPageNumberFeature & Tells if a zone is entirely a number \\ \hline
+\rownumber & IsRightFeature & Tells if a zone is on the east side of the page\\ \hline
+\rownumber & IsSingleWordFeature & Tells if a zone is one word \\ \hline
+\rownumber & LastButOneZoneFeature & Tells if the zone is last but one wrt. to the reading order \\ \hline
+\rownumber & LineCountFeature & Number of lines in the zone\\ \hline
+\rownumber & LineRelativeCountFeature & Ratio of lines in the to all lines on the page\\ \hline
+\rownumber & LineHeightMeanFeature & Mean height of the zone\\ \hline
+\rownumber & LineWidthMeanFeature & Mean width of the zone's lines\\ \hline
+\rownumber & LineXPositionMeanFeature & Mean distance of zone's lines to the zone's bounding box \\ \hline
+\rownumber & LineXPositionDiffFeature & The feature looks at the left border of all lines within a zone and finds the most-eastern and most-western among them. A positive difference between these two values is returned\\ \hline
+\rownumber & LineXWidthPositionDiffFeature & Difference between mean value of lines' left border X coordinate and zone's  \\ \hline
+\rownumber & LetterCountFeature & Number of letters in the zone\\ \hline
+\rownumber & LetterRelativeCountFeature & Ratio of letters in the zone to all letters on the page\\ \hline
+\rownumber & LowercaseCountFeature & Number of letters in lower case in the zone\\ \hline
+\rownumber & LowercaseRelativeCountFeature & Number of letters in lower case in the zone\\ \hline
+\rownumber & PageNumberFeature & Page number wrt. the reading order \\ \hline
+\rownumber & PreviousZoneFeature & Value of label assigned to the previous zone wrt. the reading order\\ \hline
+\rownumber & ProportionsFeature & Width to height ratio\\ \hline
+\rownumber & PunctuationRelativeCountFeature & Ratio of punctuation marks to all characters in the zone\\ \hline
+\rownumber & ReferencesFeature & Number of characteristic enumeration indices in the zone, e.g. ``1.''.\\ \hline
+\rownumber & StartsWithDigitFeature & Tells if the zone's first character is a digit\\ \hline
+\rownumber & UppercaseCountFeature & Number of upper case characters in the zone \\ \hline
+\rownumber & UppercaseRelativeCountFeature & Ratio of upper case letters to all characters\\ \hline
+\rownumber & UppercaseWordCountFeature & Number of words starting with upper case\\ \hline
+\rownumber & UppercaseWordRelativeCountFeature & Ratio of upper case words to all words\\ \hline
+\rownumber & VerticalProminenceFeature & Space taken by the zone and free area to the North and South of the page. This features tries to fit into the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in N and S \\ \hline
+\rownumber & WidthFeature & Width of the bounding box in pixels\\ \hline
+\rownumber & WordCountFeature & Number of words in the zone\\ \hline
+\rownumber & WordCountRelativeFeature & Ratio of number of words in the zone to all words in the page\\ \hline
+\rownumber & WordWidthMeanFeature & Mean width of words in the zone expressed as pixels\\ \hline
+\rownumber & WordLengthMeanFeature & Mean width of words in the zone expressed as number of characters\\ \hline
+\rownumber & WordLengthMedianFeature & Median of number of characters in all words \\ \hline
+\rownumber & WhitespaceCountFeature & Number of white characters in the text\\ \hline
+\rownumber & WhitespaceRelativeCountLogFeature & Feature calculated as $-log \frac{S}{L}$ where $S$ is zone's empty area and $L$ is zone's text length \\ \hline
+\rownumber & WidthRelativeFeature & Ratio of zone's width to page's width\\ \hline
+\rownumber & XPositionFeature & X coordinate\\ \hline
+\rownumber & XPositionRelativeFeature & Ratio of zone's X coordinate to page's width \\ \hline
+\rownumber & YPositionFeature & Y coordinate \\ \hline
+\rownumber & YPositionRelativeFeature & Ratio of zone's Y coordinate to page's height \\ \hline
+\end{longtable}
+\restoregeometry
+\setcounter{magicrownumbers}{0}
+\end{appendices}

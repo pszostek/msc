@@ -1,0 +1,43 @@
+\chapter{Dataset}
+\section{Motivation}
+\subsection{Open Access publications}
+\section{Previous work}
+\section{Pubmed database}
+\section{Dataset creation}
+\subsection{The methodology of creating GROTOAP2}
+\section{Metadata matching}
+
+We use xpath to extract text entries from predefined paths. These
+paths are common for the documents in the Pubmed dataset. Each path is
+mapped to a label in our labeling system. The task consists in finding
+a mapping betwen NLM entries and PDF zones, so that each zone could
+obtain a label dependent on its path in the NLM file.
+
+For each pair of kind (pdf\_zone, nlm\_entry) Smith-Waterman distance
+is calculated (457-480)
+For each zone a couple of different approaches are followed in order
+to assign a correct label:
+\begin{enumerate}
+\item Take NLM entry with the highest ratio of SW distance to the
+number of tokens (t1.alignment / t1.entryTokens.size()). If both PDF
+zone and NLM entry are not empty and their size in tokens is
+comparable (ratio not smaller than 0.7) and length of the common
+substring constitutes (swLabelSim.get(zoneIdx).get(0).alignment /
+entryTokens.size() > 0.7) more than 70% of the NLM entry, then assign
+corresponding label  (483-516)
+\item if the previous approach failed, take the entry with the highest
+SW distance. If the length of the common substring is bigger than 50%
+of the number of tokens in the PDF zone
+(swLabelSim.get(zoneIdx).get(0).alignment / zoneTokens.size() > 0.5),
+then assign corresponding label, (517-540)
+\item if the previous aproaches failed, a \"cumulated\" distance is
+calculated. This makes it possible to assign a label to these zones
+that form together one NLM entry, but were segmented into several
+parts. This applies mostly to BODY zones. For each and each entry and
+each zone (SW\_distance / Math.max(zoneTokens.size(),
+trio.entryTokens.size())) is calculated. For each zone these values
+are aggregated by summing them up. From all the cumulated distance the
+biggest one is taken. If it is greater than 0.5, the corresponding
+label is assigned. (542-570)
+\end{enumerate}
+\section{Filtering}

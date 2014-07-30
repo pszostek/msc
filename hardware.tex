@@ -1,0 +1,306 @@
+\chapter{Realizacja części sprzętowej}\label{sprzet}
+Realizowany projekt podzielony jest na dwie części: programową i sprzętową. Część sprzętowa zawiera urządzenie, którego głównym zadaniem jest zebranie pomiarów przyspieszenia, dokonanego w sześciu różnych punktach pomiarowych, oraz wysłanie ich do komputera po wcześniejszym przetworzeniu (korekta, kodowanie itp.). Urządzenie ma za zadanie wysyłać dane w później zdefiniowanym układzie poprzez jeden z popularnych interfejsów cyfrowych. Ponieważ służy ono tylko za model, pozwalający zweryfikować efektywność przyjętego algorytmu oraz możliwość zastosowania go w systemach niewymagających dużej precyzji, obudowa oraz konstrukcja nośna nie będą podporządkowane wymagniom związanym z pracą w warunkach nielaboratoryjnych.
+
+	\section{Schemat blokowy} \label{schemat_blokowy}
+		\begin{figure}[ht]
+		\begin{center}
+		\includegraphics[width=0.9\textwidth]{hardware.png}
+		\caption{Schemat blokowy cześci sprzętowej}
+		\end{center}
+		\end{figure}
+Na powyższym diagramie widoczne są następujące bloki funkcjonalne.
+		\begin{itemize}
+			\item \textbf{Czujniki przyspieszenia} - odpowiedzialne za zamianę zmian prędkości w czasie na sygnał elektryczny, który jest następnie konwertowany do postaci cyfrowej oraz wystawiany na interfejs SPI. W przypadku akcelerometrów cyfrowych \textbf{filtry dolnoprzepustowe}, zapobiegające zjawisku aliasingu, umieszczone są wewnątrz elementu (akcelerometru).
+			\item \textbf{Czujnik temperatury} - służy do pomiaru temperatury powietrza wokół akcelerometrów w celu kompensacji temperaturowej na podstawie przedstawionej w nocie katalogowej charakterystyki.
+			\item \textbf{Diody led} - celem ich zastosowania jest informowanie operatora o prawidłowej pracy (tj. prawidłowej transmisji) wskazań z akcelerometrów oraz informowanie o gotowości do użycia. Dopóki urządzenie zewnętrzne nie poinformuje o gotowości do użycia, konieczne jest trzymanie go w stanie spoczynku. Dzięki temu możliwa jest prawidłowa kalibracja urządzenia.
+			\item \textbf{Moduł zasilania} - jego zadaniem jest dostarczenie do wszystkich elementów, znajdujących się na projektowanym urządzeniu, napięcia niezbędnego do ich działania.
+			\item \textbf{Moduł nadajnika/odbiornika interfejsu RS232} - służy zamianie napięcia na złączu na zgodne z normą dla tego standardu.
+			\item \textbf{Jednostka centralna} - zrealizowana w układzie mikrokontrolera. Jej zadaniem jest zbieranie wskazań z akcelerometrów, sterowanie diodami, dokonywanie korekty wskazań oraz przesyłanie danych do komputera. Więcej informacji na ten temat zamieszczono w podrozdziale \ref{uC}.
+		\end{itemize}
+Autor, podczas wyboru elementów składowych, kierował się zrealizowaniem wszystkich wymienionych wyżej bloków oraz ich funkcjonalności. 
+\newpage
+
+	\section{Schematy ideowe}
+Schemat projektowanego urządzenia jako całości został załączony na rysunku \ref{schemat_calosci} i pokazuje on urządzenie jako całość, uwzględniając czujniki i inne elementy dyskretne, znajdujące się na wszystkich sześciu płytkach. Nie został on wprost wykorzystany do stworzenia schemtu płytek drukowanych, jest on umieszczony w tej pracy dla lepszego zrozumienia projektu. Schemat ideowy, który posłużył do zaprojektowania płyki, został umieszczony na rysunku \ref{schemat_plytki}.
+\begin{figure}[p]
+
+  \centering
+\includegraphics[width=\textwidth]{eagle/schemat_calosci.png}
+  \caption{Schemat ideowy zaprojektowanego układu}
+\label{schemat_calosci}
+\end{figure}
+
+\begin{figure}[p]
+ % \caption{Schemat ideowy zaprojektowanego układu}
+  \centering
+\includegraphics[width=\textwidth]{eagle/schemat_plytki.png}
+\caption{Schemat ideowy, służący do zaprojektowania schemtu płytki drukowanej}
+\label{schemat_plytki}
+\end{figure}
+
+W zaprojektowanym urządzeniu wykorzystywane są następujące układy dyskretne:
+\begin{itemize}
+	\item mikrokontroler z rodziny AVR AtMega8L firmy Atmel,
+	\item czujniki przyspieszenia LIS3LV02DQ firmy ST Microelectronics,
+	\item układ konwersji poziomów napięć MAX3232 firmy Texas Instruments,
+	\item układ stabilizatora napięcia LM317A firmy National Semiconductors,
+	\item diody LED SMD w obudowie 0805,
+	\item oscylator kwarcowy o częstotliwości 7,3728 MHz,
+	\item kondensatory ceramiczne i elektrolityczne,
+	\item oporniki,
+	\item złącza i przyciski,
+	\item filtr ferrytowy w postaci koralika SMD w obudowie 0805.
+\end{itemize}
+Zastosowane układy są konieczne do spełnienia wymagań funkcjonalnych i pozafunkcjonalnych stawianych projektowanemu urządzeniu. Realizują one bloki funkcjonalne opisane w podrozdziale \ref{schemat_blokowy}.
+
+Akcelerometry i mikrokontroler są połączone za pomocą wspólnej szyny, zawierającej sygnały MISO, MOSI, SCK (koniecznie dla komunikacji w interfejsie SPI). Dodatkowo od każdego czujnika przyspieszenia do mikroprocesora jest poprowadzony sygnał CS (chip select) i RDY (data ready).
+Poniżej zostało zamieszone uzasadnienie wyboru poszczególnych układów.
+
+\subsubsection{Mikrokontroler AtMega8L}
+Mikrokontroler AtMega8L jest układem o dużej wydajności i małym poborze mocy. Oferuje moc obliczeniową na poziomie 16 MIPS-ów dla częstotliwości taktowania 16 MHz, co daje duży zapas mocy obliczeniowej przy złożoności obliczeń koniecznych dla realizowania funkcjonalności. 
+Oprócz tego mikrokontroler posiada inne korzystne dla tego zastosowania cechy:
+\begin{enumerate}
+\item Posiada 25 programowalnych linii wejścia/wyjścia. Poniżej zamieszczono sygnały, które muszą być podłączone do procesora w celu realizacji funkcjonalności:
+\begin{table}[H]
+{\centering
+	\begin{tabular}{|p{6cm}|p{7cm}|} \hline
+		\textbf{rodzaj i ilość} & \textbf{przeznaczenie} \\ \hline
+		6 linii \textit{Data Ready} oraz 6 linii \textit{Chip Select} & obsługa komunikacji z akcelerometrami \\ \hline
+		linie MISO, MOSI, SCK i RESET w interfejsie SPI & programowanie układu oraz komunikacja z akcelerometrami \\ \hline
+		linie RxD, TxD & komunikacja z komputerem przez interfejs RS232 \\ \hline
+		3 sygnały sterujące dla LED & gaszenie i zapalanie diod \\ \hline
+		2 sygnały z oscylatora & taktowanie układu \\ \hline
+	\end{tabular}
+}
+\end{table}
+
+W sumie konieczne jest podłączenie 23 sygnałów wejściowych lub wyjściowych. Wynika z tego, że procesor ma dwie nadmiarowe linie w stosunku do wymagań mu stawianych.
+
+\item Posiada 8 kB wewnętrznej pamięci typu Flash przechowującej kod programu.
+Pamięć Flash pozwala na programowanie jej do 10 tysięcy razy, co jest liczbą wystarczającą, nawet dla celów doświadczalnych.
+
+\item Wspiera sprzętowo komunikację na obecnych w projekcie interfejsach:
+	\begin{itemize}
+		\item interfejsie RS232 (do kominukacji z komputerem) poprzez wewnętrzny programowalny układ USART,
+		\item interfejsie SPI (do komunikacji z czujnikami przyspieszenia) poprzez programowalny moduł obsługi tego właśnie interfejsu.
+	\end{itemize}
+\item Pozwala na podłączenie zewnętrznego oscylatora kwarcowego, dzięki czemu możliwe jest uzyskanie precyzyjnej częstotliwości taktowania i wyeliminowanie błędów przy transmisji RS232, związanych z koniecznością uzyskania odpowiedniej prędkości transmisji przez dzielenie częstotliwości.
+
+\item Może być zasilany z napięć w zakresie 2,7 - 5,5 V, przez co nie przeszkadza w użyciu uniwersalnego w układzie napięcia 3,3 V.
+\end{enumerate}
+Wynika z tego, że spełnia on wymagania funkcjonalne, stawiane jednostce centralnej. Dodatkowo posiada inne cechy, które również pozytywnie wpłwają na wybór:
+\begin{itemize}
+	\item rodzina AVR jest popularna i często występuje w rozwiązaniach spotykanych w literaturze i internecie. Dzięki temu jest łatwo osiągalne wsparcie techniczne ze strony innych projektantów oraz istnieje łatwo dostępna dokumentacja do szerokiego spektrum projektów elektronicznych, opartych na tym układzie,
+	\item istnieją narzędzia do programowania mikrokontrolerów programem napisanym w języku C (narzędzia te są również dostępne pod system operacyjny Linux),
+	\item procesor jest tani (cena jednostkowa rzędu 10 PLN) i łatwo dostępny.
+\end{itemize}
+Spełnienie wymagań funkcjonalnych oraz wyżej wymienione czynniki decydują o wybraniu układu AtMega8L jako jednostki centralnej.
+Zamontowany jest układ w obudowie TQFP, o rastrze wyprowadzeń 0,8 mm i wymiarach 7x7 mm. Alternatywą byłaby obudowa typu PDIP o wymiarach 34,5x8 mm, która mogłaby być umieszczona na podstawce, co umożliwiłoby wyjmowanie mikrokontrolera z układu. Nie jest to jednak potrzebne, ponieważ mikroprocesor jest programowany w układzie, a także nie jest przewidziany wyjmowanie go w jakimkolwiek innym celu. Obudowa typu PDIP wiązałaby się dodatkowo z problemami dotyczącymi gospodarowania miejscem na płytce.
+
+\subsubsection{Czujnik przyspieszenia LIS3LV02DQ}
+Czujniki przyspieszenia są kluczowymi elementami w układzie, ponieważ ich dobór wpływa na jakość dokonywanych pomiarów, a co za tym idzie, na rzetelność przeprowadzanych obliczeń. Wpływają również zancząco na rzetelność i sukces całego projektu, którego jednym z głównych celów (wymienionych w rozdziale \ref{cel_pracy} jest weryfikacja algorytmu ustalania położenia zawartego w \cite{Tan00}).
+Wybrany akcelerometr:
+\begin{enumerate}
+	\item Posisada cyfrowy interfejs SPI, przez który może być programowany oraz który służy do pobierania wskazań pomiarowych. Dzięki interfejsowi cyfrowemu unikamy wpływu zewnętrznych zakłóceń na odczytane wartości. Dla identycznego czujnika, podającego wynik w postaci analogowej, zakłócenie na poziomie 5 mV, występujące przez sekundę, skutkowałoby błędem we wskazaniu prędkości rzędu $0,1 m/s$. Po kolejnej minucie (już bez zakłóceń) błąd położenia wyniósłby 6 metrów. Ma to szczególne znaczenie w przypadku, jeśli rozwiązanie oparte na tej pracy byłoby wykorzystywane w warunkach przemysłowych.
+	\item Ma zakres pracy do 6 g. Spełnia to założenie projektowe dla sprzętu, które mówi, że układ ma mierzyć przyspieszenie do 6 g.
+	\item Oferuje maksymalną częstotliwość odczytu danych (ang. \textit{Output data rate} - ODR) wynoszącą 2560 Hz. Wysoka wartość próbkowania wpływa korzystnie na pasmo sygnału przyspieszenia, które jest wewnątrz układu ograniczone przez filtry dolnoprzepustowe do wartości ODR/4. Szerokie pasmo wpływa również korzystnie na dokładność przeprowadzanych obliczeń poprzez większą czułość na szybkie zmiany wartości przyspieszenia, występujące np. przy wibracjach.
+	\item Posiada trzy osie pomiarowe. Według algorytmu dla każdego punktu, w którym umieszczony jest czujnik, potrzebne są dane wzdłuż jednej osi pomiarowej. W związku dwie osie w każdym akcelerometrze nie zostaną wykorzystane.
+
+Takie rozwiązanie nie jest optymalne, jeśli chodzi o wykorzystanie zasobów i koszty. Niestety na rynku nie są dostępne akcelerometry jednoosiowe, spełniające zakładane w projekcie wymagania (jak dokładność czy rodzaj interfejsu).
+	\item Oferuje dokładną 12- lub 16-bitową reprezentację wyniku.
+	\item Daje się dobrze dostosować do konkretnego zastosowania poprzez programowanie kilkunastu wewnętrznych rejestrów.
+	\item Według producenta dobrze nadaje się do zastosowań w nawigacji inercyjnej.
+	\item Może być zasilany napięciem 3,3 V, które jest wykorzystywane w układzie.
+Spełnienie nielicznych wymagań funkcjonalnych oraz korzystne pozostałe parametry zadecydowały o wyborze tego układu.
+\end{enumerate}
+
+\subsubsection{Układ konwersji napięć MAX3232}
+Jednym z założeń dotyczących sprzętu jest możliwość wykorzystania urządzenia poprzez integrację w większym systemie np. w samochodzie, robocie lub w zintegrowanym systemie nawigacyjnym. Do komunikacji został wybrany uniwersalny i powszechny interfejs RS232, który obecny jest zarówno w komputerach, jak i w systemach mikrokomputerowych. W tym projekcie urządzenie jest podłączane do interfejsu USB komputera, poprzez przejściówkę RS232-USB.
+
+Standard TIA/EIA-232-F i ITU v.28 zakłada obecność napięć z zakresu od -12 V do +12 V. Mikroprocesor nie jest w stanie wygenerować takich sygnałów, dlatego potrzebny jest układ konwertera. 
+
+Zapewnia on przepływność maksymalną do 250 kbit/s. Zgodnie z założeniami projektowymi opisanymi w \ref{zalozenia_sprzetowe}, dane z akcelerometrów są odczytywane z maksymalną dozwoloną częstotliwością, to jest 2560 Hz. Dla każdego z sześciu akcelerometrów odczytywane są dane pomiarowe z jednej osi pomiarowej. W związku z tym w ciągu sekundy konieczne jest zapewnienie minimalnej przepływności na poziomie $2560 Hz\cdot 2B \cdot 6 = 30720 \frac{B}{s}$ (nie wliczając narzutu związanego z protokołem komunikacyjnym, który jednak jest niewielki). Oznacza to, że układ ten powinien być wystarczający.
+
+Układ MAX3232, w przeciwieństwie do układu MAX232, jest zasilny napięciem 3,3 V, dzięki czemu daje się łatwo wykorzystać w projektowanym urządzeniu. Układ MAX3232 jest bardzo popularny i często stosowany, a dodatkowo dostępny w niskiej cenie. 
+
+\subsubsection{Układ stabilizatora napięca LM317A}
+W projektowanym urządzeniu napięcie zasilające pochodzi ze złącza USB - linia 5 V jest wyprowadzona z przejściówki RS232-USB i podłączona do układu poprzez końcówkę numer 7 w złączu, poprzez połączenie wymienionych sygnałów. Linia ta, zgodnie ze standartem RS-232 jest używana dla sygnału Request to send, sterowanego przez komputer. Został tu wybrany sygnał wejściowy dla urządzenia DCE, żeby zmniejszyć możliwość uszkodzeń przy nieprawidłowym zastosowaniu przerobionej przejściówki. 
+Zakładając zasilanie elementów urządzenia z napięcia 3,3 V konieczne jest zapewnienie konwersji napięcia. Układ LM317A pozwala na wyprodukowanie na wyjściu napięcia z zakresu od 1,2 V do 25 V. Jego wartość regulowana jest wartościami oporników umieszczonych pomiędzy nóżkami OUT i ADJ oraz pomiędzy ADJ i masą.
+
+Przed wybraniem układu stabilizatora konieczne było oszacowanie poboru prądu przez wszystkie układy i elementy. Ich wartości zgodne z notami katalogowymi są przedstawione w tabeli \ref{tab_pobor}.
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l} \hline
+		\textbf{element} & \textbf{maksymalna wartość prądu} \\ \hline
+		akcelerometr &	$I_{acc} = 0,8 mA$ \\
+		mikrokontroler & $I_{\mu C} = 10 mA$ \\
+		nadajnik/odbiornik & $I_{232} = 10 mA$ \\
+		diody & $I_d = 10 mA$ \\
+	\end{tabular}
+\caption{Maksymalny pobór prądu elementów składowych urządzenia}
+\label{tab_pobor}
+\end{table}
+Całkowity pobór prądu w układzie wyniesie:
+\begin{equation*}
+	\sum I = 6\cdot I_{acc} + I_{\mu C} + I_{232} + 3\cdot I_d = 4,8mA + 10mA + 10mA + 30mA \approx 55mA
+\end{equation*}
+Układ LM317A jest w stanie podać prąd 1,5 A, stąd wniosek, że maksymalna wartość prądu wyjściowego nie ma znaczenia dla projektowanego układu.
+
+Do układu zostały podłączone kondensatory zgodnie z propozycją przedstawioną w \cite{lm317}. Oporniki zostały tak dobrane, aby na wyjściu otrzymać napięcie 3,3 V. Kondensator pomiędzy wyprowadzeniami IN i ADJ ma przeciwdziałać skokom napięcia zasilania. Kondensator pomiędzy ADJ i OUT służy niwelacji skoków napięcia na wyjściu układu.
+
+\subsubsection{Oscylator kwarcowy 7,3728 MHz}
+Układ mikrokontrolera jest taktowany zewnętrznym kwarcem. Jego częstotliwość została wybrana na podstawie tabeli zamieszczonej w \cite{atmega8} na stronie 162, pokazującej wpływ częstotliwości taktowania na niedotrzymywanie wartości czasowych dla transmisji przy ustalonej prędkości. Jej wycinek został zamieszczony w tabeli \ref{tab_rs232}
+\begin{table}[H]
+{\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\multirow{2}{*}{\textbf{prędkość transmisji}} & \multicolumn{3}{|c|}{\textbf{błąd [\%]}} \\ \cline{2-4}
+		& $f_{osc}=16 MHz$ & $f_{osc}=4 MHz$ & $f_{osc}=7,3728 MHz$ \\ \hline \hline
+		9600 & 0,2 & 0,2 & 0 \\ \hline
+		19200 & 0,2 & 0,2 & 0 \\ \hline
+		38800 & 0,2 & -7 & 0 \\ \hline
+		57600 & 2,1	& 8,5	& 0 \\ \hline
+		115200 & -3,5 & 8,5 & 0 \\ \hline
+	\end{tabular}
+\caption{Wpływ częstotliwości taktowania na powstawanie błędów transmisji w interfejsie RS232}
+\label{tab_rs232}
+}
+\end{table}
+Z tabeli \ref{tab_rs232} wynika, że dla częstotliwości 7,3728 MHz dla dowolnej prędkości transmisji dotrzymywany jest czas trwania pojedynczego bitu. Dla niektórych częstotliwości i prędkości transmisji, długość trwania bitu, w stosunku do czasu nominalnego, może się różnić o 8\%, przez co mogą powstawać błędy w transmisji (''gubienie'' bitów).
+
+Jednocześnie przy wyborze częstotliwości taktowania procesora należy pamiętać o zdeterminowaniu jej wartości przez wartość napięcia zasilania. Na rysunku \ref{vcc-f} przedstawiono zależność $f_{osc}$ od $V_{cc}$, która została zaczerpnięta z \cite{atmega8}.
+\begin{figure}[]
+  \centering
+\includegraphics[width=0.8\textwidth]{vcc-f.png}
+  \caption{Zależność $f_{osc}$ od $V_{cc}$ dla AtMega8}
+	\label{vcc-f}
+\end{figure}
+Z zależności wynika, że układ może być taktowany z częstotliwością 8 MHz, jeżeli jest zasilany z napięcia $\geq 2,7 V$. W opisywanym projekcie napięcie $V_{cc}$ jest równe 3,3 V, w związku z czym dla częstotliwości 7,3728 MHz zagwarantowana jest prawidłowa praca układu.
+
+\subsubsection{Diody LED}
+Diody, znajdujące się w urządzeniu, świecą w kolorach: czerwonym, zielonym i niebieskim. Zostały umieszczone na schemacie w celu:
+\begin{itemize}
+	\item diagnostyki (debuggowania) na etapie uruchamiania projektu,
+	\item informowania o pracy układu podczas użytkowania, to jest:
+		\begin{itemize}
+			\item dioda zielona - sygnalizuje podłączenie do zasilania poprzez miganie z częstotliwością 0,5 Hz,
+			\item dioda niebieska - informuje o stanie, w jakim znajduje się urządzenie (zapalona - wysyłanie, zgaszona - bezczynność),
+			\item dioda czerwona - sygnalizuje prawidłową komunikację i pracę akcelerometrów (zgaszona - praca poprawna, zapalona - praca niepoprawna)
+		\end{itemize}
+\end{itemize}
+Więcej informacji na temat działania diod zostało zawarte w podrozdziale \ref{uC}
+
+\subsubsection{Koralik ferrytowy}
+Koralik ferrytowy został umieszczony w układzie w celu niwelowania skoków napięcia zasilania. Działa on podobnie jak indukcyjność, zwiększając swoją impedancję przy zmianach płynącego przez niego prądu. Opór koralika jest równy $R_{dc}=0,4\Omega$, impedancja przy 100 MHz wynosi $Z=1000\Omega$. Maksymalny prąd dla koralika wynosi $I_{max}=0,8 A$.
+\subsubsection{Kondensatory}
+Zasilanie każdego elementu aktywnego jest filtrowane kondensatorem o pojemności 100 nF. Ma to na celu odfiltrowanie szumów pochodzących od sieci energetycznej. Dodatkowo przy akcelerometrach umieszczono kondesatory 16 pF, który zadaniem jest odfiltrowanie szumów z sieci GSM. Dla średniej używanej w niej częstotliwości jedna czwarta długości fali wynosi 7,5 cm. W projektowanym urządzeniu ścieżki są dłuższe, co czyni je podatne na wpływ sieci telefonii komórkowej. Jednocześnie jakość ich pracy w największy sposób wpływa wyniki pracy systemu, co zmusza autora do zwrócenia na nie szczególnej uwagi.
+$$ \, $$
+Na schemacie na liniach łączących gniazdo SV-ISP z wyprowadzeniami MISO i MOSI procesora zostały umieszczone zworki (ang. \textit{jumpers}) JP1 i JP2. Ich końcówki będą zwierane na okoliczność programowania układu i rozwierane podczas normalnej pracy.
+
+	\section{Projekt płytki drukowanej}
+Zgodnie z przyjętym algorytmem, akcelerometry muszą być umieszczone na środku ścianek sześcianu, ustawione osią pomiarową pod kątem $45^\circ$ do krawędzi. Oznacza to konieczność wprowadzenia konstrukcji mechanicznej, która zapewniałaby dokładne ustawienie akcelerometrów w przestrzeni, zgodnie z założeniami zawartymi w \cite{Tan00}. Jej wybór implikuje rozmiary płytki.
+Przy projektowaniu konstrukcji mechanicznej rozważano kilka możliwości jej budowy:
+	\begin{enumerate}[a)]
+		\item umieszczenie akcelerometrów na małych płytkach-podstawkach, które później byłyby zamocowane na sześcianie z plexi,
+		\item umieszczenie akcelerometrów na płytkach o docelowym rozmiarze bocznej ściany sześcianu, które byłby zamocowane na szkielecie drewnianym,
+		\item zbudowanie sześcianu z płytek drukowanych z pominięciem innej konstrukcji nośnej.
+	\end{enumerate}
+Ostatecznie został wybrany wariant budowy sześcianu z płytek drukowanych, które, przymocowane do płytek sąsiadujących z nimi, stworzą stabilną konstrukcję. Dzięki takiemu rozwiązaniu uniknięto budowy konstrukcji nośnej, która wiązałaby się z dodatkowymi kosztami i która skomplikowałaby budowę całości urządzenia.
+
+W celu minimalizacji liczby elementów składowych postanowiono, że urządzenie jest zbudowane wyłącznie z sześciu płytek z laminatu, które są elementami konstrukcji urządzenia. Wiąże się to z koniecznością wyróżnienia jednej płytki, na której umieszczone zostaną części składowe, występujące w urządzeniu pojedynczo lub tylko w jednym miejscu: jednostka centralna, moduł zasilania, moduł nadawczo-odbiorczy, diody LED, a także akcelerometr, obecny na każdej ściance. Na pozostałych płytkach elementami aktywnymi będą jedynie akcelerometry.
+
+Pierwotnie zakładano, że do łączenia płytek ze sobą posłużą, umieszczone na schematach, gniazda i wtyki ośmiokońcówkowe (ang. \textit{goldpin}). Po wytrawieniu płytek okazało się jednak, że umiejscowienie otworów pod te elemenety jest niewłaściwe, przez co, gdyby użyć ich do montażu, kształt urządzenia końcowego odbiegałby znacząco od sześcianu, co odbiło by się na wynikach późniejszych obliczeń. W związku z tym do łączenia płytek użyto pasków zaciskowych, przeciągnietych przez otwory, które zostały umieszczone na każdym rogu płytki. Należy podkreślić, że celem projektu jest stworzenie modelu urządzenia, które umożliwi weryfikację algorytmu, gdzie tego typu błędy są dopuszczone. Przy produkcji na większą skalę należałoby ten błąd naprawić poprzez właściwe umiejscowienie otworów, biorąc pod uwagę rzeczywiste wymiary gniazd i wtyków typu \textit{goldpin} lub innych.
+$$ \, $$
+Aby zapewnić komunikację pomiędzy akcelerometrami, płytki zawierające akcelerometr są wyposażone w gniazda dziesięciokońcówkowe (oznaczone na schemacie symbolem SV). Gniazda te służą do łączenia poszczególnych płytek z płytką główną za pomocą taśm dziesięciożyłowych. Rozmieszczenie sygnałów w złączach pokazane zostało na rysunku \ref{zlacze}. Szósty akcelerometr umiejscowiony jest na płytce mikrokontrolera i połączony z nim za pomocą ścieżek drukowanych.
+Mikrokontroler jest programowany przez dodatkowe gniazdo dziesięciopinowe SV-ISP, umieszczone na jego płytce. 
+\begin{figure}[H]
+  \centering
+\includegraphics[width=0.8\textwidth]{eagle/zlacze.png}
+  \caption{Układ wyprowadzeń na złączu użytym na płytce uniwersalnej}
+	\label{zlacze}
+
+\end{figure}
+Sygnały obecne w złączu mają następujące funkcje:
+\begin{itemize}
+\item \textbf{MISO, MOSI i SCK} - sygnały składowe interfejsu SPI (transmisja od akcelerometru, od procesora i zegar taktujący transmisję),
+\item \textbf{RDYX} - informowanie przez akcelerometr o gotowości danych do odczytu,
+\item \textbf{CSX} - sygnał wyboru akcelerometru, do którego jest skierowana komunikacja na szynie.
+\end{itemize}
+Oznaczenia sygnałów RDYX i CSX ($X\in \{1,2,3,4,5,6\}$) zmieniają się  w zależności od akcelerometru (a co za tym idzie od płytki, z której pochodzą).
+
+Podczas dalszej pracy autor przyjął koncepcję stworzenia jednej płytki uniwersalnej dla wszystkich ścianek urządzenia. W związku z tym został stworzony jeden wzór płytki drukowanej, której schemat widoczny jest na rysunku \ref{plytka}. Płytka została zaprojektowana w taki sposób, aby możliwe było wykorzystanie jej zarówno jako płytki, zawierającej mikrokontroler, moduł zasilania, diody LED, akcelerometr, jak i sam czujnik przyspieszenia. W zależności od zastosowania płytki konieczne jest przylutowanie wymaganych elementów. Oznacza to, że w przypaku płytki, zawierającej sam akcelerometr, pozostawione są puste miejsca i pady lutownicze pod: mikrokontroler, stabilizator napięcia, złącze DB-9, diody LED, gniazda SV1-SV5, oscylator kwarcowy, układ nadawczo-odbiorczy oraz towarzyszące im oporniki i kondensatory.
+
+\begin{figure}[ht]
+  \centering
+\includegraphics[width=\textwidth]{eagle/schemat.png}
+ \caption{Schemat płytki drukowanej}
+\label{plytka}
+\end{figure}
+\bigskip
+Projekt płytki drukowanej został wykonany przy pomocy programu Eagle 5.8.0 LIGHT. Programem tym autor posługiwał się na licencji typu freeware, co nakładało ograniczenia na ilość warstw płytki (maksymalnie dwie warstwy) oraz jej rozmiar (maksymalny rozmiar to 8x10 cm). Ograniczenie na ilość wartstw płytki nie okazało się istotne z punktu widzenia projektu, ponieważ:
+\begin{enumerate}[a)]
+	\item urządzenie wymaga użycia niewielkiej liczby układów,
+	\item ilość ścieżek na płytce jest stosunowo niewielka,
+	\item układ cechuje się dużą symetrią,
+	\item większość połączeń na płytce zakończone jest przy układzie mikrokontrolera.
+\end{enumerate}
+W związku z małym stopniem skomplikowania połączeń zaprojektowana płytka jest dwuwarstwowa.
+Istotne natomiast okazało się ograniczenie związane z rozmiarem płytki. Ponieważ urządzenie, zgodnie z przyjętym algorytmem (opisanym w \cite{Tan00}), ma mieć kształt sześcianu (co zostało pokazane na rysunku \ref{szescian}), wszystkie jego ścianki (zbudowane z płytek drukowanych) muszą mieć kształt kwadratu. W związku z ograniczeniem na rozmiar, zaprojektowano płytkę o wymiarach 8x8cm, z akcelerometrem umieszczonym centralnie. Według \cite{Tan00} długość krawędzi sześcianu ma wpływ na precyzję obliczeń, jaką może osiągnąć urządzenie końcowe (zależność ta nie została jednak podana). Autor przyjął, że krawędź o długości 8 cm jest wystarczająca dla realizacji postawionych projektowi celów.
+
+Przy prowadzeniu ścieżek i ustawianiu elementów kierowano się następującymi założeniami:
+\begin{itemize}
+\item ścieżki sygnałowe mają grubość 10 milsów,
+\item ścieżki zasilania mają (w zależności od płynącego przez nie prądu) grubość 30, 20 lub 10 milsów,
+\item śieżki grubsze niż 10 milsów są, przy doprowadzeniu do układów o drobnym rastrze wyprowadzeń, zwężane do 10 milsów,
+\item minimalna odległość pomiędzy ścieżkami i przelotkami wynosi 10 milsów,
+\item elementy są ustawiane na płytce z siatką o odległości pomiędzy węzłami równej 20 milsów. Wyjątek stanowi akcelerometr, którego położenie zostało podane ręcznie (w celu lokalizacji na środku płytki),
+\item warstwa zewnętrzna (niebieska) jest pokryta polem masy.
+\end{itemize}
+W celu ułatwienia lutowania akcelerometru do płytki, autor zmienił element biblioteczny akcelerometru (urządzenie LIS3LV02DQ w pakiecie QFPN-28) w programie Eagle. Zmiana polegała na wydłużeniu pól przeznaczonych pod wyprowadzenia układu. Dzięki temu możliwe było ręczne przylutowanie elementu.
+
+Przy projektowaniu płytki popełniono błąd, polegający na nieodwróceniu gniazda DB9 na zewnętrzną stroną. Efektem tego jest takie prowadzenie sygnałów interfejsu RS-232, które wymusza wlutowanie złącza od wewnętrznej strony, co z kolei uniemożliwia prawidłowe podłączenie kabla od strony komputera. Problem ten został rozwiązany poprzez zamianę w przejściówce USB - RS-232 wyprowadzeń w złączu DB-9, na których pojawiły się sygnały RxD, TxD, zasilania i masy.
+
+Na rysunku \ref{plytka_gola} pokazano zdjęcie płytki gotowej do montażu elementów. Na rysunkach \ref{plytka_a}, \ref{plytka_g} widoczne są dwa rodzaje płytek (różne ze względu na przylutowane elementy) po montażu.
+\vspace{3cm}
+ \begin{figure}[ht]
+  \centering
+\includegraphics[width=0.45\textwidth]{plytka_gola_z.png}
+\includegraphics[width=0.45\textwidth]{plytka_gola_w.png}
+ \caption{Płytka gotowa do montażu (strona zewnętrzna i wewnętrzna)}
+\label{plytka_gola}
+\end{figure}
+ \begin{figure}[ht]
+  \centering
+\includegraphics[width=0.45\textwidth]{plytka_a_z.png}
+\includegraphics[width=0.45\textwidth]{plytka_a_w.png}
+ \caption{Płytka zawierająca czujnik (strona zewnętrzna i wewnętrzna)}
+\label{plytka_a}
+\end{figure}
+ \begin{figure}[ht]
+  \centering
+\includegraphics[width=0.45\textwidth]{plytka_g_z.png}
+\includegraphics[width=0.45\textwidth]{plytka_g_w.png}
+ \caption{Płytka mikrokontrolera (strona zewnętrzna i wewnętrzna)}
+\label{plytka_g}
+\end{figure}
+\newpage
+\section{Montaż}
+Płytki składowe urządzenia zostały zlutowane własnoręcznie przez autora.
+Zmontowane urządzenie nie zostało umieszczone w obudowie, ponieważ jest to tylko model, służący weryfikacji i ewentualnej optymalizacji na podstawie testów przyjętego algorytmu. Do budowy części mechanicznej w kształcie sześcianu została wybrana konstrukcja samonośna - płytki z laminatu same w sobie stanowią ścianki sześcianu. Do połączenia ścianek ze sobą pierwotnie miały służyć gniazda i wtyki ośmiokońcówkowe typu goldpin, jednak otwory pod nie, po konfrontacji z rzeczywistymi rozmiarami tych elementów, okazały się źle umiejscowione. Zastosowano tutaj rozwiązanie awaryjne, które zostało przewidziane już na etapie projektowania, wykorzystujące paski zaciskowe o szerokości 2,4 mm.
+
+Istotne przy składaniu urządzenia okazało się precyzjne wykonanie jego bryły. Elementy na płytce są umiejscowione z dokładnością większą niż 0,01 mm, co jest wartością bardzo dobrą z punktu widzenia obliczeń i powstających przy nich błędów. Aby zapobiec niekorzystnemu nachodzeniu przy krawędziach płytek na siebie, zeszlifowano ich krawędzie pod kątem 45 stopni. W ten sposób uzyskano powierzchnie, na której płytki stykają się ze sobą. Dzięki takiemu rozwiązaniu konstrukcja jest stabilniejsza, a ustawienie czujników bardziej precyzyjne.
+
+Na rysunku \ref{kostka_otwarta} pokazano kostkę po wstępnej fazie montażu z odsłoniętą jedną ścianką (w środku widoczne połącznia płytek z płytką główną).
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{kostka_otwarta.png}
+	\caption{Otwarta kostka po wstępnym złożeniu}
+	\label{kostka_otwarta}
+\end{figure}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=1\textwidth]{kostka.png}
+	\caption{Gotowy układ pomiarowy}
+	\label{kostka_otwarta}
+\end{figure}

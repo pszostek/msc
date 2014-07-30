@@ -1,0 +1,175 @@
+\chapter{Theory}
+\section{Motivation}
+\section{Statistical learning}
+The main objective of statistical learning is to find a non-trivial description of dependencies between data gathered by measuring objects and the objects themselves. The measurement, known also as input data, is known for all of the objects under research. The property that is being looked for, on the contrary, is known uniquely for a subset of objects. The main goal of the machine learning is to figure out, in an automated way, an algorithm allowing to reason values of the properties of interest for all available input objects.
+
+As a classical example of machine learning we might take an application in the medical diagnosis. In this case, the input data are the data obtained by performing medical analysis and medical interview. The outcome of the algorithm is a probability of patient suffering from certain disease
+\section{Classification as supervised learning method}
+The goal of all classification is determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of n-dimensional vectors, where $n$ is the number of explanatory variables, known as well as ``features''. Features are values that express some traits of the classified elements. They can be real-numbers (e.g. 1.23, 3.14), interger-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
+
+In the thoery of statistical learning, classification is considered as an example of supervised learning tasks, i.e. learning on the basis of training set for which the categories of elements are available.
+
+% Building a classifier requires at least:
+% \begin{enumerate}
+% \item classification algorithm,
+% \item object features,
+% \item classification algorithm parameters.
+% \end{enumerate} 
+
+\section{Support Vector Machines}
+One of the most successful and broadly known techniques in machine learning are Support Vector Machines, whose theory was developped by Cortez and Vapnik. The basic idea is given a set of two classes of N-dimension points to find a hyperplane which seperates an N-dimensional space into two subspaces, so that each of them contains points belonging to only one class. Since the two classes might not always be linearly separable, SVM introduces an idea of kernel-induced space which casts the points into a higher dimensional feature space where the new points are linearly-separable. In the section \ref{subsec:linear_svm} there is a detailed description of the theoretical fundaments. In its original version the SVM classifier is a binary classifier, meaning that each point in the training sets belongs to one and only on of two classes and so the unknown points do.
+
+\subsection{Linearly separable Support Vector Machines} \label{subsec:linear_svm})
+In the very basic example of SVM, namely a linear SVM, is to assign each new sample to one of the two classes, being given a set of learning samples. All the points, both being the learning samples and the unknown samples, are usually tuples of values of certain features.
+
+Let us assume that we have a set of learning samples $L$, where each samples is labeled $l_i$, whereas $i$ is the index of the learning sample and $I$ is the set of these indices. Each training sample has $d$ values, so is a $d$-dimensional tuple ($x_i \in \mathbb{R}^d$) and a class label $y_i$ being on of two values ${-1, 1}$. We can sum up these assumptions with the following equation:
+\begin{equation}
+\forall{i \in I} \quad \left(x_i, y_i\right) : x_i \in \mathbb{R}^d, y_i \in \{-1, 1\}
+\end{equation} 
+
+For the sake of simplicity let us assume that the set of learning samples is linearly separable. We will label the separating hyperplane as $H$. Obiously, in a general case there is an infinite number of such hyper-planes what is shown on the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
+
+\begin{figure}[t!]
+\centering
+\begin{minipage}[t!]{0.45\linewidth}
+ % \centering
+  \includesvg[width=7cm]{graphics/hyperplanes}
+  \caption{There might exist an infinite number of hyperplanes separating two groups of points. SVM's task is to find a hyperplane that maximizes distance to all data points.}
+  \label{fig:inf_hyperplanes}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.45\linewidth}
+ % \centering
+  \includesvg[width=7cm]{graphics/optimal_and_suboptimal}
+  \caption{There were chosen two alternative lines separating the training points. The dotted line maximizes the distance to support points, whereas the dashed one is sub-optimal.}
+  \label{fig:optimal_and_suboptimal}
+\end{minipage}
+\end{figure}
+
+We can describe a hyperplane $H$ with a general formula:
+\begin{equation}
+w \cdot x+b = 0
+\end{equation}
+Obviously, the number of such hyperplanes is infinite. Let us focus on a hyperplane $H$ that is equally distanced to points from both class. Let us now focus on two hyperplanes parallel to each other that separate the space. Let us label them as $H_{-1}$ and $H^{+1}$, whereas the former is stuck to a point from class $-1$ and the latter to a point belonging to class $+1$. They both maximize the distance to the objects of the other class and therefore are parallel to each other. These hyperplanes are shown on the figure \ref{fig:two_hyperplanes}.
+
+\begin{figure}[htbp]
+  \centering
+  \includesvg[width=7cm]{graphics/two_hyperplanes}
+  \caption{Hyperplane $H$ separates perfectly points belonging to two classes. It is equally distanced to hyperplanes $H_{-1}$ and $H_{+1}$ which are stuck to objects of classes $-1$ and $+1$ respectively.}
+  \label{fig:two_hyperplanes}
+\end{figure}
+
+
+We can describe them with the following equations:
+\begin{equation}
+w^T x_i+b = 1
+\end{equation}
+\begin{equation}
+w^T x_i+b = -1
+\end{equation}
+Because $H_{-1}$ and $H_{+1}$ are decision boundaries, there are no points in between them what can be summarized in the following equations:
+\begin{equation} \label{eq:plus_one}
+w^T x_i+b \ge 1 \quad \forall \left(x_i, y_i\right) : y_i=1
+\end{equation}
+\begin{equation} \label{eq:minus_one}
+w^T x_i+b \le -1 \quad \forall \left(x_i, y_i\right) : y_i=-1
+\end{equation}
+We can unify equations \ref{eq:plus_one} and \ref{eq:minus_one} by a generalized equation:
+\begin{equation}
+y_i\left(w^T x_i+b\right)-1 \ge 0
+\end{equation}
+For each data point we might caclulate the distance to any of the hyperplanes:
+\begin{equation} \label{eq:distance}
+d\left(\left(w,b\right), x_i\right) = \frac{y_i\left(x_i\cdot w + b\right)}{||w||} \ge \frac{1}{||w||}
+\end{equation}
+To make the decision boundary most accurate, we are intuitively looking for a hyperplane that maximizes the distance to all the data points. This in turn minimizes the probability of an erronous classification of unknown data and avoids introducing a bias. According to the equation \ref{eq:distance} this can be achieved by maximizing $\frac{1}{||w||}$ or alternatively by minimizing the $||w||$ vector. We can leverage the fact that $||w||$ is a non negative value and for sake of simplicity of calculations minimize $\frac{1}{2}||w||^2$ subject to $y_i\left(w^T x_i+b\right) \ge 1 \forall i$ (note that $||w||^2=w^Tw$).
+
+This problem will be solved with the method of Lagrange multipliers. The Langragian is calculated as follows:
+\begin{equation}
+\mathcal{L} = \frac{1}{2}w^Tw + \sum_{i=1}^{n}\alpha_i\left(1-y_i\left(w^Tx_i+b\right)\right)
+\end{equation}
+In this equation $\alpha$ is a vector of Lagrange multipliers. The problem is reduced to finding a saddle point where the function has its maximum value. Thus, by setting the Langrangian to 0 with respect to $w$ and $b$ we get:
+
+\begin{equation}
+w = \sum_{i=1}^{n}\alpha_i\left(-y_i\right)x_i=0 \Rightarrow w = \sum_{i=1}^{n}\alpha_i y_i x_i \\
+\sum_{i=1}^{n}\alpha_i y_i=0
+\end{equation}
+
+If we substitute $w=\sum_{ix=1}^{n}\alpha_i y_i x_i$ in the formula for $\mathcal{L}$ we have
+\begin{eqnarray*}
+\mathcal{L} & = &\frac{1}{2}\sum_{i=1}^{n}\alpha_iy_ix_i^T \cdot \sum_{j=1}^{n}\alpha_jy_jx_j+\sum_{i=1}^{n}\alpha_i\left(1-y_i\left(\sum_{j=1}^{n}\alpha_jy_jx_j^Tx_i+b\right)\right) \\
+& = &\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_j y_i y_j x_i^T x_j + \sum_{i=1}^{n}\alpha_i-\sum_{i=1}^{n}\alpha_i y_i \sum_{j=1}^{n}\alpha_j y_j x_j^T x_i -b\sum_{i=1}^{n}\alpha_i y_i \\
+& = &-\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_j y_i y_j x_i^T x_j + \sum_{i=1}^{n}\alpha_i
+\end{eqnarray*}
+
+This equation can be used to define a dual problem:
+\begin{eqnarray*}\label{eq:svm_dual}
+max -\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_j y_i y_j x_i^T x_j + \sum_{i=1}^{n}\alpha_i \\
+subject to \alpha_i \ge 0, \sum_{i=1}^{n} \alpha_iy_i =0
+\end{eqnarray*}
+
+The problem above is a quadratic programming problem that always has a solution. Points $x_i$ with non-zero $\alpha_i$ are called support vectors. These are the points that determine the decision boundary.
+
+\subsection{Non-linearly separable Support Vector Machines}
+The assumption regardin linear separability of training points cannot be always met. In this section there will be presented an approach that does not require points to be linearly separable. The basic idea here is to allow misclassification, but to minimize the error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the ``wrong'' side of the hyperplane, but a penalty function is introduced.
+Let us label with $\xi_i$ the error in classification of the $i$-th point, i.e. its distance to the classification plane in case when it is misclassified. This variable is called ``error variable'' or ``slack variable''. In addition, let us label with $C$ a tradeoff parameter between error and margin. Now, the minimized function is expressed as follows:
+\begin{equation}
+\frac{1}{2}||w||^2 + C \cdot \sum_{i=1}^{n}\xi_i
+\end{equation}
+with the following constrains:
+\begin{equation}
+y_i \left(w^Tx_i+b\right) \ge 1-\xi_i, \quad \xi_i>0
+\end{equation}
+The dual problem becomes the following:
+\begin{align*}
+max. & W(\alpha) = \sum_{i=1}^{n}\alpha_i-\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jy_iy_jx^T_ix_j \\
+subject to & C \ge \alpha_i \ge 0, \sum_{i=1}^{n}\alpha_iy_ix_i=0
+\end{align*}
+
+\subsubsection{Nonlinear Support Vector Machines}
+So far we considered only linear SVM, so these with linear decision boundary. While this solution is very simple from the computational and conceptual point of view, the results yielded by the method might be suboptimal. In this section we will present a generalized version of the algorithm, in which training points $x_i$ will be transformed to a higher dimensional space. This will allow to perform a linear division of the transformed feature space equivalent to a non-linear operation in the original space i.e. a hyper-surface instead of a hyper-plane, e.g a curve in 2-dimensional space. Example of such transformation is shown on the figure \ref{fig:2dto3d}.
+
+\begin{figure}[htbp]
+  \centering
+  \includesvg[width=10cm]{graphics/2dto3d}
+  \caption{An example of a transformation from a two-dimensional to a three-dimensional space. In the original space the points are clearly not linearly separable. After applying a tranformation kernel, they can be separated with a plane.}
+  \label{fig:2dto3d}
+\end{figure}
+
+If we come back to the equation \ref{eq:svm_dual} we will se that the data points appear only as inner products ($x_i^Tx_j$). This means that there is need to know the mapping to the higher dimensional feature space explicitely. \\
+Let us define the kernel funtion $\mathcal{K}$ as follows:
+\begin{equation}
+K(x_i, x_j) = \phi(x_i)^T \cdot \phi{x_j}
+\end{equation}
+
+Under certain circumstances it is feasible to obtain analytically $\phi$ being given $\mathcal{K}$. As an example let's take $\mathcal{K}(u, v) = (1+u^Tv)^2$. Then when $n=2$, i.e. $u=(u_1,u_2)$ and $v=(v_1, v_2)$ we get:
+\begin{align*}
+\mathcal{K}(u, v) & = & (1+u^Tv)^2 \\
+& = & 1 + u_1^2v_1^2+2u_1v_1u_2v_2+u_2^2v_2^2+2u_1v_1+2u_2v_2 \\
+& = & (1, u_1^2, \sqrt{2}u_1u_2, u_2^2, \sqrt{2}u_1, sqrt{2}u_2)^T(1, v_1^2, \sqrt{2}v_1v_2, v_2^2, \sqrt{2}v_1, sqrt{2}v_2) \\
+& = & \phi(u)^T\phi(v)
+\end{align*}
+A kernel function $\mathcal{K}$ must be symmetric, continuous and have a positive definite Gramian Matrix. If the kernel function does not satisfies these conditions, then the dual problem might have no solutions.
+There are three most commonly used kernel functions families: polynomial, sigmoid and radial (called also RBF).
+A polynomial kernel is expressed as follows:
+\begin{equation}
+\mathcal{K}(x_i, x_j) = (\gamma x_i^Tx_j + c)^d \\
+\end{equation}
+where:
+\begin{itemize}
+\item $c$ is a zero-degree term,
+\item $d$ is the degree of the polynomial,
+\item $\gamma$ is a generic coefficient used to parametrize the kernel.
+\end{itemize}
+When $d=1$ we say that a kernel is linear. This case has been described in the section \ref{subsec:linear_svm}.
+\\
+The most common variant of radial kernels is a gaussian distribution:
+\begin{equation}
+K(x_i, x_j) = e^{-\gamma|x_i-x_j|^2}
+\end{equation}
+where $\gamma$ is often replaced with $\frac{1}{2\sigma^2}$, so it can be interpreted as a variation around distribution's deviation.
+\subsection{Feature selection and scaling}
+
+\subsection{Model selection}
+\section{Fundamentals of scholarly communication}
+\subsection{Motivation behind publication analysis tools}

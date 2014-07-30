@@ -1,0 +1,135 @@
+\documentclass[12pt,a4paper,oneside]{book}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,latexsym,amsthm,amsfonts,epsfig}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{tabularx}
+\usepackage{pdflscape}
+\usepackage{lipsum}
+\usepackage{color}
+\usepackage{afterpage}
+\usepackage{rotating}
+\usepackage[left=3.5cm, right=2.5cm]{geometry} 
+\usepackage{graphicx}
+\usepackage{listings}% listing kodu
+\usepackage{dcolumn}
+\usepackage{fancybox}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage[titletoc]{appendix}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\graphicspath{{./graphics/}}
+\fancyhf{}
+% numery stron: lewa do lewego (marginesu), prawa do prawego 
+\fancyhead[LE,RO]{\textbf{\thepage}} 
+% prawa pagina: zawartość \rightmark do lewego, wewnętrznego (marginesu) 
+\fancyhead[LO]{\small\sffamily \nouppercase{\rightmark}}
+% lewa pagina: zawartość \leftmark do prawego, wewnętrznego (marginesu) 
+\fancyhead[RE]{\small\sffamily \nouppercase{\leftmark}}
+% kreski oddzielające paginy (górną i dolną):
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.0pt}
+\newcounter{magicrownumbers}
+\newcommand\rownumber{\stepcounter{magicrownumbers}\arabic{magicrownumbers}}
+
+
+ \lstset{
+       	breaklines=true,
+			language=C,
+	%		numbers=left, numberstyle=\small, stepnumber=5, numbersep=5pt,
+			keywordstyle=\bfseries
+    }
+
+%\usepackage{thebibliography}
+\newcommand{\n}{\textcolor{blue}} %nowododany tekst
+\newcommand{\ii}{\textit}
+\clubpenalty=10000 % pierwszy wiersz akapitu nie będzie kończył strony (nie używam tego ustawienia)
+\tolerance = 500 \pretolerance = 900 %% skład z większą `tolerancją' (można te wartości zwiększyć bardziej)
+\hbadness= 1450 %% zmniejsza liczę wyświetlanych ostrzeżeń (można zwiększyć, ale bez przesady)
+%\hfuzz = 1.5pt %% tekst może sterczeć ma marginesie na 1,5pt (ok. 0,5mm)
+\footskip=27pt
+%\renewcommand*{\appendixtocname}{Dodatki}
+
+\begin{document}
+\titlepage{
+{\bf
+\begin{center}
+\begin{minipage}[t]{0.55\linewidth}
+\begin{center}
+\mbox{}\\
+Politechnika Warszawska\\
+\mbox{Wydział Elektroniki i Technik Informacyjnych}\\
+Instytut Informatyki\\
+\end{center}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.4\linewidth}
+\begin{flushright}
+Rok akademicki 2013/2014
+\end{flushright}
+\end{minipage}
+\vspace{1cm}
+\begin{figure}[H]
+\centering
+%\includegraphics[width=0.21\textwidth]{pw.png}
+\end{figure}
+\vspace{0.5cm}
+{\Large PRACA DYPLOMOWA MAGISTERSKA}
+$$ \,$$
+{\large Paweł Szostek}
+$$ \,$$
+{\LARGE Metadata extraction from scholarly publications}
+\end{center}
+\vfill
+\begin{flushright}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{center}
+\normalsize
+Opiekun pracy\\
+prof. dr hab. inż. Piotr Gawrysiak\\
+\end{center}                                     
+\end{minipage}
+\end{flushright}
+$$ \,$$
+$$ \,$$
+\begin{flushleft}
+\begin{minipage}[t]{0.45\linewidth}
+\normalsize
+Ocena:............................................ 
+\linebreak \linebreak \linebreak
+.......................................................
+\begin{center}
+Podpis Przewodniczącego \\
+\mbox{Komisji Egzaminu Dyplomowego}
+\end{center}
+\end{minipage}
+\end{flushleft}
+}}
+\pagenumbering{arabic}
+\newpage
+\mbox{}
+\newpage
+\mbox{}
+%\def\contentsname{List of content}
+\linespread{1.3}
+\tableofcontents
+
+\include{introduction}
+\include{theory}
+\include{algorithm}
+\include{data_set}
+\include{results}
+\include{appendices}
+%\addtocontents{toc}{\protect\vspace{1em}\noindent{\bf Bibliografia}\hspace*{\fill}{\bf \pageref{literatura}}}
+\pagebreak
+\bibliography{bibliography}{}
+\bibliographystyle{plain}
+\end{document}
+
