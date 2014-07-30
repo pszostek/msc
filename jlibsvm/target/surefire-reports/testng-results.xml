@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="ml" duration-ms="169" started-at="2014-05-14T01:30:58Z" finished-at="2014-05-14T01:30:58Z">
+    <groups>
+    </groups>
+    <test name="ml" duration-ms="169" started-at="2014-05-14T01:30:58Z" finished-at="2014-05-14T01:30:58Z">
+      <class name="edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernelTest">
+        <test-method status="PASS" signature="explicitAndCompositeKernelsAreEqual()" name="explicitAndCompositeKernelsAreEqual" duration-ms="159" started-at="2014-05-14T01:30:58Z" finished-at="2014-05-14T01:30:58Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>
