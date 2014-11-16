@@ -3,21 +3,75 @@ CERMINE workflowed is composed of a multi-part pipeline, out of which every stag
 
 CERMINE workflow is composed of four main parts:
 \begin{enumerate}
-    \item Basic structure extraction takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labelled with one of four general categories: METADATA, REFERENCES, BODY and OTHER.
-    \item Metadata extraction part analyses parts of the geometric hierarchical structure labelled as METADATA and extracts a rich set of document's metadata from it.
-    \item References extraction part analyses parts of the geometric hierarchical structure labelled as REFERENCES and the result is a list of document's parsed bibliographic references.
-    \item Text extraction part analyses parts of the geometric hierarchical structure labelled as BODY and extracts document's body structure composed of sections, subsections and paragraphs. 
+    \item \textbf{Basic structure extraction} takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labelled with one of four general categories: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
+    \item \textbf{Metadata extraction} part analyses parts of the geometric hierarchical structure labelled as METADATA and extracts a rich set of document's metadata from it.
+    \item \textbf{References extraction} part analyses parts of the geometric hierarchical structure labelled as REFERENCES and the result is a list of document's parsed bibliographic references.
+    \item \textbf{Text extraction} part analyses parts of the geometric hierarchical structure labelled as BODY and extracts document's body structure composed of sections, subsections and paragraphs. 
 \end{enumerate}
 \section{Structure extraction}
-\subsection{Character extraction}
-\subsection{Page segmentation}
-\subsection{Reading order resolving}
+\subsection{Character extraction}\label{sec:character_extraction}
+PDF document as such consists of a stream of characters, whereas position of each character in the stream doesn't have to be related, and usually is not, to its position in the text. Extraction of the characters is achieved using iText library. This part of the system was entirely implemented by Dominika Tkaczyk and will not be described in this work.
+\subsection{Page segmentation}\label{sec:page_segmentation}
+Page segmentation is a task of clustering a set of characters into blocks of text. Implemented system uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on
+nearest-neighborhood clustering of connected components extracted from the document. $K$-neareast neigbours for each component are found and text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be set based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
+
+\subsection{Reading order resolving}\label{sec:readin_order}
 Resolution of Reading Order is a process aiming to transform text zones from a two-dimensional space (as they are laid out on the paper) to a single-dimensional space, i.e. as they are read by a human. Usually this is done by going from left to right and from top to bottom, but there are a lot of cases that made this na\"\i ve approach less efficient. This includes multi-column layout, page numbers, textual elements of figures, figures' and equations' labels.
 \qquad
 As already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, a PDF file contains a stream of characters that undergoes processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements need to be put together in the same order as that would be done by a human reader.\\
-To this end, a bottom-up strategy is applied: firstly characters are sortedwithin words and words within lines in ascending order according to X coordinate value. Afterwards, lines are sorted with Y coordinate as tge key. As next we need to figure out zones' order. Below we describe a heuristic responsible for setting order of text zones Its fundamental principle was taken from \cite{ROR_source}. A schematic diagram of this phase can be found in the figure \ref{fig:reading_order}.
+To this end, a bottom-up strategy is applied: firstly characters are sorted within words and words within lines in ascending order according to X coordinate value. Afterwards, lines are sorted with Y coordinate as the key. As next we need to figure out zones' order. Below we describe a heuristic responsible for setting order of text zones Its fundamental principle was taken from \cite{ROR_source}. A schematic diagram of this phase can be found in the figure \ref{fig:reading_order}.
+\begin{figure}[]
+  \centering
+  \includesvg[width=12cm]{graphics/ro}
+  \caption{A schematic diagram of reading order resolution. Firstly, distances between text zones are calculated. Then, zones are hierarchicaly grouped according to distances between them. Finally, the tree is in-order traversed and a list of zones in created.}
+  \label{fig:reading_order}
+\end{figure}
+\begin{enumerate}
+\item For each pair of items inside a single page boundaries a free space between them is calculated. On the figure \ref{fig:reading_order} this space is ilustrated as the black area between two zones. The full implementation of the algorithm is included in the appendix \ref{appendix:ror}. Below is a detailed description of the steps taken.
+	\begin{enumerate} 
+	\item Formally the free space $S$ can be expressed as $S = A_d - (A_1+A_2)$, where $A_1$ and $A_2$ are areas of the two zones and $A_d$ is area of the smallest rectangle in which two objects can fit. This rectangle has to have sides parallel to the X and Y axes.
+	\item To include preference for vertical clustering (and to avoid joining blocks horizontally when multi-column layouts are present) a cosine of the angle $\alpha$ between the vector $\vec{v}$ connecting two objects' geometrical centers and vector $\vec{x}$ being a projection of the vector $\vec{v}$ on the X axis is calculated. This was illustrated in the figure \ref{fig:angle_alpha}. The formula $\cos\alpha = \frac{\vec{v} \cdot \vec{x}}{|\vec{v}||\vec{x}|}$ is employed.
+	\item Free space $S$ is multiplied by sum of coefficient $M$ and $\cos\alpha$. Coefficient $M$ is introduced in order to prevent situations when more than two zones have the same width and lay in-line with respect to the Y axes. Then, for each of them the calculated distance would be equal to zero. In such cases we prefer to join these two groups between which the Euclidean distance is minimized.
+	\end{enumerate}
+\item A list $L$ containing triples ($O_1$, $O_2$, $D$) is created (where $O_1$ and $O_2$ are zones on the page and $D$ is the distance between zones) Initially there are $\binom{N}{2}$ elements in the list.
+\item List $L$ is sorted in ascending order with respect to the distance $D$. 
+\item Until this list is empty, the first triple is picked (i.e. with the smallest distance $D$) and two associated objects, $O_1$ and $O_2$, are merged.
+\item For each element $E$ in the $L$ recalculate the distance $D$ to the new group iff the $E$ contains $O_1$ or $O_2$ (i.e. is in form of ($O_1$, $X$, $D$) or ($O_2$, $X$, $D$)).  Insert into the list a new triple ($O_1O_2$, $X$, $D$) where $O_1O_2$ is the new group.
+\item Sort the list $L$ in ascending order.
+\end{enumerate}
+\begin{figure}[h!]
+  \centering
+  \includesvg[width=8cm]{graphics/angle_alpha}
+  \caption{To include preference for vertical clustering a cosine of the angle $\alpha$ between the vector $\vec{v}$ and vector $\vec{x}$ is calculated.}
+  \label{fig:angle_alha}
+\end{figure}
+\begin{lstlisting}[caption=Listing of the function measuring distance between two zones or zone groups.]
+
+private double distance(BxObject obj1, BxObject obj2) {
+
+    double x0 = Math.min(obj1.getX(), obj2.getX());
+    double y0 = Math.min(obj1.getY(), obj2.getY());
+    double x1 = Math.max(obj1.getX() + obj1.getWidth(),
+            obj2.getX() + obj2.getWidth());
+    double y1 = Math.max(obj1.getY() + obj1.getHeight(),
+            obj2.getY() + obj2.getHeight());
+    double dist = ((x1 - x0) * (y1 - y0) - obj1.getArea() - obj2.getArea());
+
+    double obj1CenterX = obj1.getX();
+    double obj1CenterY = obj1.getY() + obj1.getHeight() / 2;
+    double obj2CenterX = obj2.getX();
+    double obj2CenterY = obj2.getY() + obj2.getHeight() / 2;
+
+    double obj1obj2VectorCosineAbs = Math.abs((obj2CenterX - obj1CenterX) / Math.sqrt((obj2CenterX - obj1CenterX) * (obj2CenterX - obj1CenterX) + (obj2CenterY - obj1CenterY) * (obj2CenterY - obj1CenterY)));
+    final double M_COEFF = 0.5;
+    return dist * (M_COEFF + obj1obj2VectorCosineAbs);
+}
+\end{lstlisting}s
 \section{Initial zone classification}
+After the stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} the document can undergo the two phases of classification. The phase described below tries to assign one of the four general labels to each zone: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
 \section{Metadata extraction}
+\section{Optimization of classifiers' parameters} 
+As already described in section \ref{sec:svm} CERMINE uses internally the SVM algorithm to classify  
 \section{References extraction}
 \section{Text extraction}
 \section{Feature selection}

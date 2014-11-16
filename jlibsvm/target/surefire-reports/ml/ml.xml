@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite hostname="paszoste-ThinkPad-X230" name="edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernelTest" tests="1" failures="0" timestamp="13 May 2014 23:30:58 GMT" time="0.169" errors="0">
-  <testcase name="explicitAndCompositeKernelsAreEqual" time="0.159" classname="edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernelTest"/>
+<testsuite hostname="paszoste-ThinkPad-X230" name="edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernelTest" tests="1" failures="0" timestamp="26 Aug 2014 14:43:32 GMT" time="0.159" errors="0">
+  <testcase name="explicitAndCompositeKernelsAreEqual" time="0.15" classname="edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernelTest"/>
 </testsuite>

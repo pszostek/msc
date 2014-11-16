@@ -1,43 +1,33 @@
 \chapter{Dataset}
 \section{Motivation}
+Despite a strong need of performing automated analyses of scholarly publications, there are not big and reliable datasets of annotated publications available publicly. Such a dataset would greatly facilitate the process of building a classifier to perform the processes automatically.
 \subsection{Open Access publications}
-\section{Previous work}
 \section{Pubmed database}
+Pubmed \cite{Pubmed} is a collection of more than 24 millions articles from MEDLINE, life science journals and online books maintained by the US National Library of Medicine. This collection is digitized which means that the articles are stored in form of PDF files and can serve as a source of full texts without a need for performing Optical Character Recognition. 
+The PMC Open Access Subset (abbreviated to PMC-OAS) is a part of the collection of Pubmed central available publicly with any fees. These articles are kept protected by copyrights, but can be used under the Creative Commons license that allows for more liberal usage of the resources. For the time of creating this report (June 2014) there were more than 400'000 articles available.
 \section{Dataset creation}
-\subsection{The methodology of creating GROTOAP2}
-\section{Metadata matching}
+With very limited budget it is clearly impossible to create a rich set of annotated articles by human means. Such was made in ICM in \cite{DominikaTkaczykArturCzeczkoKrzysztofRusekLukaszBolikowski2012}. GROTOAP (``GROund Truth for Open Access Publications'') created there is a collection of 113 articles in digitial form with corresponding ground-truth files. The ground truth files were tagged manualy, so precision and accuracy are guaranteed. Unluckily, these articles cover not more than 15 different layouts, which is certainly not enough when aiming to a tool applicable to the whole spectrum of publishers and layouts. This is why it was decided to create a dataset, called GROTOAP2, that could serve as a base for classifiers.
+\section{The methodology of creating GROTOAP2}
+As stated above, it was assumed that GROTOAP2 has to be based on open access articles. Pubmed was chosen as source of input data, as a great majority of contained articles is associated with extracted metadata. Sometimes their quality might be put in doubt, but the process was designed to automatically filter them out.
+\qquad
+Each article in the Pubmed dataset cames as a tarball containing the article itself (in PDF format), a metadata file (in XML) and possible some resource files, mainly including pictures extracted from the PDF. A sample content of a metadata XML is showed in the figure \ref{fig:pmc_xml}.
+The general strategy for creting ground-truth files out of the PMC-OAS was to match content of the metadata files to blocks of text extracted and segmented from the provided PDF files resulting in a tagged TrueViz file. PMC-AOS metadata files are not perfect, though. There are many situations, listed below, that one has to account for. Full understanding of their structure was achieved by thorough and laborious manual analysis of many randomly picked sample files.
+\begin{itemize}
+\item structure of the documents varies between documents,
+\item random fields might be missing or be incomplete,
+\item same content (e.g. article's title) might be located under different paths, e.g. contributor's e-mail address might be found under \verb+/article/front/article-meta/contrib-group/contrib/email+ or \verb+/article/front/article-meta/contrib-group/contrib/address/email+.
+\item same content might have different level of granularity, e.g. editor's name might be given as a flat string, whereas author's name might be divided into surname and given names,
+\item elements of the same kind be found under different parents, e.g. figures might be located in \verb+/article/floats-wrap//fig+, \verb+/article/floats-group//fig+, \verb+/article/back//fig+, \verb+/article/body//fig+, \verb+/article/back/app-group//fig+
 
-We use xpath to extract text entries from predefined paths. These
-paths are common for the documents in the Pubmed dataset. Each path is
-mapped to a label in our labeling system. The task consists in finding
-a mapping betwen NLM entries and PDF zones, so that each zone could
-obtain a label dependent on its path in the NLM file.
+\end{itemize}
+
+We use xpath to extract text entries from predefined paths. These paths are common for the documents in the Pubmed dataset. Each path is mapped to a label in our labeling system. The task consists in finding a mapping betwen NLM entries and PDF zones, so that each zone could obtain a label dependent on its path in the NLM file.
 
 For each pair of kind (pdf\_zone, nlm\_entry) Smith-Waterman distance
-is calculated (457-480)
-For each zone a couple of different approaches are followed in order
-to assign a correct label:
+is calculated (457-480) For each zone a couple of different approaches are followed in order to assign a correct label:
 \begin{enumerate}
-\item Take NLM entry with the highest ratio of SW distance to the
-number of tokens (t1.alignment / t1.entryTokens.size()). If both PDF
-zone and NLM entry are not empty and their size in tokens is
-comparable (ratio not smaller than 0.7) and length of the common
-substring constitutes (swLabelSim.get(zoneIdx).get(0).alignment /
-entryTokens.size() > 0.7) more than 70% of the NLM entry, then assign
-corresponding label  (483-516)
-\item if the previous approach failed, take the entry with the highest
-SW distance. If the length of the common substring is bigger than 50%
-of the number of tokens in the PDF zone
-(swLabelSim.get(zoneIdx).get(0).alignment / zoneTokens.size() > 0.5),
-then assign corresponding label, (517-540)
-\item if the previous aproaches failed, a \"cumulated\" distance is
-calculated. This makes it possible to assign a label to these zones
-that form together one NLM entry, but were segmented into several
-parts. This applies mostly to BODY zones. For each and each entry and
-each zone (SW\_distance / Math.max(zoneTokens.size(),
-trio.entryTokens.size())) is calculated. For each zone these values
-are aggregated by summing them up. From all the cumulated distance the
-biggest one is taken. If it is greater than 0.5, the corresponding
-label is assigned. (542-570)
+\item Take NLM entry with the highest ratio of SW distance to the number of tokens ($\frac{t1.alignment}{t1.entryTokens.size()}$). If both PDF zone and NLM entry are not empty and their size in tokens is comparable (ratio not smaller than 0.7) and length of the common substring constitutes (swLabelSim.get(zoneIdx).get(0).alignment / entryTokens.size() > 0.7) more than 70\% of the NLM entry, then assign corresponding label (483-516)
+\item if the previous approach failed, take the entry with the highest SW distance. If the length of the common substring is bigger than 50\% of the number of tokens in the PDF zone (swLabelSim.get(zoneIdx).get(0).alignment / zoneTokens.size() > 0.5), then assign corresponding label, (517-540)
+\item if the previous aproaches failed, a ``cumulated'' distance is calculated. This makes it possible to assign a label to these zones that form together one NLM entry, but were segmented into several parts. This applies mostly to BODY zones. For each and each entry and each zone (SW\_distance / Math.max(zoneTokens.size(), trio.entryTokens.size())) is calculated. For each zone these values are aggregated by summing them up. From all the cumulated distance the biggest one is taken. If it is greater than 0.5, the corresponding label is assigned. (542-570)
 \end{enumerate}
 \section{Filtering}

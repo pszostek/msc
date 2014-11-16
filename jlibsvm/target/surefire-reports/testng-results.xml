@@ -2,12 +2,12 @@
 <testng-results>
   <reporter-output>
   </reporter-output>
-  <suite name="ml" duration-ms="169" started-at="2014-05-14T01:30:58Z" finished-at="2014-05-14T01:30:58Z">
+  <suite name="ml" duration-ms="159" started-at="2014-08-26T16:43:32Z" finished-at="2014-08-26T16:43:32Z">
     <groups>
     </groups>
-    <test name="ml" duration-ms="169" started-at="2014-05-14T01:30:58Z" finished-at="2014-05-14T01:30:58Z">
+    <test name="ml" duration-ms="159" started-at="2014-08-26T16:43:32Z" finished-at="2014-08-26T16:43:32Z">
       <class name="edu.berkeley.compbio.jlibsvm.kernel.GaussianRBFKernelTest">
-        <test-method status="PASS" signature="explicitAndCompositeKernelsAreEqual()" name="explicitAndCompositeKernelsAreEqual" duration-ms="159" started-at="2014-05-14T01:30:58Z" finished-at="2014-05-14T01:30:58Z">
+        <test-method status="PASS" signature="explicitAndCompositeKernelsAreEqual()" name="explicitAndCompositeKernelsAreEqual" duration-ms="150" started-at="2014-08-26T16:43:32Z" finished-at="2014-08-26T16:43:32Z">
         </test-method>
       </class>
     </test>

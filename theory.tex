@@ -16,8 +16,10 @@ In the thoery of statistical learning, classification is considered as an exampl
 % \item classification algorithm parameters.
 % \end{enumerate} 
 
-\section{Support Vector Machines}
+\section{Support Vector Machines}\label{sec:svm}
 One of the most successful and broadly known techniques in machine learning are Support Vector Machines, whose theory was developped by Cortez and Vapnik. The basic idea is given a set of two classes of N-dimension points to find a hyperplane which seperates an N-dimensional space into two subspaces, so that each of them contains points belonging to only one class. Since the two classes might not always be linearly separable, SVM introduces an idea of kernel-induced space which casts the points into a higher dimensional feature space where the new points are linearly-separable. In the section \ref{subsec:linear_svm} there is a detailed description of the theoretical fundaments. In its original version the SVM classifier is a binary classifier, meaning that each point in the training sets belongs to one and only on of two classes and so the unknown points do.
+
+CERMINE internally leverages SVM to classify its content based on the training database. This is why it is important to get acquainted with this algorithm in-depth. 
 
 \subsection{Linearly separable Support Vector Machines} \label{subsec:linear_svm})
 In the very basic example of SVM, namely a linear SVM, is to assign each new sample to one of the two classes, being given a set of learning samples. All the points, both being the learning samples and the unknown samples, are usually tuples of values of certain features.
@@ -155,7 +157,7 @@ A polynomial kernel is expressed as follows:
 \begin{equation}
 \mathcal{K}(x_i, x_j) = (\gamma x_i^Tx_j + c)^d \\
 \end{equation}
-where:
+where the parameters are:
 \begin{itemize}
 \item $c$ is a zero-degree term,
 \item $d$ is the degree of the polynomial,

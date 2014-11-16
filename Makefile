@@ -1,5 +1,7 @@
-files := msc.tex introduction.tex appendices.tex
+files := msc.tex introduction.tex appendices.tex classification.tex algorithm.tex theory.tex
 all: $(files)
+		#convert mendeley format to bibtex
+		sed -i.bak -e 's/url = {\(.*\)}\(.*\)/howpublished = "\\url\{\1\}"\2/' bibliography.bib
 		pdflatex --shell-escape msc.tex
 		bibtex msc
 see:

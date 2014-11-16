@@ -1,0 +1,28 @@
+\chapter{Classification}
+\section{Classification workflow}
+\subsection{Data scaling}
+A very important step towards learning a classifier is scaling of the input data. The main motivation behin that, as mentioned in \cite{Chih-WeiHsu2010}, is not to allow variables in greater numerical ranges to dominate those in smaller numerical ranges. What is more, large values might cause numerical problems. One has to take into account that the closer to zero floating point variables are, the more precisely are they represented. Scaling recommended by \cite{Chih-WeiHsu2010} is in range [-1, +1] or  [0, 1]. The latter is used in CERMINE. Obviously, both learning and testing data have to be scaled using the same transformation. Thus, it is necesary to retain extreme values encountered in learning process.
+In CERMINE scaling for learning purposes was realized with \verb+svm-scale+, a software tool delivered together with the \verb+libsvm+ package.
+\subsection{Data sampling}
+When the decision classes are unequally represented in the training data. The approaches used to deal this problem can be divided into three groups (\cite{Choi}):
+\begin{enumerate}
+\item Changing class distribution by modyfing the data itself in order to rebalance it. It can be reached by either getting rid of samples from over-represented classes or by cloning samples from the under-represented classes. The former can greatly reduce the time spent on the optimization phase. The latter prohibits not common samples from falling out of the training set, making the resulting classifier more versatile.
+\item Adjusting the classifier itself by applying different misclassification costs for different classes. These costs might be for instance inversely linear to number of samples in each class.
+\item Ensamble learning methods, i.e. using multiple classifiers learnt with multiple training data and then combining output of the classifier, for instance by a simple voting.
+\end{enumerate}
+In the described system two first of the mentioned approaches were tested.
+\subsection{Parameter optimization}
+A priori it is impossible to tell which kernel function is the most appropriate for the given training data. There are kernels that behave usually well (and RBF is one of them) and these should be a choice when there are time constrains regarding the learning process. If this is not the case, only a grid search might yield the best classifier for the current task.
+\quad
+Kernel type is only one of the variables being optimized. In general one has to find a triple $(K, C, \gamma)$ that maximizes classifier accuracy for the given case. In this triple $K$ is the kernel type, $C$ is a generic cost of misclasifying data and $\gamma$ is a kernel parameter. In general this kind of search is called grid search and does not allow to omit any of the points in the parameter space without a risk of missing potentialy optimal point.
+\quad
+For every point a $k$-fold crossvalidation is applied. It means, that for a set of parameters the training set is divided into $k$ subsets, each of equal or nearly-equal size. At each step $k-1$ of these subsets constitue the training set and the remaining $k$-th set is treated as uknown data employed to verify correctness of the trained classifier. After $K$ trials mean efficiency is calculated and serves as the criterium for evaluating the point in parameter space.
+\subsection{Transformation to svmlight format}
+Various SVM packages, including libsvm, require that the data are represented as vectors of real numbers. Thus, if the data contains cathegorical attributes (such as \verb+red+, \verb+green+, \verb+blue+ or \verb+big+, \verb+small+) they have to be converted to numerical values. There are two common approached to this problem:
+\begin{itemize}
+\item Using a single value to encode the category. This can be very easily implemented by using the integer value behind enumeration in C implementation
+\item Using N different numbers to represent a category with N possible values. According to \cite{Chih-WeiHsu2010}, this approach yields more stable results
+\end{itemize}
+\qquad
+Svmlight format is a text file format that requires every training sample to be in a separate line (thus, they must be split with `\n' sign). Each line consists of a certain number of fields separated with white signs, e.g. spaces. Each line has to begin with a number representing the decision class followed by feature values. There are no constrains regarding encoding of the decision classes, as long as this encoding is coherent. Feature values have a form of $f_n:v_n$, where $f_n$ is the feature number and $v_n$ is its value. Not every feature has to be listed, but only these whose values are non-zero. This format is beneficial for the scenarious where features are sparse.
+\subsection{Training final classifier}

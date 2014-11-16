@@ -10,6 +10,7 @@
 \usepackage{tabularx}
 \usepackage{pdflscape}
 \usepackage{lipsum}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \usepackage{color}
 \usepackage{afterpage}
 \usepackage{rotating}
@@ -21,6 +22,7 @@
 \usepackage{float}
 \usepackage{multirow}
 \usepackage{longtable}
+\usepackage{url}
 \usepackage{enumerate}
 \usepackage[titletoc]{appendix}
 \usepackage{fancyhdr}
@@ -38,14 +40,26 @@
 \renewcommand{\footrulewidth}{0.0pt}
 \newcounter{magicrownumbers}
 \newcommand\rownumber{\stepcounter{magicrownumbers}\arabic{magicrownumbers}}
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
 
-
- \lstset{
-       	breaklines=true,
-			language=C,
-	%		numbers=left, numberstyle=\small, stepnumber=5, numbersep=5pt,
-			keywordstyle=\bfseries
-    }
+\usepackage{listings}
+\lstset{language=Java,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  commentstyle=\color{pgreen},
+  keywordstyle=\color{pblue},
+  stringstyle=\color{pred},
+  basicstyle=\footnotesize\ttfamily,
+  columns=fullflexible,
+ % moredelim=[il][\textcolor{pgrey}]{$$},
+ % moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
+}
 
 %\usepackage{thebibliography}
 \newcommand{\n}{\textcolor{blue}} %nowododany tekst
@@ -124,11 +138,13 @@ Podpis Przewodniczącego \\
 \include{introduction}
 \include{theory}
 \include{algorithm}
+\include{classification}
 \include{data_set}
 \include{results}
 \include{appendices}
 %\addtocontents{toc}{\protect\vspace{1em}\noindent{\bf Bibliografia}\hspace*{\fill}{\bf \pageref{literatura}}}
 \pagebreak
+\nocite{*}
 \bibliography{bibliography}{}
 \bibliographystyle{plain}
 \end{document}
