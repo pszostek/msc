@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Document SYSTEM "Trueviz.dtd">
+<Document>
+  <Page>
+    <Zone>
+      <ZoneID Value="52"/>
+      <ZoneCorners>
+        <Vertex x="45.4" y="743.8"/>
+        <Vertex x="197.4" y="751.3"/>
+      </ZoneCorners>
+      <ZoneNext Value="53"/>
+      <ZoneInsets Bottom="" Left="" Right="" Top=""/>
+      <ZoneLines Value=""/>
+      <Classification>
+        <Category Value="BIB_INFO"/>
+        <Type Value=""/>
+      </Classification>
+      <Line>
+        <LineID Value="506"/>
+        <LineCorners>
+          <Vertex x="45.4" y="743.8"/>
+          <Vertex x="197.4" y="751.3"/>
+        </LineCorners>
+        <LineNext Value="507"/>
+        <LineNumChars Value=""/<name />
+        <Word>
+          <WordID Value="4796"/>
+          <WordCorners>
+            <Vertex x="45.4" y="743.9"/>
+            <Vertex x="77.0" y="751.3"/>
+          </WordCorners>
+          <WordNext Value="4797"/>
+          <WordNumChars Value=""/>
+          <Character>
+            <CharacterID Value="26121"/>
+            <CharacterCorners>
+              <Vertex x="45.4" y="743.9"/>
+              <Vertex x="49.5" y="751.3"/>
+            </CharacterCorners>
+            <CharacterNext Value="26122"/>
+            <GT_Text Value="F"/>
+          </Character>
+        </Word>
+      </Line>
+    </Zone>
+  </Page>
+</Document>

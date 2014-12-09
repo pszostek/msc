@@ -4,10 +4,12 @@ all: $(files)
 		sed -i.bak -e 's/url = {\(.*\)}\(.*\)/howpublished = "\\url\{\1\}"\2/' bibliography.bib
 		pdflatex --shell-escape msc.tex
 		bibtex msc
+		pdflatex --shell-escape msc.tex 
+		pdflatex --shell-escape msc.tex
 see:
 	evince msc.pdf
 final: $(files)
-		pdflatex msc.tex && pdflatex msc.tex
+		pdflatex --shell-escape msc.tex && pdflatex --shell-escape msc.tex
 draft: $(files)
 		pdflatex -draftmode msc.tex 
 
