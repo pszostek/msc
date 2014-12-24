@@ -92,7 +92,7 @@ for t in texts:
     t.set_size("large")
 plt.axis("equal")
 fig.savefig('../plots/publishers_pieplot.pdf')
-
+plt.show()
 
 journal_labels = []
 journal_numbers = []

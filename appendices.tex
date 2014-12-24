@@ -8,9 +8,9 @@
 \newgeometry{left=2cm,right=2cm}
 %\begin{landscape}
 
-\begin{longtable}[t!]{l|l|p{9cm}}
-\hline
-\# & \textbf{Feature Name} & \textbf{Description} \\ \hline
+\begin{longtable}[t!]{rlp{9cm}}
+\toprule
+\# & \textbf{Feature Name} & \textbf{Description} \\ \midrule
 \rownumber & AffiliationFeature & Tells if the zone contains one of the \{``author details'', ``university'', ``department'', ``school'', ``institute'', ``affiliation''\}\\ \hline
 \rownumber & AuthorFeature & Tells if a text zone contains a word starting with ``author''\\ \hline
 \rownumber & BibinfoFeature & Number of occurences of \{``cite'', ``pages'', ``article'', ``volume'', ``publishing'', ``journal'', ``doi'', ``cite this article'', ``citation'', ``issue'', ``issn''\} \\ \hline
@@ -86,7 +86,7 @@
 \rownumber & XPositionFeature & X coordinate\\ \hline
 \rownumber & XPositionRelativeFeature & Ratio of zone's X coordinate to page's width \\ \hline
 \rownumber & YPositionFeature & Y coordinate \\ \hline
-\rownumber & YPositionRelativeFeature & Ratio of zone's Y coordinate to page's height \\ \hline
+\rownumber & YPositionRelativeFeature & Ratio of zone's Y coordinate to page's height \\ \bottomrule
 \end{longtable}
 \restoregeometry
 \setcounter{magicrownumbers}{0}

@@ -1,13 +1,25 @@
 \chapter{System architecture}
 CERMINE workflowed is composed of a multi-part pipeline, out of which every stage is treated as a separate module and can be maintained and developped independently. For implementation of the majority of non-trivial problems we used supervised and unsupervised machine learning algorithms, that gave a lot of elasticity and allow to adapt to new document layouts.
 
-CERMINE workflow is composed of four main parts:
+\quad
+CERMINE workflow consists of the following distinguishable stages:
 \begin{enumerate}
+    \item \textbf{Text extraction} takes place at the very beginning of metadata extraction process. CERMINE using pdfbox, an external library for manipulating PDF content, extracts a stream of characters, together with their geometrical properties, from the input files.
+    \item \textbf{Text segmentation} builds up blocks of text from a set of characters using their position and size. This stage uses Docstrum algorithm, coded by Krzysztof Rusek and described in details in \cite{O'Gorman1993}. It is therefore beyond the scope of this work and will not be mentioned hereafter.
+    \item \textbf{Resolution of the reading order} aims figuring out the order in which blocks of text are meant to be read. While this task is trivial to a human reader, it is tricky to implement an elastic algorithm suitable for different article layouts.
     \item \textbf{Basic structure extraction} takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labelled with one of four general categories: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
-    \item \textbf{Metadata extraction} part analyses parts of the geometric hierarchical structure labelled as METADATA and extracts a rich set of document's metadata from it.
-    \item \textbf{References extraction} part analyses parts of the geometric hierarchical structure labelled as REFERENCES and the result is a list of document's parsed bibliographic references.
-    \item \textbf{Text extraction} part analyses parts of the geometric hierarchical structure labelled as BODY and extracts document's body structure composed of sections, subsections and paragraphs. 
+    \item \textbf{Metadata extraction} part analyses parts of the geometric hierarchical structure labelled as \verb+METADATA+ and extracts a rich set of document's metadata from it.
+    \item \textbf{References extraction} part analyses parts of the geometric hierarchical structure labelled as \verb+REFERENCES+ and the result is a list of document's parsed bibliographic references.
+    \item \textbf{Text extraction} part analyses parts of the geometric hierarchical structure labelled as \verb+BODY+ and extracts document's body structure composed of sections, subsections and paragraphs. 
 \end{enumerate}
+A diagram of the above mentioned workflow can be found in the figure \ref{fig:pipeline}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=14cm]{graphics/pipeline}
+  \caption{A schematic diagram of CERMINE's workflow.}
+  \label{fig:pipeline}
+\end{figure}
+
 \section{Structure extraction}
 \subsection{Character extraction}\label{sec:character_extraction}
 PDF document as such consists of a stream of characters, whereas position of each character in the stream doesn't have to be related, and usually is not, to its position in the text. Extraction of the characters is achieved using iText library. This part of the system was entirely implemented by Dominika Tkaczyk and will not be described in this work.
@@ -15,7 +27,7 @@ PDF document as such consists of a stream of characters, whereas position of eac
 Page segmentation is a task of clustering a set of characters into blocks of text. Implemented system uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on
 nearest-neighborhood clustering of connected components extracted from the document. $K$-neareast neigbours for each component are found and text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be set based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
 
-\subsection{Reading order resolving}\label{sec:readin_order}
+\subsection{Reading order resolving}\label{sec:reading_order}
 Resolution of Reading Order is a process aiming to transform text zones from a two-dimensional space (as they are laid out on the paper) to a single-dimensional space, i.e. as they are read by a human. Usually this is done by going from left to right and from top to bottom, but there are a lot of cases that made this na\"\i ve approach less efficient. This includes multi-column layout, page numbers, textual elements of figures, figures' and equations' labels.
 \qquad
 As already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, a PDF file contains a stream of characters that undergoes processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements need to be put together in the same order as that would be done by a human reader.\\
@@ -23,7 +35,7 @@ To this end, a bottom-up strategy is applied: firstly characters are sorted with
 \begin{figure}[]
   \centering
   \includesvg[width=12cm]{graphics/ro}
-  \caption{A schematic diagram of reading order resolution. Firstly, distances between text zones are calculated. Then, zones are hierarchicaly grouped according to distances between them. Finally, the tree is in-order traversed and a list of zones in created.}
+  \caption{A schematic diagram of reading order resolving. Firstly, distances between text zones are calculated. Then, zones are hierarchicaly grouped according to distances between them. Finally, the tree is in-order traversed and a list of zones in created.}
   \label{fig:reading_order}
 \end{figure}
 \begin{enumerate}
@@ -43,7 +55,7 @@ To this end, a bottom-up strategy is applied: firstly characters are sorted with
   \centering
   \includesvg[width=8cm]{graphics/angle_alpha}
   \caption{To include preference for vertical clustering a cosine of the angle $\alpha$ between the vector $\vec{v}$ and vector $\vec{x}$ is calculated.}
-  \label{fig:angle_alha}
+  \label{fig:angle_alpha}
 \end{figure}
 \begin{lstlisting}[caption=Listing of the function measuring distance between two zones or zone groups.]
 
@@ -66,10 +78,59 @@ private double distance(BxObject obj1, BxObject obj2) {
     final double M_COEFF = 0.5;
     return dist * (M_COEFF + obj1obj2VectorCosineAbs);
 }
-\end{lstlisting}s
+\end{lstlisting}
 \section{Initial zone classification}
-After the stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} the document can undergo the two phases of classification. The phase described below tries to assign one of the four general labels to each zone: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
+After the stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} the document can undergo the two phases of classification. Firstly, all the zones are classified to one of the four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform finer-grained analysis on the zones falling into each class. Semantics of these classes is as following
+\begin{itemize}
+\item \verb+METADATA+ contains all the data which do not constitute the proper content. This includes publication elements such as: title, author name, affiliation, bibliographic informations, abstract etc.
+\item \verb+BODY+ contains text of the publication. This includes the chapters, figures, tables, equations, plots, acknowledgments, headings, contribution statements, conflict statements and attachments.
+\item \verb+REFERENCES+ contains article's references,
+\item \verb+OTHER+ contains misclassified zones and page numbers. It is a result of a non-ideal dataset, being tagged only to some extent. When training the classifier, those unclassified zones are labeled as \verb+OTHER+. This in turn introduces some kind on additional noise. We decided that it is better to exclude a handful of zones from the further processing (i.e. classify them as \verb+OTHER), than to classify them incorrectly to one of the remaining classes. Employed dataset contains 3.6\% of unknown labels, therefore we might expect a similar number of zones classified to \verb+OTHER+ in the classifier's output.
+\end{itemize}
+\quad
+Initial classification is node using an SVM classifier with the parameters given in the table \ref{tab:classifier_parameters}.
+\begin{table*}
+\centering
+\begin{tabular}{@{}rrr@{}}
+\toprule
+& initial & metadata \\
+\midrule
+SVM type & C\_SVC & C\_SVC \\ 
+kernel type & polynomial & polynomial \\
+$\gamma$ & $\frac{1}{8}$ & $\frac{1}{8}$ \\ 
+$C$ & 8 & 8 \\
+$coef_0$ & 0.5 & 0.5 \\
+$degree$ & 3 & 3 \\
+\bottomrule
+\end{tabular}
+\label{tab:classifier_parameters}
+\caption{Parameters used in the final training of both classification stages}
+\end{table*} 
 \section{Metadata classification}
+Once the initial coarse-grained classification is done, we employ a second classifier which is specialized in classifying metadata, i.e. those zones, which initially got the \verb+METADATA+ label. This class contains 19 sub-labels:
+\begin{itemize}
+    \item \textbf{abstract} - document's abstract, usually one or more zones placed in the first page of the document;
+    \item \textbf{acknowledgments} - sections containing information about document's acknowledgments or funding;
+    \item \textbf{affiliation} - authors' affiliations sections, which sometimes contain contact information (emails, addresses) as well;
+    \item \textbf{author} - a list of document's authors,
+    \item \textbf{bib\_info} - zones containing all kinds of bibliographic information, such as journal/publisher name, volume, issue, DOI, etc.; often includes pages' headers or footers; headers and footers containing document's title or author names are also labelled as bib\_info;
+    \item \textbf{body\_content} - the text content of the document, contains paragraphs and section titles;
+    \item \textbf{conflict\_statement} - conflict statement declarations;
+    \item \textbf{copyright} - copyright or license-related sections;
+    \item \textbf{correspondence} - the authors' contact information, such as emails or addresses;
+    \item \textbf{dates} -important dates related to the document, such as received, revised, accepted or published dates;
+    \item \textbf{editor} - the names of the document's editors;
+    \item \textbf{equation} - equations placed in the document;
+    \item \textbf{figure} - zones containing figures' captions and other text fragments belonging to figures;
+    \item \textbf{glossary} - important terms and abbreviations used in the document;
+    \item \textbf{keywords} - keywords listed in the document;
+    \item \textbf{page} number -zones containing the numbers of pages;
+    \item \textbf{table} - the text content of tables and table captions;
+    \item \textbf{title} - the document's title;
+    \item \textbf{title\_author} - zones containing both document's title and the list of authors;
+    \item \textbf{type} -the type of the document, usually mentioned on the first page near the title, such as ``research paper'', ``case study'' or ``editorial'';
+    \item \textbf{unknown} - used for all the zones that do not fall in any of the above categories.
+\end{itemize}
 \section{Optimization of classifiers' parameters} 
 As already described in section \ref{sec:svm} CERMINE uses internally the SVM algorithm to classify  
 \section{References extraction}

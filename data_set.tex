@@ -23,7 +23,7 @@ GROTOAP2 is made of ground-truth files in TrueViz format, which extends XML, con
 \section{The methodology of creating GROTOAP2}
 As stated before, it was assumed that GROTOAP2 has to be based on open access articles. Pubmed was chosen as source of input data, as a great majority of contained articles is associated with extracted metadata. Sometimes their quality might be put in doubt, but the process was designed to automatically filter them out. The method presented here is scalable to immense sets as the human factor was ruled out.
 
-Each article in the Pubmed dataset cames as a tarball containing the article itself (in PDF format), a metadata file (in XML) and possible some resource files, mainly including pictures extracted from the PDF. A sample content of a metadata XML is showed in the listing \ref{lst:pmc_xml}. A complete description of possible elements is described in \cite{PubmedXML}.
+Each article in the Pubmed dataset cames as a tarball containing the article itself (in PDF format), a metadata file (in XML) and possible some resource files, mainly including pictures extracted from the PDF. A sample content of a metadata XML is showed in the listing \ref{lst:pmc_xml}. A complete description of possible elements can be found in \cite{PubmedXML}.
 \lstinputlisting[label={lst:pmc_xml},caption={Sample content of PUBMED XML file},basicstyle=\scriptsize,language=XML]{pubmed_sample.xml}
 
 The general strategy for creating ground-truth files out of the PMC-OAS was to match content of the metadata files to blocks of text extracted and segmented from the provided PDF files resulting in a tagged TrueViz file. This allowed us to mix together both data, metadata and geometric properties of the articles. PMC-AOS metadata files are not perfect, though. There are many situations, listed below, that one has to take into account. Full understanding of their structure was achieved by thorough and laborious manual analysis of many randomly picked sample files.
@@ -55,6 +55,19 @@ is calculated (457-480) For each zone a couple of different approaches are follo
 \item if the previous aproaches failed, a ``cumulated'' distance is calculated. This makes it possible to assign a label to these zones that form together one NLM entry, but were segmented into several parts. This applies mostly to BODY zones. For each and each entry and each zone (SW\_distance / Math.max(zoneTokens.size(), trio.entryTokens.size())) is calculated. For each zone these values are aggregated by summing them up. From all the cumulated distance the biggest one is taken. If it is greater than 0.5, the corresponding label is assigned. (542-570)
 \end{enumerate}
 \section{Filtering}
+After the matching stage we obtained initial set of TrueViz files whose quality was very diverse, i.e. spanning from fully labelled to almost unlabelled. There are two reasons for that:
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=12cm]{plots/zone_coverage_grotoap2}
+  \label{fig:trueviz_match_histogram}
+\end{figure}
+\begin{enumerate}
+\item NLM files in PMC vary in quality. Those with less detailed metadata resulted in barely labeled TrueViz files,
+\item with certain layouts our segmentation algorithm was failing, producing very finely-grained text zones with just a handful of letters each. In these cases it was barely possible to match NLM metadata with the actual text, what again lead to sparsely labelled TrueViz files. 
+\end{enumerate}
+In order to assure good quality of the final set we needed to filter out documents with TrueViz files of bad quality. On the figure \label{fig:trueviz_match_histogram} one can see a distribution of documents with a given fraction of labelled zones.
+Based on this distribution we decided to keep these documents having the percentage of labelled zone equal or greater than 90\%.
+
 \section{TrueViz file format}
 We decided to choose TrueViz file format as the data set's main data format. This was to maintain the choice taken when working on GROTOAP data set. The motivation behind this choice is discussed in details in \cite{Tkaczyk2012}. TrueViz is a plain text file based on the XML format that holds in an extremely inefficient way the content of a document together with its geometrical properties and classification metadata. An example of a dumb file containing a single character is shown on the listing \ref{lst:trueviz_sample}.
 \lstinputlisting[label={lst:trueviz_sample},caption={Sample content of a TrueViz file with one letter of content - ``F''},basicstyle=\scriptsize,language=XML]{trueviz_sample.xml}
@@ -94,7 +107,7 @@ Figure \ref{fig:label_count_barplot} shows the total count of labels across all 
 \quad
 Figures \ref{fig:publishers_pieplot} and \ref{fig:journals_pieplot} show the contribution in the data set of the top 15 publishers and top 25 journals respectively. In total there are 208 publishers included and 1170 journals. As expected, the biggest publisher is a medical one (BioMed Central), but the remaining ones might be associated with a general scientific publishing. As different journals are stuck to their layouts, we might be sure that the variety of the layouts in the data set is sufficient to allow good mean performance on unknown articles. 
 \quad
-Figures \ref{fig:pages_count_histogram} and \ref{fig:publication_year_histogram} show the distribution of number of pages and publication years respectively. The first distribution reaches its maximum at 8 pages, which is a standard in the scientific publishing. The second ditribution is focused around the year 2010, but has a tail reaching year 1995. Therefore we might expect that the classifier trained using this set will show better performance for more recent publications.
+Figures \ref{fig:page_count_histogram} and \ref{fig:publication_year_histogram} show the distribution of number of pages and publication years respectively. The first distribution reaches its maximum at 8 pages, which is a standard in the scientific publishing. The second ditribution is focused around the year 2010, but has a tail reaching year 1995. Therefore we might expect that the classifier trained using this set will show better performance for more recent publications.
 \begin{figure}[ht]
 \centering
 \begin{minipage}[t!]{0.48\linewidth}
@@ -130,13 +143,13 @@ Figures \ref{fig:pages_count_histogram} and \ref{fig:publication_year_histogram}
 \begin{minipage}[t!]{0.48\linewidth}
   \includegraphics[width=8cm]{plots/author_histogram}
   \caption{Histogram of number of zones labeled as \textbf{author}}
-  \label{fig:_histogram}
+  \label{fig:author_histogram}
 \end{minipage}
 \quad
 \begin{minipage}[t!]{0.48\linewidth}
   \includegraphics[width=8cm]{plots/author_title_histogram}
   \caption{Histogram of number of zones labeled as \textbf{author\_title}}
-  \label{fig:_histogram}
+  \label{fig:author_title_histogram}
 \end{minipage}
 \end{figure}
 
@@ -145,13 +158,13 @@ Figures \ref{fig:pages_count_histogram} and \ref{fig:publication_year_histogram}
 \begin{minipage}[t!]{0.48\linewidth}
   \includegraphics[width=8cm]{plots/body_content_histogram}
   \caption{Histogram of number of zones labeled as \textbf{body\_content}}
-  \label{fig:_histogram}
+  \label{fig:body_content_histogram}
 \end{minipage}
 \quad
 \begin{minipage}[t!]{0.48\linewidth}
   \includegraphics[width=8cm]{plots/conflict_statement_histogram}
   \caption{Histogram of number of zones labeled as \textbf{conflict\_statement}}
-  \label{fig:_histogram}
+  \label{fig:conflict_statement_histogram}
 \end{minipage}
 \end{figure}
 
@@ -160,7 +173,7 @@ Figures \ref{fig:pages_count_histogram} and \ref{fig:publication_year_histogram}
 \begin{minipage}[t!]{0.48\linewidth}
   \includegraphics[width=8cm]{plots/copyright_histogram}
   \caption{Histogram of number of zones labeled as \textbf{copyright}}
-  \label{fig:_histogram}
+  \label{fig:copyright_histogram}
 \end{minipage}
 \quad
 \begin{minipage}[t!]{0.48\linewidth}
@@ -262,24 +275,33 @@ Figures \ref{fig:pages_count_histogram} and \ref{fig:publication_year_histogram}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{figure}[p]
-  \centering
+\begin{figure}
+\centering
+\begin{minipage}[t!]{\linewidth}
   \centerline{\includegraphics[width=18cm]{plots/docs_with_labels_barplot}}
-  \label{fig:label_barplot}
   \caption{Barplot of fraction of documents containing given label}
+  \label{fig:label_barplot}
+\end{minipage}
+\begin{minipage}[t!]{\linewidth}
   \centerline{\includegraphics[width=18cm]{plots/label_barplot}}
-  \label{fig:label_count_barplot}
   \caption{Barplot of total count of zones labeled with given label in GROTOAP2}
+  \label{fig:label_count_barplot}
+\end{minipage}
 \end{figure}
 
-\begin{figure}
+  \begin{figure}
   \centering
+\begin{minipage}[t!]{\linewidth}
   \centerline{\includegraphics[width=22cm]{plots/journals_pieplot}}
-  \label{fig:journals_pieplot}
   \caption{Top 25 journals in the GROTOAP2 dataset}
+  \label{fig:journals_pieplot}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{\linewidth}
   \centerline{\includegraphics[width=22cm]{plots/publishers_pieplot}}
   \caption{Top 15 publishers in the GROTOAP2 dataset}
   \label{fig:publishers_pieplot}
+\end{minipage}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -297,3 +319,50 @@ Figures \ref{fig:pages_count_histogram} and \ref{fig:publication_year_histogram}
   \label{fig:publication_year_histogram}
 \end{minipage}
 \end{figure}
+
+\section{Dataset evaluation}
+Evaluation of the created dataset is precisely described in \cite{DominikaTkaczykPaweSzostek2014}. Evaluation \textbf{was not done by the author of this thesis}. It was entirely conducted by author's teammates from the Interdisciplinary Center for Mathematical and Computation Modelling. Nevertheless, its results and methodology will be quoted here in order to make the description more complete.
+\quad
+For the purpose of evaluation there was a handful of 50 documents picked. Those documents were automatically labelled and then errors were rectified. Subsequently, the corrected documents and the original ones were compared and the factors of precision and recall were calculated. Table \ref{tab:grotoap2_evaluation} shows the values obtained for each label.
+
+\begin{table*}
+%\ra{1.3}
+\centering
+\begin{tabular}{@{}rrrcrrr@{}}
+ \toprule
+label & precision & recall & \phantom{abc} & label & precision & recall\\ \midrule
+abstract & 0.98 & 0.98 && equation & - & - \\ 
+acknowledgment & 1.00 & 0.90 && figure & 0.99 & 0.46 \\ 
+affiliation & 0.95 & 0.95 && glossary & 1.00 & 1.00 \\ 
+author & 1.00 & 0.98 && keywords & 1.00 & 0.94 \\ 
+author\_title & 1.00 & 1.00 && page\_number & 0.98 & 0.97 \\ 
+bib\_info & 0.96 & 0.94 && references & 0.99 & 0.95 \\ 
+body & 0.88 & 0.99 && table & 0.98 & 0.96 \\ 
+conflict\_statement & 0.82 & 0.89 && title & 1.00 & 1.00 \\ 
+copyright & 0.93 & 0.78 && type & 0.89 & 0.47 \\ 
+correspondence & 1.00 & 0.97 && unknown & 0.62 & 0.94 \\ 
+dates & 0.94 & 1.00 && * & 0.95 & 0.91 \\ 
+editor & 1.00 & 1.00 &&   &      &       \\
+\bottomrule
+\end{tabular}
+\caption{Evaluation metrics for the GROTOAP2 zone labelling process. The automatically generated metrics were manually compared with the actual labels. For each class precision and recall were calculated. Source: \cite{DominikaTkaczykPaweSzostek2014}}
+\label{tab:grotoap2_evaluation}
+\end{table*}
+
+Another evaluation of the dataset was done by comparing CERMINE performance in two scenarios: trained with GROTOAP and a random handful of 1000 documents from GROTOAP2. Test documents were randomly selected from the Pubmed Central collection. Table \ref{tab:grotoap2_cermine_evaluation} shows results of the evaluation. One can notice that the F-score of classifier based on GROTOAP2 has grown by 16.93\%.
+
+\begin{table*}[]
+\centering
+\begin{tabular}{@{}rrr@{}}
+\toprule
+& GROTOAP & GROTOAP2 \\
+\midrule
+precision & 77.13\% & 82.22\% \\
+recall & 55.99\% & 76.96\% \\
+F-score & 62.41\% & 79.34\% \\
+\bottomrule
+\end{tabular}
+\caption{Evaluation of GROTOAP2 using CERMINE trained with GROTOAP and GROTOAP2.}
+\label{tab:grotoap2_cermine_evaluation}
+\end{table*}
+

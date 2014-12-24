@@ -28,6 +28,8 @@
 \usepackage[titletoc]{appendix}
 \usepackage{fancyhdr}
 \usepackage{morefloats}
+\usepackage{booktabs}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \pagestyle{fancy}
 \graphicspath{{./graphics/}}
 \fancyhf{}
@@ -47,9 +49,9 @@
 \definecolor{pred}{rgb}{0.9,0,0}
 \definecolor{pgrey}{rgb}{0.46,0.45,0.48}
 
-\usepackage{listings}
 \lstset{language=Java,
   showspaces=false,
+  captionpos=b,
   showtabs=false,
   breaklines=true,
   showstringspaces=false,
