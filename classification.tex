@@ -1,4 +1,5 @@
 \chapter{Classification}
+Classification consists
 \section{Classification workflow}
 \subsection{Data scaling}
 A very important step towards learning a classifier is scaling of the input data. The main motivation behin that, as mentioned in \cite{Chih-WeiHsu2010}, is not to allow variables in greater numerical ranges to dominate those in smaller numerical ranges. What is more, large values might cause numerical problems. One has to take into account that the closer to zero floating point variables are, the more precisely are they represented. Scaling recommended by \cite{Chih-WeiHsu2010} is in range [-1, +1] or  [0, 1]. The latter is used in CERMINE. Obviously, both learning and testing data have to be scaled using the same transformation. Thus, it is necesary to retain extreme values encountered in learning process.
@@ -25,4 +26,4 @@ Various SVM packages, including libsvm, require that the data are represented as
 \end{itemize}
 \qquad
 Svmlight format is a text file format that requires every training sample to be in a separate line (thus, they must be split with `\n' sign). Each line consists of a certain number of fields separated with white signs, e.g. spaces. Each line has to begin with a number representing the decision class followed by feature values. There are no constrains regarding encoding of the decision classes, as long as this encoding is coherent. Feature values have a form of $f_n:v_n$, where $f_n$ is the feature number and $v_n$ is its value. Not every feature has to be listed, but only these whose values are non-zero. This format is beneficial for the scenarious where features are sparse.
-\subsection{Training final classifier}
+\subsection{Training final of the classifier}

@@ -2,94 +2,157 @@
 %\appendixpage
 \noappendicestocpagenum
 \addappheadtotoc
+\chapter{Decription of the training workflow}
+Below one can find description of the complete procedure for training the system classifiers.
+\begin{enumerate}
+\item Get CERMINE source code. It is available publicly on the Web.
+\lstset{language=bash}
+\begin{lstlisting}
+git clone https://github.com/pszostek/CERMINE.git
+cd CERMINE
+\end{lstlisting}
+\item Build CERMINE using maven by running the following Bash script from the CERMINE main directory. It assumes that the PATH varible contains a path to \verb+mvn+.
+\begin{lstlisting}
+#!/usr/bin/env bash
+curdir=$PWD
+cd cermine-impl && mvn package -DskipTests && mvn assembly:single && cd $curdir
+cd cermine-tools && mvn package -DskipTests && mvn assembly:single && cd $curdir
+\end{lstlisting}
+\item Create files with samples for the classifiers using GROTOAP2. To this end, one need to run the following script. Note that the GROTOAP2\_PATH variable has to point to a directory containing cxml files from the dataset.
+\begin{lstlisting}
+#!/usr/bin/env bash
+BASE=$(dirname $(pwd))
+java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
+    $BASE/cermine-tools/target/cermine-tools-1.2-SNAPSHOT-jar-with-dependencies.jar:\
+    $BASE/cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar:\
+    $BASE/cermine-impl/target/cermine-impl-1.2-SNAPSHOT.jar pl.edu.icm.cermine.libsvm.LibSVMExporter $GROTOAP2_PATH
+\end{lstlisting}
+\item Scale down the samples' feature values so that those with relatively huge absolute values do not dominate those with smaller values. This is a step recommended in \cite{Chih-WeiHsu2010}. It can be done by using the svm-scale tool from libsvm package.
+\begin{lstlisting}
+svm-scale -l -1 -u 1 -s range1 meta_GROTOAP2 > meta_GROTOAP2.scale
+svm-scale -l -1 -u 1 -s range1 initial_GROTOAP2 > initial_GROTOAP2.scale
+\end{lstlisting}
+\item Find the best parameters for the classifiers using \verb+grid.py+ from the libsvm package. The below script can facilitate iterating over different kernel types. One need to pick the classifier with the lowest error rate.
+\begin{lstlisting}
+#!/usr/bin/env bash
+for classifier in meta initial; do
+        for kernel in $(seq 0 3); do
+                printf "kernel=$kernel: "
+                if [ $kernel -eq 1 ]; then
+                        degree=" -d 4 "
+                else
+                        degree=""
+                fi
+                /root/grid.py -t $kernel -gnuplot /usr/local/bin/gnuplot -svmtrain /root/libsvm-3.18/svm-train $degree ${classifier}_GROTOAP.dat.scale
+        done
+done
+\end{lstlisting}
+\item Using the optimal parameters, train the classifiers and save them to files. The below command has to be run from the main CERMINE directory. The variables KERNEL\_I, G\_I, C\_I and D\_I indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the initial zone classification kernel. Variables KERNEL\_M, G\_M, C\_M and D\_M indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the metadata classification kernel.
+\begin{lstlisting}
+java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
+    ./cermine-tools/target/cermine-tools-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT.jar\
+    pl.edu.icm.cermine.tools.classification.svm.SVMInitalBuilder -input\
+        initial_GROTOAP2.dat.scale -output CERMINE_initial_classifier\
+        -kernel $KERNEL_I -g $G_I -C $C_I [-degree $D_I]
 
+java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
+    ./cermine-tools/target/cermine-tools-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT.jar\
+    pl.edu.icm.cermine.tools.classification.svm.SVMMetadataBuilder -input\
+        meta_GROTOAP2.dat.scale -output CERMINE_meta_classifier\
+        -kernel $KERNEL_M -g $G_M -C $C_M [-degree $D_M]
+\end{lstlisting}
+\end{enumerate}
 \chapter{Description of classification features}
 \label{appendix:features}
-\newgeometry{left=2cm,right=2cm}
-%\begin{landscape}
+Below one can find description of all the features used in the zone classification process.
 
-\begin{longtable}[t!]{rlp{9cm}}
-\toprule
-\# & \textbf{Feature Name} & \textbf{Description} \\ \midrule
-\rownumber & AffiliationFeature & Tells if the zone contains one of the \{``author details'', ``university'', ``department'', ``school'', ``institute'', ``affiliation''\}\\ \hline
-\rownumber & AuthorFeature & Tells if a text zone contains a word starting with ``author''\\ \hline
-\rownumber & BibinfoFeature & Number of occurences of \{``cite'', ``pages'', ``article'', ``volume'', ``publishing'', ``journal'', ``doi'', ``cite this article'', ``citation'', ``issue'', ``issn''\} \\ \hline
-\rownumber & BracketRelativeCount & Ratio of the number of brackets to the number of all characters \\ \hline
-\rownumber & BracketedLineRelativeCount & Ratio of number of lines starting with a bracket to the number of all lines\\ \hline
-\rownumber & CharCountFeature & Counts number of characters in a zone\\ \hline
-\rownumber & CharCountRelativeFeature & Ratio of number of characters in a zone to the number of character on its page\\ \hline
-\rownumber & CommaCountFeature & Counts number of commas in a zone\\ \hline
-\rownumber & CommaRelativeCountFeature & Ratio of commas to all characters in a zone \\ \hline
-\rownumber & ContainsPageNumberFeature & Tells consists of a number or is like ``Page \%d'' or ``page \%d'', where \%d is a number \\ \hline
-\rownumber & CuePhrasesRelativeCountFeature & Ratio of cue phrases from \{``although'', ``therefore'', ``therein'', ``hereby'', ``nevertheless'', ``to this end'', ``however'', ``moreover'', ``nonetheles''\} to all words\\ \hline
-\rownumber & DateFeature & Tells if the zone contains a string being a date with months expressed as text or as a number, with either European or American order\\ \hline
-\rownumber & DigitCountFeature & Number of digits is in the zone\\ \hline
-\rownumber & DigitRelativeCountFeature & Ratio of digits to all characters in the zone \\ \hline
-\rownumber & DistanceFromNearestNeighbourFeature & Distance to the nearest neighbour zone or returns Double.MAX\_VALUE if there is no other zone on the page\\ \hline
-\rownumber & DotCountFeature & Counts number of dots (``.'') in the zone\\ \hline
-\rownumber & DotRelativeCountFeature & Ratio of number of dots to all characters in the zone \\ \hline
-\rownumber & EmailFeature & Tells if the zone contains a valid e-mail address\\ \hline
-\rownumber & EmptySpaceRelativeFeature & Calculates a ratio of the surface taken by the characters' bounding boxes to the area of the zone \\ \hline
-\rownumber & FontHeightMeanFeature & Calculates average font size in the zone \\ \hline
-\rownumber & FreeSpaceWithinZoneFeature & Difference between zone's area and total area taken by the characters\\ \hline
-\rownumber & HeightFeature & Height of a zone\\ \hline
-\rownumber & HeightRelativeFeature & Ratio of zone's height to the page's height\\ \hline
-\rownumber & HorizontalRelativeProminenceFeature & Area taken by the zone and free area to the West and East of the page. This features tries to fit into the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in E and W\\ \hline
-\rownumber & IsAnywhereElseFeature & Tells if this zone is duplicated anywhere in the investigated document \\ \hline
-\rownumber & IsFirstPageFeature & Tells if the zone is located on the first page of the document \\ \hline
-\rownumber & IsFontBiggerThanNeighboursFeature & Tells whether the font of the zone is bigger than in neighbour zones\\ \hline
-\rownumber & IsGreatestFontOnPageFeature & Tells if the zone has the greatest font on the page \\ \hline
-\rownumber & IsHighestOnThePageFeature & Tells if the zone is the highest on the page \\ \hline
-\rownumber & IsItemizeFeature & Tells if the zone contains any kind of indexing charactersic for section or enumeration numbering \\ \hline
-\rownumber & IsWidestOnThePageFeature & Tells if the zone is the widest on the page\\ \hline
-\rownumber & IsLastButOnePageFeature & Tells if the zone is located on the last but one page\\ \hline
-\rownumber & IsLastPageFeature & Tells if the zone is located on the last page\\ \hline
-\rownumber & IsLeftFeature & Tells if the zone is in the left part of the page\\ \hline
-\rownumber & IsLongestOnThePageFeature & Tells if the zone contains maximal number of characters among all the zones in the page\\ \hline
-\rownumber & IsLowestOnThePageFeature & Tells if the zone is most southern on the page (southern bounding box border is taken into account) \\ \hline
-\rownumber & IsOnSurroundingPagesFeature & Tells if the same zone is on the previous or on the next page \\ \hline
-\rownumber & IsPageNumberFeature & Tells if a zone is entirely a number \\ \hline
-\rownumber & IsRightFeature & Tells if a zone is on the east side of the page\\ \hline
-\rownumber & IsSingleWordFeature & Tells if a zone is one word \\ \hline
-\rownumber & LastButOneZoneFeature & Tells if the zone is last but one wrt. to the reading order \\ \hline
-\rownumber & LineCountFeature & Number of lines in the zone\\ \hline
-\rownumber & LineRelativeCountFeature & Ratio of lines in the to all lines on the page\\ \hline
-\rownumber & LineHeightMeanFeature & Mean height of the zone\\ \hline
-\rownumber & LineWidthMeanFeature & Mean width of the zone's lines\\ \hline
-\rownumber & LineXPositionMeanFeature & Mean distance of zone's lines to the zone's bounding box \\ \hline
-\rownumber & LineXPositionDiffFeature & The feature looks at the left border of all lines within a zone and finds the most-eastern and most-western among them. A positive difference between these two values is returned\\ \hline
-\rownumber & LineXWidthPositionDiffFeature & Difference between mean value of lines' left border X coordinate and zone's  \\ \hline
-\rownumber & LetterCountFeature & Number of letters in the zone\\ \hline
-\rownumber & LetterRelativeCountFeature & Ratio of letters in the zone to all letters on the page\\ \hline
-\rownumber & LowercaseCountFeature & Number of letters in lower case in the zone\\ \hline
-\rownumber & LowercaseRelativeCountFeature & Number of letters in lower case in the zone\\ \hline
-\rownumber & PageNumberFeature & Page number wrt. the reading order \\ \hline
-\rownumber & PreviousZoneFeature & Value of label assigned to the previous zone wrt. the reading order\\ \hline
-\rownumber & ProportionsFeature & Width to height ratio\\ \hline
-\rownumber & PunctuationRelativeCountFeature & Ratio of punctuation marks to all characters in the zone\\ \hline
-\rownumber & ReferencesFeature & Number of characteristic enumeration indices in the zone, e.g. ``1.''.\\ \hline
-\rownumber & StartsWithDigitFeature & Tells if the zone's first character is a digit\\ \hline
-\rownumber & UppercaseCountFeature & Number of upper case characters in the zone \\ \hline
-\rownumber & UppercaseRelativeCountFeature & Ratio of upper case letters to all characters\\ \hline
-\rownumber & UppercaseWordCountFeature & Number of words starting with upper case\\ \hline
-\rownumber & UppercaseWordRelativeCountFeature & Ratio of upper case words to all words\\ \hline
-\rownumber & VerticalProminenceFeature & Space taken by the zone and free area to the North and South of the page. This features tries to fit into the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in N and S \\ \hline
-\rownumber & WidthFeature & Width of the bounding box in pixels\\ \hline
-\rownumber & WordCountFeature & Number of words in the zone\\ \hline
-\rownumber & WordCountRelativeFeature & Ratio of number of words in the zone to all words in the page\\ \hline
-\rownumber & WordWidthMeanFeature & Mean width of words in the zone expressed as pixels\\ \hline
-\rownumber & WordLengthMeanFeature & Mean width of words in the zone expressed as number of characters\\ \hline
-\rownumber & WordLengthMedianFeature & Median of number of characters in all words \\ \hline
-\rownumber & WhitespaceCountFeature & Number of white characters in the text\\ \hline
-\rownumber & WhitespaceRelativeCountLogFeature & Feature calculated as $-log \frac{S}{L}$ where $S$ is zone's empty area and $L$ is zone's text length \\ \hline
-\rownumber & WidthRelativeFeature & Ratio of zone's width to page's width\\ \hline
-\rownumber & XPositionFeature & X coordinate\\ \hline
-\rownumber & XPositionRelativeFeature & Ratio of zone's X coordinate to page's width \\ \hline
-\rownumber & YPositionFeature & Y coordinate \\ \hline
-\rownumber & YPositionRelativeFeature & Ratio of zone's Y coordinate to page's height \\ \bottomrule
+%\begin{landscape}
+\small
+\setlength\LTleft{-2cm}
+\begin{longtable}[c]{|r|c|p{8cm}|}
+\hline
+\textbf{Feature Name} & \textbf{Type} & \textbf{Description} \\ \hline
+Affiliation & \verb+bool+ & Tells if the zone contains one of the \{``author details'', ``university'', ``department'', ``school'', ``institute'', ``affiliation''\}\\ \hline
+Author & \verb+bool+ & Tells if a text zone contains a word starting with ``author''\\ \hline
+Bibinfo & \verb+int+ & Number of occurences of \{``cite'', ``pages'', ``article'', ``volume'', ``publishing'', ``journal'', ``doi'', ``cite this article'', ``citation'', ``issue'', ``issn''\} \\ \hline
+BracketRelativeCount & \verb+float+ & Ratio of the number of brackets to the number of all characters \\ \hline
+BracketedLineRelativeCount & \verb+float+ & Ratio of number of lines starting with a bracket to the number of all lines\\ \hline
+CharCount & \verb+int+ & Counts number of characters in a zone\\ \hline
+CharCountRelative & \verb+float+ & Ratio of number of characters in a zone to the number of character on its page\\ \hline
+CommaCount & \verb+int+ & Counts number of commas in a zone\\ \hline
+CommaRelativeCount & \verb+int+ & Ratio of commas to all characters in a zone \\ \hline
+ContainsPageNumber & \verb+bool+  & Does the zone consists of a number or is like ``Page \%d'' or ``page \%d'', where \%d is a number \\ \hline
+CuePhrasesRelativeCount & \verb+float+ & Ratio of cue phrases from \{``although'', ``therefore'', ``therein'', ``hereby'', ``nevertheless'', ``to this end'', ``however'', ``moreover'', ``nonetheles''\} to all words\\ \hline
+Date & \verb+bool+ & Tells if the zone contains a string being a date with months expressed as text or as a number, with either European or American order\\ \hline
+DigitCount & \verb+int+ & Number of digits is in the zone\\ \hline
+DigitRelativeCount & \verb+float+ & Ratio of digits to all characters in the zone \\ \hline
+DistanceFromNearestNeighbour & \verb+float+ & Distance to the nearest neighbour zone or returns Double.MAX\_VALUE if there is no other zone on the page\\ \hline
+DotCount & \verb+int+ & Counts number of dots (``.'') in the zone\\ \hline
+DotRelativeCount & \verb+float+ & Ratio of number of dots to all characters in the zone \\ \hline
+Email & \verb+bool+ & Tells if the zone contains a valid e-mail address\\ \hline
+EmptySpaceRelative & \verb+float+ & Calculates a ratio of the surface taken by the characters' bounding boxes to the area of the zone \\ \hline
+FontHeightMean & \verb+float+ & Calculates average font size in the zone \\ \hline
+FreeSpaceWithinZone & \verb+float+ & Difference between zone's area and total area taken by the characters\\ \hline
+Height & \verb+int+ & Height of a zone\\ \hline
+HeightRelative & \verb+float+ & Ratio of zone's height to the page's height\\ \hline
+HorizontalRelativeProminence & \verb+float+ & Area taken by the zone and free area to the West and East of the page. This features tries to fit \verb+int+o the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in E and W\\ \hline
+IsAnywhereElse & \verb+bool+ & Tells if this zone is duplicated anywhere in the investigated document \\ \hline
+IsFirstPage & \verb+bool+ & Tells if the zone is located on the first page of the document \\ \hline
+IsFontBiggerThanNeighbours & \verb+bool+ & Tells whether the font of the zone is bigger than in neighbour zones\\ \hline
+IsGreatestFontOnPage & \verb+bool+ & Tells if the zone has the greatest font on the page \\ \hline
+IsHighestOnThePage & \verb+bool+ & Tells if the zone is the highest on the page \\ \hline
+IsItemize & \verb+bool+ & Tells if the zone contains any kind of indexing charactersic for section or enumeration numbering \\ \hline
+IsWidestOnThePage & \verb+bool+ & Tells if the zone is the widest on the page\\ \hline
+IsLastButOnePage & \verb+bool+ & Tells if the zone is located on the last but one page\\ \hline
+IsLastPage & \verb+bool+ & Tells if the zone is located on the last page\\ \hline
+IsLeft & \verb+bool+ & Tells if the zone is in the left part of the page\\ \hline
+IsLongestOnThePage & \verb+bool+ & Tells if the zone contains maximal number of characters among all the zones in the page\\ \hline
+IsLowestOnThePage & \verb+bool+ & Tells if the zone is most southern on the page (southern bounding box border is taken \verb+int+o account) \\ \hline
+IsOnSurroundingPages & \verb+bool+ & Tells if the same zone is on the previous or on the next page \\ \hline
+IsPageNumber & \verb+bool+ & Tells if a zone is entirely a number \\ \hline
+IsRight & \verb+bool+ & Tells if a zone is on the east side of the page\\ \hline
+IsSingleWord & \verb+bool+ & Tells if a zone is one word \\ \hline
+LastButOneZone & \verb+bool+ & Tells if the zone is last but one wrt. to the reading order \\ \hline
+LineCount & \verb+int+ & Number of lines in the zone\\ \hline
+LineRelativeCount & \verb+float+ & Ratio of lines in the to all lines on the page\\ \hline
+LineHeightMean & \verb+float+ & Mean height of the zone\\ \hline
+LineWidthMean & \verb+float+ & Mean width of the zone's lines\\ \hline
+LineXPositionMean & \verb+float+ & Mean distance of zone's lines to the zone's bounding box \\ \hline
+LineXPositionDiff & \verb+float+ & The feature looks at the left border of all lines within a zone and finds the most-eastern and most-western among them. A positive difference between these two values is returned\\ \hline
+LineXWidthPositionDiff & \verb+float+ & Difference between mean value of lines' left border X coordinate and zone's  \\ \hline
+LetterCount & \verb+int+ & Number of letters in the zone\\ \hline
+LetterRelativeCount & \verb+float+ & Ratio of letters in the zone to all letters on the page\\ \hline
+LowercaseCount & \verb+int+ & Number of letters in lower case in the zone\\ \hline
+LowercaseRelativeCount & \verb+float+ & Number of letters in lower case in the zone\\ \hline
+PageNumber & \verb+int+ & Page number wrt. the reading order \\ \hline
+PreviousZone & \verb+int+ & Value of label assigned to the previous zone wrt. the reading order\\ \hline
+Proportions & \verb+float+ & Width to height ratio\\ \hline
+PunctuationRelativeCount & \verb+float+ & Ratio of punctuation marks to all characters in the zone\\ \hline
+References & \verb+int+ & Number of characteristic enumeration indices in the zone, e.g. ``1.''.\\ \hline
+StartsWithDigit & \verb+bool+ & Tells if the zone's first character is a digit\\ \hline
+UppercaseCount & \verb+int+ & Number of upper case characters in the zone \\ \hline
+UppercaseRelativeCount & \verb+float+ & Ratio of upper case letters to all characters\\ \hline
+UppercaseWordCount & \verb+int+ & Number of words starting with upper case\\ \hline
+UppercaseWordRelativeCount & \verb+float+ & Ratio of upper case words to all words\\ \hline
+VerticalProminence & \verb+float+ & Space taken by the zone and free area to the North and South of the page. This features tries to fit \verb+int+o the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in N and S \\ \hline
+Width & \verb+int+ & Width of the bounding box in pixels\\ \hline
+WordCount & \verb+int+ & Number of words in the zone\\ \hline
+WordCountRelative & \verb+float+ & Ratio of number of words in the zone to all words in the page\\ \hline
+WordWidthMean & \verb+float+ & Mean width of words in the zone expressed as pixels\\ \hline
+WordLengthMean & \verb+float+ & Mean width of words in the zone expressed as number of characters\\ \hline
+WordLengthMedian & \verb+int+ & Median of number of characters in all words \\ \hline
+WhitespaceCount & \verb+int+ & Number of white characters in the text\\ \hline
+WhitespaceRelativeCountLog & & Feature calculated as $-log \frac{S}{L}$ where $S$ is zone's empty area and $L$ is zone's text length \\ \hline
+WidthRelative & \verb+float+ & Ratio of zone's width to page's width\\ \hline
+XPosition & \verb+int+ & X coordinate\\ \hline
+XPositionRelative & \verb+float+ & Ratio of zone's X coordinate to page's width \\ \hline
+YPosition & \verb+int+ & Y coordinate \\ \hline
+YPositionRelativeFeature & \verb+float+ & Ratio of zone's Y coordinate to page's height \\ \hline
 \end{longtable}
-\restoregeometry
-\setcounter{magicrownumbers}{0}
 
 \chapter{Reading order resolving} \label{appendix:ror}
 \begin{lstlisting}

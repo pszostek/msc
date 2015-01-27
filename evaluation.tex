@@ -1,2 +1,64 @@
 \chapter{Evaluation}
+\section{Results}
+\begin{table*}[]
+\centering
+\begin{tabular}{|r|c|c|c|c||c|c|}
+\hline
+& \rotatebox{90}{\textbf{BODY}} & \rotatebox{90}{\textbf{METADATA}} & \rotatebox{90}{\textbf{REFERENCES }} & \rotatebox{90}{\textbf{OTHER}} & \rotatebox{90}{\textbf{precision}} & \rotatebox{90}{\textbf{recall}} \\ \hline \hline
+\textbf{BODY} & \textbf{1} & & & & & \\ \hline
+\textbf{METADATA} & & \textbf{2} & & & & \\ \hline
+\textbf{REFERENCES} & & & \textbf{3} & & & \\ \hline
+\textbf{OTHER} & & & & \textbf{4}& & \\ \hline
+\end{tabular}
+\caption{Confusion matrix for the initial zone classification in GROTOAP2 in a 5-fold cross-validation. Rows and columns contain desired and obtained labels respectively.}
+\label{tab:initial_confusion_matrix}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\newgeometry{margin=1cm}
+\thispagestyle{empty}
+
+\begin{sidewaystable}
+\centering
+\begin{tabular}{|r||c|c|c|c|c|c|c|c|c|c|c|c|c||c|c|}
+\hline
+& \rotatebox{90}{\textbf{ABSTRACT}} & \rotatebox{90}{\textbf{AFFILIATION}} & \rotatebox{90}{\textbf{AUTHOR}} & \rotatebox{90}{\textbf{BIB\_INFO}} & \rotatebox{90}{\textbf{COPYRIGHT}} & \rotatebox{90}{\textbf{CORRESPONDENCE  }} & \rotatebox{90}{\textbf{DATES}} & \rotatebox{90}{\textbf{EDITOR}} & \rotatebox{90}{\textbf{KEYWORDS}} & \rotatebox{90}{\textbf{TITLE}} & \rotatebox{90}{\textbf{TITLE\_AUTHOR}} & \rotatebox{90}{\textbf{TYPE}} & \rotatebox{90}{\textbf{UNKNOWN}} & \rotatebox{90}{\textbf{PRECISION}} & \rotatebox{90}{\textbf{RECALL}} \\
+\hline \hline
+\textbf{ABSTRACT} & \textbf{o} & & & & & & & & & & & & & & \\ \hline
+\textbf{AFFILIATION} & & \textbf{o} & & & & & & & & & & & & & \\ \hline
+\textbf{AUTHOR}  & & & \textbf{o} & & & & & & & & & & & &\\ \hline
+\textbf{BIB\_INFO} & & & & \textbf{o} & & & & & & & & & & &\\ \hline
+\textbf{COPYRIGHT} & & & & & \textbf{o} & & & & & & & & & &\\ \hline
+\textbf{CORRESPONDENCE} & & & & & & \textbf{o} & & & & & & & & &\\ \hline
+\textbf{DATES} & & & & & & & \textbf{o} & & & & & & & &\\ \hline
+\textbf{EDITOR} & & & & & & & & \textbf{o} & & & & & & &\\ \hline
+\textbf{KEYWORDS} & & & & & & & & & \textbf{o} & & & & & &\\ \hline
+\textbf{TITLE} & & & & & & & & & & \textbf{o} & & & & &\\ \hline
+\textbf{TITLE\_AUTHOR} & & & & & & & & & & & \textbf{o} & & & &\\ \hline
+\textbf{TYPE} & & & & & & & & & & & & \textbf{o} & & &\\ \hline
+\textbf{UNKNOWN} & & & & & & & & & & & & & \textbf{o} & &\\ \hline
+\bottomrule
+\end{tabular}
+\caption{Confusion matrix for the initial zone classification in GROTOAP2 in a 5-fold cross-validation. Rows and columns contain desired and obtained labels respectively.}
+\label{tab:metadata_confusion_matrix}
+\end{sidewaystable}
+
+\clearpage
+\restoregeometry
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
+\subsection{Grotoap2}
+Grotoap2 is a rich data set created in a semi-automized way from Open Access publications. It contains 13210 articles representing a big variety of layouts and issued by more than 200 publishers. We find this set very useful for every data minig algorithm willing to extract metadata, data and other various features from scolarly articles in an automated way. Grotoap2 can be easily applied to testing or learning every algoritm designed for processing born-digital documents.
+\quad
+We believe that Grotoap2 can be made more versatile by:
+\begin{itemize}
+\item growing its size by an order or two orders of magnitude.
+\item Tuning the segmentation algorithm and improving segmentation quality. This would result in removing the AUTHOR\_TITLE tag.
+\item Dividing the BODY\_CONTENT into subcategories based on the level of their headers.
+\item Including fine-grained author metadata, e.g. first name, middle name, surname.
+\item Introducing association between authors and theirs affiliations, i.e. pointing out which author is associated with which affiliation.
+\item Including fine-grained bibliographic reference data, making it applicable for reference-extraction algorithms.
+\end{itemize}
+Most of the above-mentioned cases are related to loosing as little information as possible from the
+
+\subsection{CERMINE}

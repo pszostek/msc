@@ -85,10 +85,10 @@ After the stages described in sections \ref{sec:character_extraction}, \ref{sec:
 \item \verb+METADATA+ contains all the data which do not constitute the proper content. This includes publication elements such as: title, author name, affiliation, bibliographic informations, abstract etc.
 \item \verb+BODY+ contains text of the publication. This includes the chapters, figures, tables, equations, plots, acknowledgments, headings, contribution statements, conflict statements and attachments.
 \item \verb+REFERENCES+ contains article's references,
-\item \verb+OTHER+ contains misclassified zones and page numbers. It is a result of a non-ideal dataset, being tagged only to some extent. When training the classifier, those unclassified zones are labeled as \verb+OTHER+. This in turn introduces some kind on additional noise. We decided that it is better to exclude a handful of zones from the further processing (i.e. classify them as \verb+OTHER), than to classify them incorrectly to one of the remaining classes. Employed dataset contains 3.6\% of unknown labels, therefore we might expect a similar number of zones classified to \verb+OTHER+ in the classifier's output.
+\item \verb+OTHER+ contains misclassified zones and page numbers. It is a result of a non-ideal dataset, being tagged only to some extent. When training the classifier, those unclassified zones are labeled as \verb+OTHER+. This in turn introduces some kind on additional noise. We decided that it is better to exclude a handful of zones from the further processing and classify them as \verb+OTHER+, rather than to classify them incorrectly to one of the remaining classes. Employed dataset contains 3.6\% of unknown labels, therefore we might expect a similar number of zones classified to \verb+OTHER+ in the classifier's output.
 \end{itemize}
 \quad
-Initial classification is node using an SVM classifier with the parameters given in the table \ref{tab:classifier_parameters}.
+Initial classification uses Support Vector Machines as classication algorithm, with the parameters given in the table \ref{tab:initial_classifier_parameters}. A way to obtain these parameters is described in \ref{sec:svm_optimization}.
 \begin{table*}
 \centering
 \begin{tabular}{@{}rrr@{}}
@@ -103,11 +103,11 @@ $coef_0$ & 0.5 & 0.5 \\
 $degree$ & 3 & 3 \\
 \bottomrule
 \end{tabular}
-\label{tab:classifier_parameters}
-\caption{Parameters used in the final training of both classification stages}
+\caption{Parameters used in the final training of the initial classifier}
+\label{tab:initial_classifier_parameters}
 \end{table*} 
 \section{Metadata classification}
-Once the initial coarse-grained classification is done, we employ a second classifier which is specialized in classifying metadata, i.e. those zones, which initially got the \verb+METADATA+ label. This class contains 19 sub-labels:
+Once the initial coarse-grained classification is done, we employ a second classifier which is specialized in classifying metadata, i.e. those zones, which initially got the \verb+METADATA+ label. This class consists of 19 labels:
 \begin{itemize}
     \item \textbf{abstract} - document's abstract, usually one or more zones placed in the first page of the document;
     \item \textbf{acknowledgments} - sections containing information about document's acknowledgments or funding;
@@ -131,9 +131,36 @@ Once the initial coarse-grained classification is done, we employ a second class
     \item \textbf{type} -the type of the document, usually mentioned on the first page near the title, such as ``research paper'', ``case study'' or ``editorial'';
     \item \textbf{unknown} - used for all the zones that do not fall in any of the above categories.
 \end{itemize}
-\section{Optimization of classifiers' parameters} 
+\begin{table*}
+\centering
+\begin{tabular}{@{}rrr@{}}
+\toprule
+& initial & metadata \\
+\midrule
+SVM type & C\_SVC & C\_SVC \\ 
+kernel type & polynomial & polynomial \\
+$\gamma$ & $\frac{1}{8}$ & $\frac{1}{8}$ \\ 
+$C$ & 8 & 8 \\
+$coef_0$ & 0.5 & 0.5 \\
+$degree$ & 3 & 3 \\
+\bottomrule
+\end{tabular}
+\caption{Parameters used in the final training of the metadata classifier}
+\label{tab:metadata_classifier_parameters}
+\end{table*} 
+
+
+\section{Optimization of classifiers' parameters}
+\label{sec:svm_optimization}
 As already described in section \ref{sec:svm} CERMINE uses internally the SVM algorithm to classify  
 \section{References extraction}
+Reference extraction path is responisble for processing zones that were labelled as \verb+REFERENCE+ during the inital classification; it's purpose is to extract bibligraphic references together with their metadata.
+
+To this end, the blocks of text are divided into strings containing one bibliographic reference each. This phase employs unsupervised learning whose task is to cluster all lines of references into two group - one group containing only first lines of references and the second group containing other lines. The clustering algorithm uses 5 features based on the text layout.
+
+Afterwards, inidividual references are parsed and corresponding bibliographical data are yield back. This algorithm is based on Conditional Random Fields, thus a supervised learnign algorithm, and is implemented on the top of GRMM and Mallet packages.
+
+Reference extraction was implemented by Mateusz Fedoryszak and is described in details in \ref{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}.
 \section{Text extraction}
 \section{Feature selection}
 In both stages of classification we employed a set of features including almost one hundred elements. In appendix \ref{appendix:features} there is a detailed description of how their values are calculated. Briefly, they can be divided into following groups:

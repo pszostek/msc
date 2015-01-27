@@ -6,9 +6,10 @@ Despite a strong need of performing automated analyses of scholarly publications
 \item PDF, being a \textit{de facto} standard in the scientific publishing, is not suitable for carrying metadata. Its main design goal was to hold geometrical metadata allowing a faithful reproduction of the source document's display with different tools and platforms. It holds no relevant metadata and the structure of the input document is broken down to the level of single characters
 \end{itemize}
 Each publisher or even each journal follows its own layout. For instance, in the Open Acces subset of PubMed Central there are more than 800 publishers, each of them very likely following a different layout. We need to keep in mind that the articles included there are biology-related which is only a fraction of scientific publishing. It's safe to assume that there are thousands of publishers worldwide. We decided to put together a diverse set of articles that could serve as a basis for automatic approach for content analysis. 
+
+\textbf{The role played by a given document fragment can be deduced not only from its text content, but also from the way the text is displayed for the readers. As a result, document zone classifier can benefit a lot from using not only the text content of objects, but also geometric features, such as object dimensions, positions on the page and in the document, formatting, object neighbourhood, distance between objects, etc. A dataset useful for training such a classifier must therefore preserve the information related to object size, position and distance.}
 \section{Related work}
-The vast majority of the data sets publicly available is based on images - there are no born-digital documents available. As an example here we might give MARG, which contains scanned first pages of biomedical articles. This makes its usability in our case very limited. PRImA is a data set containing images of various documents, whose category goes beyond scientific publishing. Again, these are images which aren't helpful in case of chosen architecture. Conversly, The UW-III data set containes both articles' images and born-digital data. It is not available freely, though. What is more, we prefered to focus in our work on pure scientific articles as those are the target input of the designed system .
-\subsection{Open Access publications}
+The vast majority of the data sets publicly available is based on images - there are no born-digital documents available. As an example here we might give MARG, which contains scanned first pages of biomedical articles. This makes its usability in our case very limited. PRImA is a data set containing images of various documents, whose category goes beyond scientific publishing. Again, these are images which aren't helpful in case of chosen architecture. Conversly, The UW-III data set containes both articles' images and born-digital data. It is not available freely, though. What is more, we prefered to focus in our work on pure scientific articles as those are the target input of the designed system.
 \section{Pubmed database}
 Pubmed \cite{Pubmed} is a collection of more than 24 millions articles from MEDLINE, life science journals and online books maintained by the US National Library of Medicine. This collection is digitized which means that the articles are stored in form of PDF files and can serve as a source of full texts without a need for performing Optical Character Recognition. 
 The PMC Open Access Subset (abbreviated to PMC-OAS) is a part of the collection of Pubmed central available publicly with any fees. These articles are kept protected by copyrights, but can be used under the Creative Commons license that allows for more liberal usage of the resources. For the time of creating this report (June 2014) there were more than 400,000 articles available.
@@ -75,27 +76,27 @@ The resulting TrueViz files are obviously much bigger than the input PDF file. T
 \quad
 Each of the text zones in a document is labeled with one out of 22 categories:
 \begin{itemize}
-    \item \textbf{abstract} - document's abstract,
-    \item \textbf{acknowledgments} - acknowledgment for article's fundinf
-    \item \textbf{affiliation} - authors' affiliations,
-    \item \textbf{author} - document authors,
-    \item \textbf{author\_title} - zones containing both document's title and the list of authors; This zone has been introduced, as very often our segmentation algorithm 
-    \item \textbf{bib\_info} - bibliographic information that did not fall into any other category, usually concerning the journal issue e.g. journal name, publisher name, volume, DOI,
-    \item \textbf{body\_content} - the text of the document that did not match any other category,
-    \item \textbf{conflict\_statement} - conflict statement declaration,
-    \item \textbf{copyright} - copyright section,
-    \item \textbf{correspondence} - contact information to the article's authors, usually includes e-mail addresses, but physical address is also possible,
-    \item \textbf{dates} - dates related to the document lifecycle - reception date, review date, publishing date etc.,
-    \item \textbf{editor} - name of document's editor,
-    \item \textbf{equation} - mathematical equation,
-    \item \textbf{figure} - figure captions and figures elements which are embedded in a PDF as text, e.g. axes labels,
-    \item \textbf{glossary} - article's glossary,
-    \item \textbf{keywords} - article's keywords,
-    \item \textbf{page\_number} - page number of the volume;
-    \item \textbf{references} - article's references with all the data (titles, names, years) put into one bag,
-    \item \textbf{table} - table's content and caption;
-    \item \textbf{title} - article title;
-    \item \textbf{type} -the type of the document, usually mentioned on the first page near the title, such as ``research paper'', ``case study'' or ``editorial'';
+    \item \textbf{ABSTRACT} - document's abstract,
+    \item \textbf{ACKNOWLEDGMENTS} - acknowledgment for article's fundinf
+    \item \textbf{AFFILIATION} - authors' affiliations,
+    \item \textbf{AUTHOR} - document authors,
+    \item \textbf{AUTHOR\_TITLE} - zones containing both document's title and the list of authors; This zone has been introduced, as very often our segmentation algorithm 
+    \item \textbf{BIB\_INFO} - bibliographic information that did not fall into any other category, usually concerning the journal issue e.g. journal name, publisher name, volume, DOI,
+    \item \textbf{BODY\_CONTENT} - the text of the document that did not match any other category,
+    \item \textbf{CONFLICT\_STATEMENT} - conflict statement declaration,
+    \item \textbf{COPYRIGHT} - copyright section,
+    \item \textbf{CORRESPONDENCE} - contact information to the article's authors, usually includes e-mail addresses, but physical address is also possible,
+    \item \textbf{DATES} - dates related to the document lifecycle - reception date, review date, publishing date etc.,
+    \item \textbf{EDITOR} - name of document's editor,
+    \item \textbf{EQUATION} - mathematical equation,
+    \item \textbf{FIGURE} - figure captions and figures elements which are embedded in a PDF as text, e.g. axes labels,
+    \item \textbf{GLOSSARY} - article's glossary,
+    \item \textbf{KEYWORDS} - article's keywords,
+    \item \textbf{PAGE\_NUMBER} - page number of the volume;
+    \item \textbf{REFERENCES} - article's references with all the data (titles, names, years) put into one bag,
+    \item \textbf{TABLE} - table's content and caption;
+    \item \textbf{TITLE} - article title;
+    \item \textbf{TYPE} -the type of the document, usually mentioned on the first page near the title, such as ``research paper'', ``case study'' or ``editorial'';
     \item \textbf{unknown} - used for the text zones that couldn't be assigned to any other category. This might be because they are very rare or couldn't be matched to the any metadata.
 \end{itemize}
 This list is richer than the set of labels used by CERMINE, as we were not targeting such a fine-grained granularity in the system output. On the other hand, Pubmed XMLs are very rich and contain a huge number of metadata elements. It would be pity to create a data set which would loose silently these data. This is why we decided to keep extended set of categories in GROTOAP2.
