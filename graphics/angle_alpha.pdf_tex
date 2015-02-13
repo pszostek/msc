@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{383.775bp}%
+    \setlength{\unitlength}{384.00715332bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,7 +48,10 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.84216012)%
+  \begin{picture}(1,1.03660712)%
     \put(0,0){\includegraphics[width=\unitlength]{angle_alpha.pdf}}%
+    \put(0.03258387,0.30419618){\color[rgb]{0.90196078,0.30980392,0.00392157}\makebox(0,0)[lt]{\begin{minipage}{0.41878461\unitlength}\raggedright A1\end{minipage}}}%
+    \put(0.88479962,0.94613658){\color[rgb]{0.90196078,0.11764706,0.24313725}\makebox(0,0)[lb]{\smash{A2}}}%
+    \put(0.05388665,0.94509096){\color[rgb]{0.37254902,0.55294118,0.82745098}\makebox(0,0)[lb]{\smash{S}}}%
   \end{picture}%
 \endgroup%

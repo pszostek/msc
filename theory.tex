@@ -5,7 +5,7 @@ The main objective of statistical learning is to find a non-trivial description 
 
 As a classical example of machine learning we might take an application in the medical diagnosis. In this case, the input data are the data obtained by performing medical analysis and medical interview. The outcome of the algorithm is a probability of patient suffering from certain disease
 \section{Classification as supervised learning method}
-The goal of all classification is determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of n-dimensional vectors, where $n$ is the number of explanatory variables, known as well as ``features''. Features are values that express some traits of the classified elements. They can be real-numbers (e.g. 1.23, 3.14), interger-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
+The goal of all classification is determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of n-dimensional vectors, where $n$ is the number of explanatory variables, known as well as \textit{features}. Features are values that express some traits of the classified elements. They can be real-numbers (e.g. 1.23, 3.14), interger-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
 
 In the thoery of statistical learning, classification is considered as an example of supervised learning tasks, i.e. learning on the basis of training set for which the categories of elements are available.
 
@@ -21,7 +21,8 @@ One of the most successful and broadly known techniques in machine learning are 
 
 CERMINE internally leverages SVM to classify its content based on the training database. This is why it is important to get acquainted with this algorithm in-depth. 
 
-\subsection{Linearly separable Support Vector Machines} \label{subsec:linear_svm})
+\subsection{Linearly separable Support Vector Machines}
+\label{subsec:linear_svm}
 In the very basic example of SVM, namely a linear SVM, is to assign each new sample to one of the two classes, being given a set of learning samples. All the points, both being the learning samples and the unknown samples, are usually tuples of values of certain features.
 
 Let us assume that we have a set of learning samples $L$, where each samples is labeled $l_i$, whereas $i$ is the index of the learning sample and $I$ is the set of these indices. Each training sample has $d$ values, so is a $d$-dimensional tuple ($x_i \in \mathbb{R}^d$) and a class label $y_i$ being on of two values ${-1, 1}$. We can sum up these assumptions with the following equation:
@@ -113,8 +114,8 @@ subject to \alpha_i \ge 0, \sum_{i=1}^{n} \alpha_iy_i =0
 The problem above is a quadratic programming problem that always has a solution. Points $x_i$ with non-zero $\alpha_i$ are called support vectors. These are the points that determine the decision boundary.
 
 \subsection{Non-linearly separable Support Vector Machines}
-The assumption regardin linear separability of training points cannot be always met. In this section there will be presented an approach that does not require points to be linearly separable. The basic idea here is to allow misclassification, but to minimize the error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the ``wrong'' side of the hyperplane, but a penalty function is introduced.
-Let us label with $\xi_i$ the error in classification of the $i$-th point, i.e. its distance to the classification plane in case when it is misclassified. This variable is called ``error variable'' or ``slack variable''. In addition, let us label with $C$ a tradeoff parameter between error and margin. Now, the minimized function is expressed as follows:
+The assumption regardin linear separability of training points cannot be always met. In this section there will be presented an approach that does not require points to be linearly separable. The basic idea here is to allow misclassification, but to minimize the error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the \textit{wrong} side of the hyperplane, but a penalty function is introduced.
+Let us label with $\xi_i$ the error in classification of the $i$-th point, i.e. its distance to the classification plane in case when it is misclassified. This variable is called \textit{error variable} or \textit{slack variable}. In addition, let us label with $C$ a tradeoff parameter between error and margin. Now, the minimized function is expressed as follows:
 \begin{equation}
 \frac{1}{2}||w||^2 + C \cdot \sum_{i=1}^{n}\xi_i
 \end{equation}
@@ -134,14 +135,14 @@ So far we considered only linear SVM, so these with linear decision boundary. Wh
 \begin{figure}[htbp]
   \centering
   \includesvg[width=10cm]{graphics/2dto3d}
-  \caption{An example of a transformation from a two-dimensional to a three-dimensional space. In the original space the points are clearly not linearly separable. After applying a tranformation kernel, they can be separated with a plane.}
+  \caption{An example of a transformation from a two-dimensional to a three-dimensional space. In the original space the points are clearly not linearly separable. After applying a tranformation kernel, they can be separated with a plane marked with yellow color. With SVM several common kinds of kernels are applied to find the best way of transforming the input data into a problem with distinct borders. }
   \label{fig:2dto3d}
 \end{figure}
 
 If we come back to the equation \ref{eq:svm_dual} we will se that the data points appear only as inner products ($x_i^Tx_j$). This means that there is need to know the mapping to the higher dimensional feature space explicitely. \\
 Let us define the kernel funtion $\mathcal{K}$ as follows:
 \begin{equation}
-K(x_i, x_j) = \phi(x_i)^T \cdot \phi{x_j}
+\mathcal{K}(x_i, x_j) = \phi(x_i)^T \cdot \phi{x_j}
 \end{equation}
 
 Under certain circumstances it is feasible to obtain analytically $\phi$ being given $\mathcal{K}$. As an example let's take $\mathcal{K}(u, v) = (1+u^Tv)^2$. Then when $n=2$, i.e. $u=(u_1,u_2)$ and $v=(v_1, v_2)$ we get:
@@ -167,11 +168,6 @@ When $d=1$ we say that a kernel is linear. This case has been described in the s
 \\
 The most common variant of radial kernels is a gaussian distribution:
 \begin{equation}
-K(x_i, x_j) = e^{-\gamma|x_i-x_j|^2}
+\mathcal{K}(x_i, x_j) = e^{-\gamma|x_i-x_j|^2}
 \end{equation}
 where $\gamma$ is often replaced with $\frac{1}{2\sigma^2}$, so it can be interpreted as a variation around distribution's deviation.
-\subsection{Feature selection and scaling}
-
-\subsection{Model selection}
-\section{Fundamentals of scholarly communication}
-\subsection{Motivation behind publication analysis tools}

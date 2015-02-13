@@ -20,6 +20,7 @@
 \usepackage{dcolumn}
 \usepackage{fancybox}
 \usepackage{tabu}
+\usepackage{cprotect}
 \usepackage{float}
 \usepackage{multirow}
 \usepackage{needspace}
@@ -67,6 +68,23 @@
  % moredelim=[il][\textcolor{pgrey}]{$$},
  % moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
 }
+\lstnewenvironment{code}[1][]%
+  {\noindent\minipage{\linewidth}\medskip}
+  {\endminipage}
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  stringstyle=\color{black},
+  identifierstyle=\color{darkblue},
+  keywordstyle=\color{cyan},
+  morekeywords={xmlns,version,type}% list your attributes here
+}
 
 %\usepackage{thebibliography}
 \newcommand{\n}{\textcolor{blue}} %nowododany tekst
@@ -110,11 +128,11 @@ $$ \,$$
 \end{center}
 \vfill
 \begin{flushright}
-\begin{minipage}[t]{0.4\linewidth}
+\begin{minipage}[t]{0.5\linewidth}
 \begin{center}
 \normalsize
 Opiekun pracy\\
-prof. dr hab. inż. Piotr Gawrysiak\\
+prof.~dr~hab.~inż.~Piotr~Gawrysiak\\
 \end{center}                                     
 \end{minipage}
 \end{flushright}

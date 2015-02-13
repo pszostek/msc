@@ -1,4 +1,5 @@
 \chapter{Evaluation}
+\label{chapter:evaluation}
 \section{Results}
 \begin{table*}[]
 \centering
@@ -47,18 +48,35 @@
 \restoregeometry
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
-\subsection{Grotoap2}
-Grotoap2 is a rich data set created in a semi-automized way from Open Access publications. It contains 13210 articles representing a big variety of layouts and issued by more than 200 publishers. We find this set very useful for every data minig algorithm willing to extract metadata, data and other various features from scolarly articles in an automated way. Grotoap2 can be easily applied to testing or learning every algoritm designed for processing born-digital documents.
+\subsection{GROTOAP2}
+GROTOAP2 is a rich data set created in a semi-automized way from Open Access publications. It contains 13210 articles representing a big variety of layouts and issued by more than 200 publishers. We find this set very useful for every data minig algorithm willing to extract metadata, data and other various features from scolarly articles in an automated way. Grotoap2 can be easily applied to testing or learning every algoritm designed for processing born-digital documents.
 \quad
-We believe that Grotoap2 can be made more versatile by:
+We believe that GROTOAP2 can be made more versatile by:
 \begin{itemize}
 \item growing its size by an order or two orders of magnitude.
+\item Improving the algorithm used to assign NML metadata to text zones by tuning the magic contants used there.
 \item Tuning the segmentation algorithm and improving segmentation quality. This would result in removing the AUTHOR\_TITLE tag.
 \item Dividing the BODY\_CONTENT into subcategories based on the level of their headers.
 \item Including fine-grained author metadata, e.g. first name, middle name, surname.
 \item Introducing association between authors and theirs affiliations, i.e. pointing out which author is associated with which affiliation.
 \item Including fine-grained bibliographic reference data, making it applicable for reference-extraction algorithms.
 \end{itemize}
-Most of the above-mentioned cases are related to loosing as little information as possible from the
+Most of the above-mentioned cases are related to loosing as little information as possible from the original Pubmed XML files.
 
 \subsection{CERMINE}
+CERMINE is a robust system for metadata extraction. It can be used to accurately extract fine-grained metadata from scientific articles en masse. CERMINE can be very useful in every digital library application, as it is flexible and doesn't depend on any particular layout. What is more, it can be easily adapted in a semi-automatic way to some particular layout, if such need arises.
+\quad
+We consider that there are many ways to improve the system, e.g.:
+\begin{itemize}
+\item increase classification accuracy and recall. This can be done by:
+	\begin{itemize}
+		\item chosing a different classification algorithm,
+		\item using an ensemble of algorithms,
+		\item performing lexical analysis on the zones classified as unknown,
+		\item increasing quality of the training set.
+	\end{itemize}
+\item extract detailed bibliographic references,
+\item extract figures and tables,
+\item perform sentiment analysis with respect to the included references,
+\item improve segmentation algorithm's on unusual layouts.
+\end{itemize}

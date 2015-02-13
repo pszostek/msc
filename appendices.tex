@@ -1,8 +1,9 @@
-\begin{appendices}
+\begin{appendix}
 %\appendixpage
 \noappendicestocpagenum
 \addappheadtotoc
 \chapter{Decription of the training workflow}
+\label{appendix:training_workflow}
 Below one can find description of the complete procedure for training the system classifiers.
 \begin{enumerate}
 \item Get CERMINE source code. It is available publicly on the Web.
@@ -49,6 +50,7 @@ done
 \end{lstlisting}
 \item Using the optimal parameters, train the classifiers and save them to files. The below command has to be run from the main CERMINE directory. The variables KERNEL\_I, G\_I, C\_I and D\_I indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the initial zone classification kernel. Variables KERNEL\_M, G\_M, C\_M and D\_M indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the metadata classification kernel.
 \begin{lstlisting}
+#!/usr/bin/env bash
 java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
     ./cermine-tools/target/cermine-tools-1.2-SNAPSHOT-jar-with-dependencies.jar\
     ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar\
@@ -65,10 +67,30 @@ java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
         meta_GROTOAP2.dat.scale -output CERMINE_meta_classifier\
         -kernel $KERNEL_M -g $G_M -C $C_M [-degree $D_M]
 \end{lstlisting}
+\item Parameters from the previous step can be used to evaluate the classifier. CERMINE contains full classes that perform n-fold cross-validation. To obtain full validation reports, one need to run the commands that follow.
+\begin{lstlisting}
+#!/usr/bin/env bash
+java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
+    ./cermine-tools/target/cermine-tools-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT.jar\
+    pl.edu.icm.cermine.evaluation.SVMInitialClassificationEvaluator -full\
+        -input initial_GROTOAP2.dat \
+        -kernel $KERNEL_I -g $G_I -C $C_I [-degree $D_I]
+
+java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
+    ./cermine-tools/target/cermine-tools-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar\
+    ./cermine-impl/target/cermine-impl-1.2-SNAPSHOT.jar\
+    pl.edu.icm.cermine.evaluation.SVMMetadataClassificationEvaluator -full\
+        -input metadata_GROTOAP2.dat \
+        -kernel $KERNEL_I -g $G_I -C $C_I [-degree $D_I]
+\end{lstlisting}
+
 \end{enumerate}
 \chapter{Description of classification features}
 \label{appendix:features}
-Below one can find description of all the features used in the zone classification process.
+Below the reader can find description of all the features used in the zone classification process.
 
 %\begin{landscape}
 \small
@@ -76,22 +98,22 @@ Below one can find description of all the features used in the zone classificati
 \begin{longtable}[c]{|r|c|p{8cm}|}
 \hline
 \textbf{Feature Name} & \textbf{Type} & \textbf{Description} \\ \hline
-Affiliation & \verb+bool+ & Tells if the zone contains one of the \{``author details'', ``university'', ``department'', ``school'', ``institute'', ``affiliation''\}\\ \hline
-Author & \verb+bool+ & Tells if a text zone contains a word starting with ``author''\\ \hline
-Bibinfo & \verb+int+ & Number of occurences of \{``cite'', ``pages'', ``article'', ``volume'', ``publishing'', ``journal'', ``doi'', ``cite this article'', ``citation'', ``issue'', ``issn''\} \\ \hline
+Affiliation & \verb+bool+ & Tells if the zone contains one of the \{\textit{author details}, \textit{university}, \textit{department}, \textit{school}, \textit{institute}, \textit{affiliation}\}\\ \hline
+Author & \verb+bool+ & Tells if a text zone contains a word starting with \textit{author}\\ \hline
+Bibinfo & \verb+int+ & Number of occurences of \{\textit{cite}, \textit{pages}, \textit{article}, \textit{volume}, \textit{publishing}, \textit{journal}, \textit{doi}, \textit{cite this article}, \textit{citation}, \textit{issue}, \textit{issn}\} \\ \hline
 BracketRelativeCount & \verb+float+ & Ratio of the number of brackets to the number of all characters \\ \hline
 BracketedLineRelativeCount & \verb+float+ & Ratio of number of lines starting with a bracket to the number of all lines\\ \hline
 CharCount & \verb+int+ & Counts number of characters in a zone\\ \hline
 CharCountRelative & \verb+float+ & Ratio of number of characters in a zone to the number of character on its page\\ \hline
 CommaCount & \verb+int+ & Counts number of commas in a zone\\ \hline
 CommaRelativeCount & \verb+int+ & Ratio of commas to all characters in a zone \\ \hline
-ContainsPageNumber & \verb+bool+  & Does the zone consists of a number or is like ``Page \%d'' or ``page \%d'', where \%d is a number \\ \hline
-CuePhrasesRelativeCount & \verb+float+ & Ratio of cue phrases from \{``although'', ``therefore'', ``therein'', ``hereby'', ``nevertheless'', ``to this end'', ``however'', ``moreover'', ``nonetheles''\} to all words\\ \hline
+ContainsPageNumber & \verb+bool+  & Does the zone consists of a number or is like \textit{Page \%d} or \textit{page \%d}, where \%d is a number \\ \hline
+CuePhrasesRelativeCount & \verb+float+ & Ratio of cue phrases from \{\textit{although}, \textit{therefore}, \textit{therein}, \textit{hereby}, \textit{nevertheless}, \textit{to this end}, \textit{however}, \textit{moreover}, \textit{nonetheles}\} to all words\\ \hline
 Date & \verb+bool+ & Tells if the zone contains a string being a date with months expressed as text or as a number, with either European or American order\\ \hline
 DigitCount & \verb+int+ & Number of digits is in the zone\\ \hline
 DigitRelativeCount & \verb+float+ & Ratio of digits to all characters in the zone \\ \hline
 DistanceFromNearestNeighbour & \verb+float+ & Distance to the nearest neighbour zone or returns Double.MAX\_VALUE if there is no other zone on the page\\ \hline
-DotCount & \verb+int+ & Counts number of dots (``.'') in the zone\\ \hline
+DotCount & \verb+int+ & Counts number of dots (\textit{.}) in the zone\\ \hline
 DotRelativeCount & \verb+float+ & Ratio of number of dots to all characters in the zone \\ \hline
 Email & \verb+bool+ & Tells if the zone contains a valid e-mail address\\ \hline
 EmptySpaceRelative & \verb+float+ & Calculates a ratio of the surface taken by the characters' bounding boxes to the area of the zone \\ \hline
@@ -132,7 +154,7 @@ PageNumber & \verb+int+ & Page number wrt. the reading order \\ \hline
 PreviousZone & \verb+int+ & Value of label assigned to the previous zone wrt. the reading order\\ \hline
 Proportions & \verb+float+ & Width to height ratio\\ \hline
 PunctuationRelativeCount & \verb+float+ & Ratio of punctuation marks to all characters in the zone\\ \hline
-References & \verb+int+ & Number of characteristic enumeration indices in the zone, e.g. ``1.''.\\ \hline
+References & \verb+int+ & Number of characteristic enumeration indices in the zone, e.g. \textit{1.}.\\ \hline
 StartsWithDigit & \verb+bool+ & Tells if the zone's first character is a digit\\ \hline
 UppercaseCount & \verb+int+ & Number of upper case characters in the zone \\ \hline
 UppercaseRelativeCount & \verb+float+ & Ratio of upper case letters to all characters\\ \hline
@@ -146,7 +168,7 @@ WordWidthMean & \verb+float+ & Mean width of words in the zone expressed as pixe
 WordLengthMean & \verb+float+ & Mean width of words in the zone expressed as number of characters\\ \hline
 WordLengthMedian & \verb+int+ & Median of number of characters in all words \\ \hline
 WhitespaceCount & \verb+int+ & Number of white characters in the text\\ \hline
-WhitespaceRelativeCountLog & & Feature calculated as $-log \frac{S}{L}$ where $S$ is zone's empty area and $L$ is zone's text length \\ \hline
+WhitespaceRelativeCountLog & \verb+float+ & Feature calculated as $-log \frac{S}{L}$ where $S$ is zone's empty area and $L$ is zone's text length \\ \hline
 WidthRelative & \verb+float+ & Ratio of zone's width to page's width\\ \hline
 XPosition & \verb+int+ & X coordinate\\ \hline
 XPositionRelative & \verb+float+ & Ratio of zone's X coordinate to page's width \\ \hline
@@ -468,4 +490,4 @@ public class HierarchicalReadingOrderResolver implements ReadingOrderResolver {
 }
 \end{lstlisting}
 
-\end{appendices}
+\end{appendix}

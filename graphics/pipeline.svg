@@ -14,7 +14,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="pipeline.pdf">
+   sodipodi:docname="pipeline.svg"
+   inkscape:export-filename="/home/paszoste/msc/graphics/pipeline.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <marker
@@ -180,16 +183,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.28"
-     inkscape:cx="328.48955"
-     inkscape:cy="384.87293"
+     inkscape:cx="231.61455"
+     inkscape:cy="478.62293"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1366"
-     inkscape:window-height="768"
+     inkscape:window-height="719"
      inkscape:window-x="0"
      inkscape:window-y="25"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -1537,8 +1540,8 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;text-anchor:start;font-family:Courier;-inkscape-font-specification:Courier Bold">...</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="-166.80977"
-       y="294.21924"
+       x="-150.82393"
+       y="270.78174"
        id="text3315"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/paszoste/msc/graphics/piepline.png"
@@ -1546,9 +1549,14 @@
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan3317"
-         x="-166.80977"
-         y="294.21924"
-         style="font-size:14px">Text extraction</tspan></text>
+         x="-150.82393"
+         y="270.78174"
+         style="font-size:14px">Character </tspan><tspan
+         sodipodi:role="line"
+         x="-150.82393"
+         y="288.28174"
+         style="font-size:14px"
+         id="tspan7674">extraction</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:10px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
@@ -1579,7 +1587,7 @@
          sodipodi:role="line"
          id="tspan4216"
          x="303.83496"
-         y="632.51752"></tspan></text>
+         y="632.51752" /></text>
     <g
        id="g4402"
        transform="translate(-1002.2155,235.86016)">
@@ -1963,5 +1971,15 @@
          d="m 143.6818,542.60496 -72.857141,0"
          style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Lend)" />
     </g>
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot7666"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:24px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion7668"><rect
+           id="rect7670"
+           width="9.375"
+           height="92.96875"
+           x="656.25"
+           y="179.13336" /></flowRegion><flowPara
+         id="flowPara7672"></flowPara></flowRoot>  </g>
 </svg>
