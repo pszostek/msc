@@ -1,4 +1,4 @@
-files := msc.tex introduction.tex appendices.tex classification.tex algorithm.tex theory.tex
+files := msc.tex introduction.tex appendices.tex implementation.tex architecture.tex theory.tex
 all: $(files)
 		#convert mendeley format to bibtex
 		sed -i.bak -e 's/url = {\(.*\)}\(.*\)/howpublished = "\\url\{\1\}"\2/' bibliography.bib
@@ -15,4 +15,4 @@ draft: $(files)
 
 .PHONY: clean
 clean:
-	rm *aux *log *toc msc.pdf 2>/dev/null || true
+	rm *bbl *blg *out *aux *log *toc msc.pdf 2>/dev/null || true

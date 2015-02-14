@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<front>
+   <journal-meta>
+      <journal-id journal-id-type="nlm-ta">Genome Biol</journal-id>
+      <journal-title>Genome Biology</journal-title>
+      <issn pub-type="ppub">1465-6906</issn>
+      <issn pub-type="epub">1465-6914</issn>
+      <publisher>
+         <publisher-name>BioMed Central</publisher-name>
+      </publisher>
+   </journal-meta>
+   <article-meta>
+      <article-id pub-id-type="pmid">18341703</article-id>
+      <article-id pub-id-type="pmc">2397496</article-id>
+      <article-id pub-id-type="publisher-id">gb-2008-9-3-213</article-id>
+      <article-id pub-id-type="doi">10.1186/gb-2008-9-3-213</article-id>
+      <article-categories>
+         <subj-group subj-group-type="heading">
+            <subject>Minireview</subject>
+         </subj-group>
+      </article-categories>
+      <title-group>
+         <article-title>On the nature of thumbs</article-title>
+      </title-group>
+      <contrib-group>
+         <contrib id="A1" corresp="yes" contrib-type="author">
+            <name>
+               <surname>Wagner</surname>
+               <given-names>Gunter P</given-names>
+            </name>
+            <xref ref-type="aff" rid="I1">1</xref>
+            <email>gunter.wagner@yale.edu</email>
+         </contrib>
+         <contrib id="A2" contrib-type="author">
+            <name>
+               <surname>Vargas</surname>
+               <given-names>Alexander O</given-names>
+            </name>
+            <xref ref-type="aff" rid="I1">1</xref>
+         </contrib>
+      </contrib-group>
+      <aff id="I1">
+         <label>1</label>
+         Department of Ecology and Evolutionary Biology, Yale University, Prospect Street, New Haven, CT 06520-8106, USA.
+      </aff>
+      <pub-date pub-type="ppub">
+         <year>2008</year>
+      </pub-date>
+      <pub-date pub-type="epub">
+         <day>4</day>
+         <month>3</month>
+         <year>2008</year>
+      </pub-date>
+      <volume>9</volume>
+      <issue>3</issue>
+      <fpage>213</fpage>
+      <lpage>213</lpage>
+      <permissions>
+         <copyright-statement>Copyright 2008 BioMed Central Ltd</copyright-statement>
+         <copyright-year>2008</copyright-year>
+         <copyright-holder>BioMed Central Ltd</copyright-holder>
+      </permissions>
+      <abstract abstract-type="short">
+         <p>Differential Hox gene expression make the thumb special</p>
+      </abstract>
+      <abstract>
+         <p>Asymmetric regulation of Hox gene expression pre-dates the appearance of tetrapod digits, and was co-opted in the development of 'thumbness'. This asymmetric expression correlates with independent morphological evolutionary variation of digit 1.</p>
+      </abstract>
+   </article-meta>
+</front>

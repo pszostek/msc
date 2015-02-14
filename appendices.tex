@@ -19,7 +19,7 @@ curdir=$PWD
 cd cermine-impl && mvn package -DskipTests && mvn assembly:single && cd $curdir
 cd cermine-tools && mvn package -DskipTests && mvn assembly:single && cd $curdir
 \end{lstlisting}
-\item Create files with samples for the classifiers using GROTOAP2. To this end, one need to run the following script. Note that the GROTOAP2\_PATH variable has to point to a directory containing cxml files from the dataset.
+\item Create files with samples for the classifiers using GROTOAP2. To this end, one need to run the following script. Note that the \verb+GROTOAP2_PATH+ variable has to point to a directory containing cxml files from the dataset.
 \begin{lstlisting}
 #!/usr/bin/env bash
 BASE=$(dirname $(pwd))
@@ -48,7 +48,7 @@ for classifier in meta initial; do
         done
 done
 \end{lstlisting}
-\item Using the optimal parameters, train the classifiers and save them to files. The below command has to be run from the main CERMINE directory. The variables KERNEL\_I, G\_I, C\_I and D\_I indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the initial zone classification kernel. Variables KERNEL\_M, G\_M, C\_M and D\_M indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the metadata classification kernel.
+\item Using the optimal parameters, train the classifiers and save them to files. The below command has to be run from the main CERMINE directory. The variables \verb+KERNEL_I+, \verb+G_I+, \verb+C_I+ and \verb+D_I+ indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the initial zone classification kernel. Variables \verb+KERNEL_M+, \verb+G_M+, \verb+C_M+ and \verb+D_M+ indicate respectively the kernel type, the $\gamma$ parameter, the $C$ parameter and possibly polynomial degree of the metadata classification kernel.
 \begin{lstlisting}
 #!/usr/bin/env bash
 java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
@@ -489,5 +489,21 @@ public class HierarchicalReadingOrderResolver implements ReadingOrderResolver {
     }
 }
 \end{lstlisting}
+
+\chapter{Project resources}
+\section{CERMINE repository}
+CERMINE was a collaborative project implemented as a part of author's work in ICM UW. Repository for the project can be found under \url{https://github.com/CeON/CERMINE/}.
+In total there were 217 commits added between 25.06.2012 and 10.01.2015 by the author of this work under usernames ``Pawel Szostek'' and ``pszostek''. They can be easily listed with the procedure below:
+\begin{lstlisting}
+#!/usr/bin/env bash
+git clone https://github.com/CeON/CERMINE.git
+cd CERMINE
+git log --author="Pawel Szostek"
+git log --author="pszostek"
+\end{lstlisting}
+\section{CERMINE interface}
+CERMINE interface was create as a side project to make the engine available for public use. It can be found under \url{http://cermine.ceon.pl/}.
+\section{GROTOAP2}
+GROTOAP2 can be found on the servers of the Centre for Open Science (CeON) under \url{http://cermine.ceon.pl/grotoap2/}
 
 \end{appendix}

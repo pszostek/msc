@@ -33,6 +33,14 @@
 \usepackage{fancyhdr}
 \usepackage{morefloats}
 \usepackage{booktabs}
+\usepackage{hyperref}
+% \hypersetup{
+%     colorlinks=true,
+%     citecolor=black,
+%     filecolor=black,
+%     linkcolor=black,
+%     urlcolor=black
+% }
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \pagestyle{fancy}
 \graphicspath{{./graphics/}}
@@ -160,17 +168,19 @@ Podpis Przewodniczącego \\
 \linespread{1.3}
 \tableofcontents
 
+
+
 \include{introduction}
 \include{theory}
-\include{algorithm}
-\include{classification}
+\include{architecture}
+\include{implementation}
 \include{data_set}
 \include{evaluation}
 \include{appendices}
 %\addtocontents{toc}{\protect\vspace{1em}\noindent{\bf Bibliografia}\hspace*{\fill}{\bf \pageref{literatura}}}
 \pagebreak
 \nocite{*}
+\bibliographystyle{alpha}
 \bibliography{bibliography}{}
-\bibliographystyle{plain}
 \end{document}
 

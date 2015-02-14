@@ -30,7 +30,7 @@ Let us assume that we have a set of learning samples $L$, where each samples is 
 \forall{i \in I} \quad \left(x_i, y_i\right) : x_i \in \mathbb{R}^d, y_i \in \{-1, 1\}
 \end{equation} 
 
-For the sake of simplicity let us assume that the set of learning samples is linearly separable. We will label the separating hyperplane as $H$. Obiously, in a general case there is an infinite number of such hyper-planes what is shown on the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
+For the sake of simplicity let us assume that the set of learning samples is linearly separable. We will label the separating hyperplane as $H$. Obiously, in a general case there is an infinite number of such hyper-planes what is shown in the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
 
 \begin{figure}[t!]
 \centering
@@ -53,7 +53,7 @@ We can describe a hyperplane $H$ with a general formula:
 \begin{equation}
 w \cdot x+b = 0
 \end{equation}
-Obviously, the number of such hyperplanes is infinite. Let us focus on a hyperplane $H$ that is equally distanced to points from both class. Let us now focus on two hyperplanes parallel to each other that separate the space. Let us label them as $H_{-1}$ and $H^{+1}$, whereas the former is stuck to a point from class $-1$ and the latter to a point belonging to class $+1$. They both maximize the distance to the objects of the other class and therefore are parallel to each other. These hyperplanes are shown on the figure \ref{fig:two_hyperplanes}.
+Obviously, the number of such hyperplanes is infinite. Let us focus on a hyperplane $H$ that is equally distanced to points from both class. Let us now focus on two hyperplanes parallel to each other that separate the space. Let us label them as $H_{-1}$ and $H^{+1}$, whereas the former is stuck to a point from class $-1$ and the latter to a point belonging to class $+1$. They both maximize the distance to the objects of the other class and therefore are parallel to each other. These hyperplanes are shown in the figure \ref{fig:two_hyperplanes}.
 
 \begin{figure}[htbp]
   \centering
@@ -130,7 +130,7 @@ subject to & C \ge \alpha_i \ge 0, \sum_{i=1}^{n}\alpha_iy_ix_i=0
 \end{align*}
 
 \subsubsection{Nonlinear Support Vector Machines}
-So far we considered only linear SVM, so these with linear decision boundary. While this solution is very simple from the computational and conceptual point of view, the results yielded by the method might be suboptimal. In this section we will present a generalized version of the algorithm, in which training points $x_i$ will be transformed to a higher dimensional space. This will allow to perform a linear division of the transformed feature space equivalent to a non-linear operation in the original space i.e. a hyper-surface instead of a hyper-plane, e.g a curve in 2-dimensional space. Example of such transformation is shown on the figure \ref{fig:2dto3d}.
+So far we considered only linear SVM, so these with linear decision boundary. While this solution is very simple from the computational and conceptual point of view, the results yielded by the method might be suboptimal. In this section we will present a generalized version of the algorithm, in which training points $x_i$ will be transformed to a higher dimensional space. This will allow to perform a linear division of the transformed feature space equivalent to a non-linear operation in the original space i.e. a hyper-surface instead of a hyper-plane, e.g a curve in a 2-dimensional space. An example of such transformation is shown in the figure \ref{fig:2dto3d}.
 
 \begin{figure}[htbp]
   \centering
