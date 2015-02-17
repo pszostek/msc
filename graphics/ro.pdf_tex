@@ -56,7 +56,7 @@
     \put(0.60059678,0.53109328){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{3}}}%
     \put(0.64801697,0.69713785){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.38646447\unitlength}\raggedright Original documents\\ in 2D space with implicit\\ reading order\end{minipage}}}%
     \put(0.64823912,0.07801946){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.24892665\unitlength}\raggedright Zones ordered logically in 1D space\end{minipage}}}%
-    \put(0.64803629,0.47465284){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.33634476\unitlength}\raggedright Calculating distances between\\ all pairs of zones inside\\ every page\\ \end{minipage}}}%
+    \put(0.643374,0.47698399){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.33634476\unitlength}\raggedright Calculating distances between\\ all pairs of zones inside\\ every page\\ \end{minipage}}}%
     \put(0.64867375,0.26066276){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.42143169\unitlength}\raggedright Zones clustering into binary tree\\ followed by in-order tree traversal\end{minipage}}}%
   \end{picture}%
 \endgroup%
