@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{637.00263672bp}%
+    \setlength{\unitlength}{970.65498047bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,19 +48,15 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,1.16194681)%
+  \begin{picture}(1,0.72825242)%
     \put(0,0){\includegraphics[width=\unitlength]{ro.pdf}}%
-    \put(0.20917081,0.81004698){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
-    \put(0.54561417,0.80939747){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{2
+    \put(0.1568765,0.53151954){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
+    \put(0.37767103,0.53109328){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{2
 }}}%
-    \put(0.88530505,0.80939747){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{3}}}%
-    \put(0.38667017,1.16857702){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.37931067\unitlength}\raggedright 2D space\end{minipage}}}%
-    \put(0.3982058,0.16629851){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.37931067\unitlength}\raggedright 1D space\end{minipage}}}%
-    \put(0.31934731,0.66414289){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.14237341\unitlength}\raggedright ...\end{minipage}}}%
-    \put(0.59491786,0.66414289){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.14237341\unitlength}\raggedright ...\end{minipage}}}%
-    \put(0.54434296,0.73226755){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{distances}}}%
-    \put(0.90135652,0.34166965){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{+ in-order 
-tree traversal}}}%
-    \put(0.82765564,0.3747539){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{binary tree}}}%
+    \put(0.60059678,0.53109328){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{3}}}%
+    \put(0.64801697,0.69713785){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.38646447\unitlength}\raggedright Original documents\\ in 2D space with implicit\\ reading order\end{minipage}}}%
+    \put(0.64823912,0.07801946){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.24892665\unitlength}\raggedright Zones ordered logically in 1D space\end{minipage}}}%
+    \put(0.64803629,0.47465284){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.33634476\unitlength}\raggedright Calculating distances between\\ all pairs of zones inside\\ every page\\ \end{minipage}}}%
+    \put(0.64867375,0.26066276){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.42143169\unitlength}\raggedright Zones clustering into binary tree\\ followed by in-order tree traversal\end{minipage}}}%
   \end{picture}%
 \endgroup%

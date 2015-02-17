@@ -23,20 +23,20 @@
 \centering
 \begin{tabular}{|r||c|c|c|c|c|c|c|c|c|c|c|c|c||c|c|}
 \hline
-& \rotatebox{-90}{\textbf{ABSTRACT}} & \rotatebox{-90}{\textbf{AFFILIATION}} & \rotatebox{-90}{\textbf{AUTHOR}} & \rotatebox{-90}{\textbf{BIB\_INFO}} & \rotatebox{-90}{\textbf{COPYRIGHT}} & \rotatebox{-90}{\textbf{CORRESPONDENCE  }} & \rotatebox{-90}{\textbf{DATES}} & \rotatebox{-90}{\textbf{EDITOR}} & \rotatebox{-90}{\textbf{KEYWORDS}} & \rotatebox{-90}{\textbf{TITLE}} & \rotatebox{-90}{\textbf{TITLE\_AUTHOR}} & \rotatebox{-90}{\textbf{TYPE}} & \rotatebox{-90}{\textbf{UNKNOWN}} & \rotatebox{-90}{\textbf{PRECISION}} & \rotatebox{-90}{\textbf{RECALL}} \\
+& \rotatebox{-90}{\textbf{abstract}} & \rotatebox{-90}{\textbf{affiliation}} & \rotatebox{-90}{\textbf{author}} & \rotatebox{-90}{\textbf{bib\_info}} & \rotatebox{-90}{\textbf{copyright}} & \rotatebox{-90}{\textbf{correspondence  }} & \rotatebox{-90}{\textbf{dates}} & \rotatebox{-90}{\textbf{editor}} & \rotatebox{-90}{\textbf{keywords}} & \rotatebox{-90}{\textbf{title}} & \rotatebox{-90}{\textbf{title\_author}} & \rotatebox{-90}{\textbf{type}} & \rotatebox{-90}{\textbf{unknown}} & \rotatebox{-90}{\textbf{precision}} & \rotatebox{-90}{\textbf{recall}} \\
 \hline \hline
-\textbf{ABSTRACT} & \textbf{o} & & & & & & & & & & & & & & \\ \hline
-\textbf{AFFILIATION} & & \textbf{o} & & & & & & & & & & & & & \\ \hline
-\textbf{AUTHOR}  & & & \textbf{o} & & & & & & & & & & & &\\ \hline
-\textbf{BIB\_INFO} & & & & \textbf{o} & & & & & & & & & & &\\ \hline
-\textbf{COPYRIGHT} & & & & & \textbf{o} & & & & & & & & & &\\ \hline
-\textbf{CORRESPONDENCE} & & & & & & \textbf{o} & & & & & & & & &\\ \hline
-\textbf{DATES} & & & & & & & \textbf{o} & & & & & & & &\\ \hline
-\textbf{EDITOR} & & & & & & & & \textbf{o} & & & & & & &\\ \hline
-\textbf{KEYWORDS} & & & & & & & & & \textbf{o} & & & & & &\\ \hline
-\textbf{TITLE} & & & & & & & & & & \textbf{o} & & & & &\\ \hline
-\textbf{TITLE\_AUTHOR} & & & & & & & & & & & \textbf{o} & & & &\\ \hline
-\textbf{TYPE} & & & & & & & & & & & & \textbf{o} & & &\\ \hline
+\textbf{abstract} & \textbf{o} & & & & & & & & & & & & & & \\ \hline
+\textbf{affiliation} & & \textbf{o} & & & & & & & & & & & & & \\ \hline
+\textbf{author}  & & & \textbf{o} & & & & & & & & & & & &\\ \hline
+\textbf{bib\_info} & & & & \textbf{o} & & & & & & & & & & &\\ \hline
+\textbf{copyright} & & & & & \textbf{o} & & & & & & & & & &\\ \hline
+\textbf{correspondence} & & & & & & \textbf{o} & & & & & & & & &\\ \hline
+\textbf{dates} & & & & & & & \textbf{o} & & & & & & & &\\ \hline
+\textbf{editor} & & & & & & & & \textbf{o} & & & & & & &\\ \hline
+\textbf{keywords} & & & & & & & & & \textbf{o} & & & & & &\\ \hline
+\textbf{title} & & & & & & & & & & \textbf{o} & & & & &\\ \hline
+\textbf{title\_author} & & & & & & & & & & & \textbf{o} & & & &\\ \hline
+\textbf{type} & & & & & & & & & & & & \textbf{o} & & &\\ \hline
 \textbf{UNKNOWN} & & & & & & & & & & & & & \textbf{o} & &\\ \hline
 \bottomrule
 \end{tabular}
@@ -49,12 +49,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future work}
 \subsection{GROTOAP2}
-GROTOAP2 is a rich data set created in a semi-automized way from Open Access publications. It contains 13210 articles representing a big variety of layouts and issued by more than 200 publishers. We find this set very useful for every data minig algorithm willing to extract metadata, data and other various features from scolarly articles in an automated way. Grotoap2 can be easily applied to testing or learning every algoritm designed for processing born-digital documents.
+GROTOAP2 is a rich data set created in a semi-automatized way from Open Access publications. It contains 13210 articles representing a big variety of layouts and issued by more than 200 publishers. We find this set very useful for every data mining algorithm willing to extract metadata, data and other various features from scholarly articles in an automated way. GROTOAP2 can be easily applied to testing or learning every algorithm designed for processing born-digital documents.
 \quad
 We believe that GROTOAP2 can be made more versatile by:
 \begin{itemize}
 \item growing its size by an order or two orders of magnitude.
-\item Improving the algorithm used to assign NML metadata to text zones by tuning the magic contants used there.
+\item Improving the algorithm used to assign NML metadata to text zones by tuning the magic constants used there.
 \item Tuning the segmentation algorithm and improving segmentation quality. This would result in removing the \verb+author_title+ tag.
 \item Dividing the \verb+body_content+ into subcategories based on the level of their headers.
 \item Including fine-grained author metadata, e.g. first name, middle name, surname.
@@ -71,7 +71,7 @@ We consider that there are many ways to improve the system, e.g.:
 \begin{itemize}
 \item increase classification accuracy and recall. This can be done by:
 	\begin{itemize}
-		\item chosing a different classification algorithm,
+		\item choosing a different classification algorithm,
 		\item using an ensemble of algorithms,
 		\item performing lexical analysis on the zones classified as unknown,
 		\item increasing quality of the training set.

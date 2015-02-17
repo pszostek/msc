@@ -107,8 +107,8 @@ If we substitute $w=\sum_{ix=1}^{n}\alpha_i y_i x_i$ in the formula for $\mathca
 
 This equation can be used to define a dual problem:
 \begin{eqnarray*}\label{eq:svm_dual}
-max -\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_j y_i y_j x_i^T x_j + \sum_{i=1}^{n}\alpha_i \\
-subject to \alpha_i \ge 0, \sum_{i=1}^{n} \alpha_iy_i =0
+\textrm{max }-\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_j y_i y_j x_i^T x_j + \sum_{i=1}^{n}\alpha_i \\
+\textrm{subject to }\alpha_i \ge 0, \sum_{i=1}^{n} \alpha_iy_i =0
 \end{eqnarray*}
 
 The problem above is a quadratic programming problem that always has a solution. Points $x_i$ with non-zero $\alpha_i$ are called support vectors. These are the points that determine the decision boundary.
@@ -125,11 +125,11 @@ y_i \left(w^Tx_i+b\right) \ge 1-\xi_i, \quad \xi_i>0
 \end{equation}
 The dual problem becomes the following:
 \begin{align*}
-max. & W(\alpha) = \sum_{i=1}^{n}\alpha_i-\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jy_iy_jx^T_ix_j \\
-subject to & C \ge \alpha_i \ge 0, \sum_{i=1}^{n}\alpha_iy_ix_i=0
+\textrm{max. }& W(\alpha) = \sum_{i=1}^{n}\alpha_i-\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_jy_iy_jx^T_ix_j \\
+\textrm{subject to }& C \ge \alpha_i \ge 0, \sum_{i=1}^{n}\alpha_iy_ix_i=0
 \end{align*}
 
-\subsubsection{Nonlinear Support Vector Machines}
+\subsubsection{Non-linear Support Vector Machines}
 So far we considered only linear SVM, so these with linear decision boundary. While this solution is very simple from the computational and conceptual point of view, the results yielded by the method might be suboptimal. In this section we will present a generalized version of the algorithm, in which training points $x_i$ will be transformed to a higher dimensional space. This will allow to perform a linear division of the transformed feature space equivalent to a non-linear operation in the original space i.e. a hyper-surface instead of a hyper-plane, e.g a curve in a 2-dimensional space. An example of such transformation is shown in the figure \ref{fig:2dto3d}.
 
 \begin{figure}[htbp]

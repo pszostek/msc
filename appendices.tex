@@ -12,7 +12,7 @@ Below one can find description of the complete procedure for training the system
 git clone https://github.com/pszostek/CERMINE.git
 cd CERMINE
 \end{lstlisting}
-\item Build CERMINE using maven by running the following Bash script from the CERMINE main directory. It assumes that the PATH varible contains a path to \verb+mvn+.
+\item Build CERMINE using maven by running the following Bash script from the CERMINE main directory. It assumes that the \verb+PATH+ variable contains a path to \verb+mvn+.
 \begin{lstlisting}
 #!/usr/bin/env bash
 curdir=$PWD
@@ -28,12 +28,12 @@ java -Djava.util.Arrays.useLegacyMergeSort=true -cp \
     $BASE/cermine-impl/target/cermine-impl-1.2-SNAPSHOT-jar-with-dependencies.jar:\
     $BASE/cermine-impl/target/cermine-impl-1.2-SNAPSHOT.jar pl.edu.icm.cermine.libsvm.LibSVMExporter $GROTOAP2_PATH
 \end{lstlisting}
-\item Scale down the samples' feature values so that those with relatively huge absolute values do not dominate those with smaller values. This is a step recommended in \cite{Chih-WeiHsu2010}. It can be done by using the svm-scale tool from libsvm package.
+\item Scale down the samples' feature values so that those with relatively huge absolute values do not dominate those with smaller values. This is a step recommended in \cite{Chih-WeiHsu2010}. It can be done by using the svm-scale tool from \verb+libsvm+ package.
 \begin{lstlisting}
 svm-scale -l -1 -u 1 -s range1 meta_GROTOAP2 > meta_GROTOAP2.scale
 svm-scale -l -1 -u 1 -s range1 initial_GROTOAP2 > initial_GROTOAP2.scale
 \end{lstlisting}
-\item Find the best parameters for the classifiers using \verb+grid.py+ from the libsvm package. The below script can facilitate iterating over different kernel types. One need to pick the classifier with the lowest error rate.
+\item Find the best parameters for the classifiers using \verb+grid.py+ from the \verb+libsvm+ package. The below script can facilitate iterating over different kernel types. One need to pick the classifier with the lowest error rate.
 \begin{lstlisting}
 #!/usr/bin/env bash
 for classifier in meta initial; do
@@ -160,7 +160,7 @@ UppercaseCount & \verb+int+ & Number of upper case characters in the zone \\ \hl
 UppercaseRelativeCount & \verb+float+ & Ratio of upper case letters to all characters\\ \hline
 UppercaseWordCount & \verb+int+ & Number of words starting with upper case\\ \hline
 UppercaseWordRelativeCount & \verb+float+ & Ratio of upper case words to all words\\ \hline
-VerticalProminence & \verb+float+ & Space taken by the zone and free area to the North and South of the page. This features tries to fit \verb+int+o the page a bounding box of the same height as the zone and sticking either to neighbour zones or to the page boundaries in N and S \\ \hline
+VerticalProminence & \verb+float+ & Space taken by the zone and free area to the North and South of the page. This features tries to fit \verb+int+o the page a bounding box of the same height as the zone and sticking either to neighbor zones or to the page boundaries in N and S \\ \hline
 Width & \verb+int+ & Width of the bounding box in pixels\\ \hline
 WordCount & \verb+int+ & Number of words in the zone\\ \hline
 WordCountRelative & \verb+float+ & Ratio of number of words in the zone to all words in the page\\ \hline
@@ -491,6 +491,7 @@ public class HierarchicalReadingOrderResolver implements ReadingOrderResolver {
 \end{lstlisting}
 
 \chapter{Project resources}
+\label{appendix:resources}
 \section{CERMINE repository}
 CERMINE was a collaborative project implemented as a part of author's work in ICM UW. Repository for the project can be found under \url{https://github.com/CeON/CERMINE/}.
 In total there were 217 commits added between 25.06.2012 and 10.01.2015 by the author of this work under usernames ``Pawel Szostek'' and ``pszostek''. They can be easily listed with the procedure below:
@@ -502,8 +503,177 @@ git log --author="Pawel Szostek"
 git log --author="pszostek"
 \end{lstlisting}
 \section{CERMINE interface}
-CERMINE interface was create as a side project to make the engine available for public use. It can be found under \url{http://cermine.ceon.pl/}.
+CERMINE interface was created as a side project to make the engine available for public use. It can be found under \url{http://cermine.ceon.pl/}.
 \section{GROTOAP2}
-GROTOAP2 can be found on the servers of the Centre for Open Science (CeON) under \url{http://cermine.ceon.pl/grotoap2/}
+GROTOAP2 can be downloaded from the servers of the Center for Open Science (CeON) under \url{http://cermine.ceon.pl/grotoap2/}
+
+
+\chapter{GROTOAP2 labels distributions}
+\label{app:grotoap2}
+Figures \ref{fig:abstract_histogram}, \ref{fig:acknowledgment_histogram}, \ref{fig:affiliation_histogram}, \ref{fig:bib_info_histogram}, \ref{fig:author_histogram}, \ref{fig:author_title_histogram}, \ref{fig:body_content_histogram}, \ref{fig:conflict_statement_histogram}, \ref{fig:copyright_histogram}, \ref{fig:correspondence_histogram}, \ref{fig:dates_histogram}, \ref{fig:editor_histogram}, \ref{fig:equation_histogram}, \ref{fig:figure_histogram}, \ref{fig:glossary_histogram}, \ref{fig:keywords_histogram}, \ref{fig:page_number_histogram}, \ref{fig:reference_histogram}, \ref{fig:table_histogram}, \ref{fig:title_histogram}, \ref{fig:type_histogram}, \ref{fig:unknown_histogram} show the density of different labels across the data set. One can see that in most of the documents the abstract is enclosed in only one zone. Nevertheless, there is a tail of the distribution going up to 40 zones. This can mean that there are articles where abstract is excessively long or that the segmentation algorithm failed. \\
+\begin{figure}[b!]
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/abstract_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{abstract}}
+  \label{fig:abstract_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/acknowledgment_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{acknowledgment}}
+  \label{fig:acknowledgment_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/affiliation_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{affiliation}}
+  \label{fig:affiliation_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/bib_info_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{bib\_info}}
+  \label{fig:bib_info_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/author_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{author}}
+  \label{fig:author_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/author_title_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{author\_title}}
+  \label{fig:author_title_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/body_content_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{body\_content}}
+  \label{fig:body_content_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/conflict_statement_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{conflict\_statement}}
+  \label{fig:conflict_statement_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/copyright_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{copyright}}
+  \label{fig:copyright_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/correspondence_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{correspondence}}
+  \label{fig:correspondence_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/dates_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{dates}}
+  \label{fig:dates_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/editor_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{editor}}
+  \label{fig:editor_histogram}
+\end{minipage}
+\end{figure}
+
+  \begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/equation_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{equation}}
+  \label{fig:equation_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/figure_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{figure}}
+  \label{fig:figure_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/glossary_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{glossary}}
+  \label{fig:glossary_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/keywords_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{keywords}}
+  \label{fig:keywords_histogram}
+\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/page_number_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{page\_number}}
+  \label{fig:page_number_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/references_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{reference}}
+  \label{fig:reference_histogram}
+\end{minipage}
+\end{figure}
+
+  \begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/table_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{table}}
+  \label{fig:table_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/title_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{title}}
+  \label{fig:title_histogram}
+\end{minipage}
+\end{figure}
+
+  \begin{figure}
+\centering
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/type_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{type}}
+  \label{fig:type_histogram}
+\end{minipage}
+\quad
+\begin{minipage}[t!]{0.48\linewidth}
+  \includegraphics[width=8cm]{plots/unknown_histogram}
+  \caption{Histogram of number of zones labeled as \texttt{unknown}}
+  \label{fig:unknown_histogram}
+\end{minipage}
+\end{figure}
 
 \end{appendix}
