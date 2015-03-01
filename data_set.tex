@@ -66,6 +66,7 @@ After the matching stage we obtained initial set of TrueViz files whose quality 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=12cm]{plots/zone_coverage_grotoap2}
+  \caption{The histogram presents distribution of succesful zone coverage after mapping NLM metadata to PDF files in the Open Access Subset of PubMed. Coverage different than 100\% can be caused by imperfect metadata, wrong PDF segmentation or inefficient mapping algorithm. Image source: \cite{DominikaTkaczykPaweSzostek2014}.}
   \label{fig:trueviz_match_histogram}
 \end{figure}
 \begin{enumerate}
@@ -73,7 +74,7 @@ After the matching stage we obtained initial set of TrueViz files whose quality 
 \item with certain layouts our segmentation algorithm was failing, producing very finely-grained text zones with just a handful of letters each. In these cases it was barely possible to match NLM metadata with the actual text, what again lead to sparsely labeled TrueViz files. 
 \end{enumerate}
 In order to assure good quality of the final set we needed to filter out documents with TrueViz files of bad quality. In the figure \ref{fig:trueviz_match_histogram} one can see a distribution of documents with a given fraction of labeled zones.
-Based on this distribution we decided to keep these documents having the percentage of labeled zone equal or greater than 90\%.
+Based on this distribution we decided to keep the documents having at least 90\% of labeled zones.
 
 \section{TrueViz file format}
 We decided to choose TrueViz file format as the data set's main data format. This was to maintain the choice taken when working on GROTOAP data set. The motivation behind this choice is discussed in details in \cite{Tkaczyk2012}. TrueViz is a plain text file based on the XML format that holds in an extremely inefficient way the content of a document together with its geometrical properties and classification metadata. An example of a dumb file containing a single character is shown on the listing \ref{lst:trueviz_sample}.

@@ -1,13 +1,13 @@
 \chapter{Theory}
-\section{Motivation}
+CERMINE at its core uses Support Vector Machines - a machine learning approach to classifiy data from the input articles, optimized and trained on an immense set of scholarly publications. Below we describe its theoretical foundations to encourage the reader to get acquainted with the algorithm in details.
 \section{Statistical learning}
-The main objective of statistical learning is to find a non-trivial description of dependencies between data gathered by measuring objects and the objects themselves. The measurement, known also as input data, is known for all of the objects under research. The property that is being looked for, on the contrary, is known uniquely for a subset of objects. The main goal of the machine learning is to figure out, in an automated way, an algorithm allowing to reason values of the properties of interest for all available input objects.
+The main objective of statistical learning is to find a non-trivial description of dependencies between data gathered by measuring objects and the objects themselves. The measurement, known also as input data, is known for all of the objects under research. The property that is being looked for, on the contrary, is known uniquely for a subset of objects. The main goal of the machine learning is to figure out, in an automated way, an algorithm allowing to reason the values of the properties of interest for all available input objects.
 
 As a classical example of machine learning we might take an application in the medical diagnosis. In this case, the input data are the data obtained by performing medical analysis and medical interview. The outcome of the algorithm is a probability of patient suffering from certain disease
 \section{Classification as supervised learning method}
-The goal of all classification is determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of n-dimensional vectors, where $n$ is the number of explanatory variables, known as well as \textit{features}. Features are values that express some traits of the classified elements. They can be real-numbers (e.g. 1.23, 3.14), interger-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
+The goal of all classification is determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of $n$-dimensional vectors, where $n$ is the number of explanatory variables, known as well as \textit{features}. Features are values that express some traits of the classified elements. They can be real-numbers (e.g. 1.23, 3.14), interger-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
 
-In the thoery of statistical learning, classification is considered as an example of supervised learning tasks, i.e. learning on the basis of training set for which the categories of elements are available.
+In the thoery of statistical learning, classification is considered as an example of supervised learning tasks, i.e. learning on the basis of training set for which the categories of elements are available. An example of unsupervised learning task is clustering, which consists in joining input elements into cluster, without any prior knowledge nor training data, using only objects' features and similarities between them. One need to note here that clustering and classifcation can be interchanged with each other.
 
 % Building a classifier requires at least:
 % \begin{enumerate}
@@ -17,20 +17,20 @@ In the thoery of statistical learning, classification is considered as an exampl
 % \end{enumerate} 
 
 \section{Support Vector Machines}\label{sec:svm}
-One of the most successful and broadly known techniques in machine learning are Support Vector Machines, whose theory was developped by Cortez and Vapnik. The basic idea is given a set of two classes of N-dimension points to find a hyperplane which seperates an N-dimensional space into two subspaces, so that each of them contains points belonging to only one class. Since the two classes might not always be linearly separable, SVM introduces an idea of kernel-induced space which casts the points into a higher dimensional feature space where the new points are linearly-separable. In the section \ref{subsec:linear_svm} there is a detailed description of the theoretical fundaments. In its original version the SVM classifier is a binary classifier, meaning that each point in the training sets belongs to one and only on of two classes and so the unknown points do.
-
-CERMINE internally leverages SVM to classify its content based on the training database. This is why it is important to get acquainted with this algorithm in-depth. 
+One of the most successful and broadly known techniques in machine learning are Support Vector Machines, whose theory was developped by Cortez and Vapnik in \cite{C.Cortes1995}. The basic idea is given a set of two classes of N-dimension points to find a hyperplane which seperates an N-dimensional space into two subspaces, so that each of them contains points belonging to only one class. Since the two classes might not always be linearly separable, SVM introduces an idea of kernel-induced space which casts the points into a higher dimensional feature space where the new points are linearly-separable. In the section \ref{subsec:linear_svm} there is a detailed description of the theoretical fundaments. In its original version the SVM classifier is a binary classifier, meaning that each point in the training sets belongs to one and only on of two classes and so the unknown points do. However, many implementations bypass this constraint by using a series of SVM classifiers, for instance $n-1$ classifiers to classify points into $n$ classes. Their approach is as follows: first classifiers classifies points as class $1$ or other (i.e. $2...n$). The second one classifies as $2$ or other (i.e. $3..n$). The classifier $n-1$ classifies points as $n-1$ or $n$.
 
 \subsection{Linearly separable Support Vector Machines}
 \label{subsec:linear_svm}
-In the very basic example of SVM, namely a linear SVM, is to assign each new sample to one of the two classes, being given a set of learning samples. All the points, both being the learning samples and the unknown samples, are usually tuples of values of certain features.
+In the very basic example of SVM, namely a linear SVM, the task is to assign each new sample to one of the two classes, being given a set of learning samples. All the points, both learning samples and the unknown samples, are usually tuples of values of certain features.
 
-Let us assume that we have a set of learning samples $L$, where each samples is labeled $l_i$, whereas $i$ is the index of the learning sample and $I$ is the set of these indices. Each training sample has $d$ values, so is a $d$-dimensional tuple ($x_i \in \mathbb{R}^d$) and a class label $y_i$ being on of two values ${-1, 1}$. We can sum up these assumptions with the following equation:
+Let us assume that we have a set of learning samples $L$, where each samples is labeled $l_i$, whereas $i$ is the index of the learning sample and $I$ is the set of these indices. Each training sample has $d$ values, so is a $d$-dimensional tuple ($x_i \in \mathbb{R}^d$) and a class label $y_i$ being one of two values ${-1, 1}$. We can sum up these definitions with the following equation:
 \begin{equation}
 \forall{i \in I} \quad \left(x_i, y_i\right) : x_i \in \mathbb{R}^d, y_i \in \{-1, 1\}
 \end{equation} 
 
-For the sake of simplicity let us assume that the set of learning samples is linearly separable. We will label the separating hyperplane as $H$. Obiously, in a general case there is an infinite number of such hyper-planes what is shown in the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
+For the sake of simplicity let us assume that the set of learning samples is linearly separable i.e. for two groups of points $X_{-1}$ and $X_1$, belonging to decision classes $-1$ and $1$ respectively, there exist $d+1$ real numbers, such that every point $x \in X_{0}$ satisfies $\sum^{n}_{i=1}w_ix_i > k$ and every point $x \in X_{1}$ satisfies $\sum^{n}_{i=1}w_ix_i < k$, where $x_i$ is the $i$-th component of $x$. The property of linear separability can be easily visualized in a 2-dimensional space - the points are linearly seperable if there exists a line that divides a plane so that one group of points is on one side and the other group is on the other side.
+
+ We will label the separating hyperplane as $H$. Obiously, in a general case there is an infinite number of such hyper-planes what is shown in the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
 
 \begin{figure}[t!]
 \centering
@@ -53,7 +53,7 @@ We can describe a hyperplane $H$ with a general formula:
 \begin{equation}
 w \cdot x+b = 0
 \end{equation}
-Obviously, the number of such hyperplanes is infinite. Let us focus on a hyperplane $H$ that is equally distanced to points from both class. Let us now focus on two hyperplanes parallel to each other that separate the space. Let us label them as $H_{-1}$ and $H^{+1}$, whereas the former is stuck to a point from class $-1$ and the latter to a point belonging to class $+1$. They both maximize the distance to the objects of the other class and therefore are parallel to each other. These hyperplanes are shown in the figure \ref{fig:two_hyperplanes}.
+Noticeably, the number of such hyperplanes is infinite. In addition, let us consider two hyperplanes parallel to each other that separate the space. They will be labeled as $H_{-1}$ and $H^{+1}$, whereas the former is stuck to a point from class $-1$ and the latter to a point belonging to class $+1$ and both are parallel to the hyperplane $H$. These hyperplanes are shown in the figure \ref{fig:two_hyperplanes}.
 
 \begin{figure}[htbp]
   \centering
@@ -85,9 +85,9 @@ For each data point we might caclulate the distance to any of the hyperplanes:
 \begin{equation} \label{eq:distance}
 d\left(\left(w,b\right), x_i\right) = \frac{y_i\left(x_i\cdot w + b\right)}{||w||} \ge \frac{1}{||w||}
 \end{equation}
-To make the decision boundary most accurate, we are intuitively looking for a hyperplane that maximizes the distance to all the data points. This in turn minimizes the probability of an erronous classification of unknown data and avoids introducing a bias. According to the equation \ref{eq:distance} this can be achieved by maximizing $\frac{1}{||w||}$ or alternatively by minimizing the $||w||$ vector. We can leverage the fact that $||w||$ is a non negative value and for sake of simplicity of calculations minimize $\frac{1}{2}||w||^2$ subject to $y_i\left(w^T x_i+b\right) \ge 1 \forall i$ (note that $||w||^2=w^Tw$).
+To make the decision boundary most accurate, we are intuitively looking for a hyperplane that maximizes the distance to all the data points. This in turn minimizes the probability of an erronous classification of unknown data and avoids introducing a bias. According to the equation \ref{eq:distance} this can be achieved by maximizing $\frac{1}{||w||}$ or alternatively by minimizing the $||w||$ vector. We can leverage the fact that $||w||$ is a non negative value and, for sake of simplicity of calculations, minimize $\frac{1}{2}||w||^2$ subject to $y_i\left(w^T x_i+b\right) \ge 1 \forall i$ (note that $||w||^2=w^Tw$).
 
-This problem will be solved with the method of Lagrange multipliers. The Langragian is calculated as follows:
+We will solve this problem with the method of Lagrange multipliers. The Langragian is calculated as follows:
 \begin{equation}
 \mathcal{L} = \frac{1}{2}w^Tw + \sum_{i=1}^{n}\alpha_i\left(1-y_i\left(w^Tx_i+b\right)\right)
 \end{equation}
@@ -98,7 +98,7 @@ w = \sum_{i=1}^{n}\alpha_i\left(-y_i\right)x_i=0 \Rightarrow w = \sum_{i=1}^{n}\
 \sum_{i=1}^{n}\alpha_i y_i=0
 \end{equation}
 
-If we substitute $w=\sum_{ix=1}^{n}\alpha_i y_i x_i$ in the formula for $\mathcal{L}$ we have
+If we substitute $w=\sum_{ix=1}^{n}\alpha_i y_i x_i$ in the above formula with $\mathcal{L}$ we have
 \begin{eqnarray*}
 \mathcal{L} & = &\frac{1}{2}\sum_{i=1}^{n}\alpha_iy_ix_i^T \cdot \sum_{j=1}^{n}\alpha_jy_jx_j+\sum_{i=1}^{n}\alpha_i\left(1-y_i\left(\sum_{j=1}^{n}\alpha_jy_jx_j^Tx_i+b\right)\right) \\
 & = &\frac{1}{2}\sum_{i=1}^{n}\sum_{j=1}^{n}\alpha_i\alpha_j y_i y_j x_i^T x_j + \sum_{i=1}^{n}\alpha_i-\sum_{i=1}^{n}\alpha_i y_i \sum_{j=1}^{n}\alpha_j y_j x_j^T x_i -b\sum_{i=1}^{n}\alpha_i y_i \\
@@ -114,8 +114,8 @@ This equation can be used to define a dual problem:
 The problem above is a quadratic programming problem that always has a solution. Points $x_i$ with non-zero $\alpha_i$ are called support vectors. These are the points that determine the decision boundary.
 
 \subsection{Non-linearly separable Support Vector Machines}
-The assumption regardin linear separability of training points cannot be always met. In this section there will be presented an approach that does not require points to be linearly separable. The basic idea here is to allow misclassification, but to minimize the error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the \textit{wrong} side of the hyperplane, but a penalty function is introduced.
-Let us label with $\xi_i$ the error in classification of the $i$-th point, i.e. its distance to the classification plane in case when it is misclassified. This variable is called \textit{error variable} or \textit{slack variable}. In addition, let us label with $C$ a tradeoff parameter between error and margin. Now, the minimized function is expressed as follows:
+The assumption regarding linear separability of training points cannot be always met. In the section below we will present an approach that does not require points to be linearly separable. The basic idea here is to allow misclassification, but to minimize the classification error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the \textit{wrong} side of the hyperplane by intruducing a penalty function.
+Let us label with $\xi_i$ the error of classification of the $i$-th point, i.e. its distance to the classification plane in case when it is misclassified. This variable is called \textit{error variable} or \textit{slack variable}. In addition, let us label with $C$ a trade-off parameter between the error and the margin. Now, the minimized function is expressed as follows:
 \begin{equation}
 \frac{1}{2}||w||^2 + C \cdot \sum_{i=1}^{n}\xi_i
 \end{equation}
@@ -130,7 +130,7 @@ The dual problem becomes the following:
 \end{align*}
 
 \subsubsection{Non-linear Support Vector Machines}
-So far we considered only linear SVM, so these with linear decision boundary. While this solution is very simple from the computational and conceptual point of view, the results yielded by the method might be suboptimal. In this section we will present a generalized version of the algorithm, in which training points $x_i$ will be transformed to a higher dimensional space. This will allow to perform a linear division of the transformed feature space equivalent to a non-linear operation in the original space i.e. a hyper-surface instead of a hyper-plane, e.g a curve in a 2-dimensional space. An example of such transformation is shown in the figure \ref{fig:2dto3d}.
+So far we considered only linear SVM, i.e. those with linear decision boundaries. While this solution is very simple from the computational and conceptual point of view, the results yielded by the method might be suboptimal. In this section we will present a generalized version of the algorithm, in which training points $x_i$ will be transformed to a higher dimensional space. This will allow performing a linear division of the transformed feature space, which will be equivalent to a non-linear operation in the original space. In other words, we will use a hyper-surface instead of a hyper-plane, e.g a curve in a 2-dimensional space. An example of such transformation is shown in the figure \ref{fig:2dto3d}.
 
 \begin{figure}[htbp]
   \centering
@@ -139,7 +139,7 @@ So far we considered only linear SVM, so these with linear decision boundary. Wh
   \label{fig:2dto3d}
 \end{figure}
 
-If we come back to the equation \ref{eq:svm_dual} we will se that the data points appear only as inner products ($x_i^Tx_j$). This means that there is need to know the mapping to the higher dimensional feature space explicitely. \\
+If we come back to the equation \ref{eq:svm_dual} we will see that the data points appear only as inner products ($x_i^Tx_j$). This means that there is need to know the mapping to the higher dimensional feature space explicitly. \\
 Let us define the kernel funtion $\mathcal{K}$ as follows:
 \begin{equation}
 \mathcal{K}(x_i, x_j) = \phi(x_i)^T \cdot \phi{x_j}

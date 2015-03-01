@@ -35,7 +35,7 @@ SVM classifier have a handful of free variables and kernel type is one of them. 
 For every point in the space a $k$-fold cross-validation is applied. It means that for a set of parameters the training set is divided into $k$ subsets, each of equal or nearly-equal size. At every step $k-1$ of these subsets constitute the training set and the remaining $k$-th set is treated as the unknown data employed to verify correctness of the trained classifier. The trained classifier is applied to classification of the pseudo-unknown data and finally their \textit{de facto} is compared to the output of the classification. After $k$ iterations the mean efficiency is calculated and it serves as a criterion for evaluating the current $(K, C, \gamma)$ triple.
 
 
-In the case of CERMINE grid search was performed on 16'384 samples from GROTOAP2. The training set was limited to this size to limit to make possible evaluation with reasonable time constraints. For both classifiers four kernels were tested with $log_{10}C$ and $log_{10}\gamma$ varying with a unit step in range $[-5,15]$ and $[-15,3]$ respectively, resulting in 399 points tested for every classifier. In total there were 3192 ($=399\cdot4\cdot2$) points tested in the first pass, which yielded candidates for accuracy maxima. Later, a fine-grained search was performed with the best kernels so far (both RBF) around the candidates for maximum in distance of 10dB with a step equal to 2.5dB resulting in additional 81 points being checked for each of the classifier. Results of this procedure are presented in the figures \ref{fig:initial_linear}, \ref{fig:initial_poly}, \ref{fig:initial_rbf}, \ref{fig:initial_sigmoid}, \ref{fig:initial_fine}, \ref{fig:meta_linear}, \ref{fig:meta_poly}, \ref{fig:meta_rbf}, \ref{fig:meta_sigmoid} and \ref{fig:meta_fine}. Optimal parameters for the classifiers are presented in the table \ref{tab:classifier_parameters}.
+In the case of CERMINE grid search was performed on 16'384 samples from GROTOAP2. The training set was limited to this size to limit to make possible evaluation with reasonable time constraints. For both classifiers four kernels were tested with $log_{2}C$ and $log_{w}\gamma$ varying with a unit step in range $[-5,15]$ and $[-15,3]$ respectively, resulting in 399 points tested for every classifier. In total there were 3192 ($=399\cdot4\cdot2$) points tested in the first pass, which yielded candidates for accuracy maxima. Later, a fine-grained search was performed with the best kernels so far (both RBF) around the candidates for maximum in distance of 10dB with a step equal to 2.5dB resulting in additional 81 points being checked for each of the classifier. Results of this procedure are presented in the figures \ref{fig:initial_linear}, \ref{fig:initial_poly}, \ref{fig:initial_rbf}, \ref{fig:initial_sigmoid}, \ref{fig:initial_fine}, \ref{fig:meta_linear}, \ref{fig:meta_poly}, \ref{fig:meta_rbf}, \ref{fig:meta_sigmoid} and \ref{fig:meta_fine}. Optimal parameters for the classifiers are presented in the table \ref{tab:classifier_parameters}.
 
 \begin{table*}[th!]
 \centering
@@ -45,8 +45,8 @@ In the case of CERMINE grid search was performed on 16'384 samples from GROTOAP2
 \midrule
 SVM type & C\_SVC & C\_SVC \\ 
 kernel type & RBF & RBF \\
-$\gamma$ & -4.0 & -2.5 \\ 
-$C$ & 2.75 & 4.25 \\
+$log_{2}\gamma$ & -4.0 & -2.5 \\ 
+$log_{2}C$ & 2.75 & 4.25 \\
 $coef_0$ & 0.5 & 0.5 \\
 \midrule
 mean accuracy & 93.66 & 86.98 \\
@@ -60,64 +60,64 @@ mean accuracy & 93.66 & 86.98 \\
 \begin{figure}
 	\centering
   \includegraphics[width=1\textwidth]{plots/init_linear}
-  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with linear kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 91.14 and is found for $log_{10}C=6$}
+  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with linear kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 91.14 and is found for $log_{2}C=6$}
   \label{fig:initial_linear}
 \end{figure}
 \begin{figure}
 \centering
   \includegraphics[width=1\textwidth]{plots/init_poly}
-  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with polynomial $4^{th}$-degree kernel for the initial classifier. In the investigated interval there are 5 maxima. Classifier accuracy over 5-fold validation is equal to 93.45 and is found for instance for $log_{10}C=3$ and $log_{10}\gamma=-7$.}
+  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with polynomial $4^{th}$-degree kernel for the initial classifier. In the investigated interval there are 5 maxima. Classifier accuracy over 5-fold validation is equal to 93.45 and is found for instance for $log_{2}C=3$ and $log_{2}\gamma=-7$.}
   \label{fig:initial_poly}
 \end{figure}
 
 \begin{figure}
 	\centering
   \includegraphics[width=1\textwidth]{plots/init_rbf}
-   \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a radial-basis function kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 93.62 and is found for $log_{10}C=3$ and $log_{10}\gamma=-4$. This was the highest accuracy found in the first pass. The second pass refined the maximum around the initial result.}
+   \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a radial-basis function kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 93.62 and is found for $log_{2}C=3$ and $log_{2}\gamma=-4$. This was the highest accuracy found in the first pass. The second pass refined the maximum around the initial result.}
    \label{fig:initial_rbf}
 \end{figure}
 \begin{figure}
 	\centering
   \includegraphics[width=1\textwidth]{plots/init_sigmoid}
-  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a sigmoid kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 91.05 and is found for $log_{10}C=13$ and $log_{10}\gamma=-13$}
+  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a sigmoid kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 91.05 and is found for $log_{2}C=13$ and $log_{2}\gamma=-13$}
 
   \label{fig:initial_sigmoid}
 \end{figure}
 \begin{figure}
 	\centering
   \includegraphics[width=\textwidth]{plots/init_fine}
-  \caption{Fine-grain search around initial classifier with RBF kernel for the initial classifier (the color-mapping scheme is not coherent with the previous plots). Initial coarse-grain search yielded the maximum in ($log_{10}C=3$, $log_{10}\gamma=-4$) equal to 93.62. This search refines the search with $log_{10}step=0.25$ yielding maximum in ($log_{10}C=2.75$, $log_{10}\gamma=-4$) equal to 93.66. This parameters are used for training of the final classifier.}
+  \caption{Fine-grain search around initial classifier with RBF kernel for the initial classifier (the color-mapping scheme is not coherent with the previous plots). Initial coarse-grain search yielded the maximum in ($log_{2}C=3$, $log_{2}\gamma=-4$) equal to 93.62. This search refines the search with $log_{2}step=0.25$ yielding maximum in ($log_{2}C=2.75$, $log_{2}\gamma=-4$) equal to 93.66. This parameters are used for training of the final classifier.}
   \label{fig:initial_fine}
 \end{figure}
 \begin{figure}
 	\centering
   \includegraphics[width=\textwidth]{plots/meta_linear}
-  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with linear kernel for the metadata classifier. The maximal accuracy in 5-fold cross-validation is equal to 80.46 and is found for $log_{10}C=19$}
+  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with linear kernel for the metadata classifier. The maximal accuracy in 5-fold cross-validation is equal to 80.46 and is found for $log_{2}C=19$}
   \label{fig:meta_linear}
 \end{figure}
 \begin{figure}
 \centering
   \includegraphics[width=\textwidth]{plots/meta_poly}
-  \caption{Grid search over two-dimensional parameter space ($C$,$\gamma$) with polynomial $4^{th}$-degree kernel for the metadata classifier. In the investigated interval there are 5 maxima. Classifier accuracy over 5-fold validation is equal to 86.38 and is found for instance for $log_{10}C=7$ and $log_{10}\gamma=-5$.}
+  \caption{Grid search over two-dimensional parameter space ($C$,$\gamma$) with polynomial $4^{th}$-degree kernel for the metadata classifier. In the investigated interval there are 5 maxima. Classifier accuracy over 5-fold validation is equal to 86.38 and is found for instance for $log_{2}C=7$ and $log_{2}\gamma=-5$.}
   \label{fig:meta_poly}
 \end{figure}
 
 \begin{figure}
 	\centering
   \includegraphics[width=\textwidth]{plots/meta_rbf}
-   \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a radial-basis function kernel for the metadata classifier. The maximal accuracy in 5-fold cross-validation is equal to 86.85 and is found for $log_{10}C=4$ and $log_{10}\gamma=-2$. This was the highest accuracy found in the first pass. The second pass refined the maximum around the initial result.}
+   \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a radial-basis function kernel for the metadata classifier. The maximal accuracy in 5-fold cross-validation is equal to 86.85 and is found for $log_{2}C=4$ and $log_{2}\gamma=-2$. This was the highest accuracy found in the first pass. The second pass refined the maximum around the initial result.}
   \label{fig:meta_rbf}
 \end{figure}
 \begin{figure}
 	\centering
   \includegraphics[width=\textwidth]{plots/meta_sigmoid}
-  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a sigmoid kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 79.85 and is found for $log_{10}C=15$ and $log_{10}\gamma=-12$}
+  \caption{Grid search over two-dimensional parameter space ($C$, $\gamma$) with a sigmoid kernel for the initial classifier. The maximal accuracy in 5-fold cross-validation is equal to 79.85 and is found for $log_{2}C=15$ and $log_{2}\gamma=-12$}
   \label{fig:meta_sigmoid}
 \end{figure}
 \begin{figure}
 	\centering
   \includegraphics[width=\textwidth]{plots/meta_fine}
-  \caption{Fine-grain search around initial classifier with RBF kernel for the metadata classifier (the color-mapping scheme is not coherent with the previous plots). Initial coarse-grain search yielded the maximum in ($log_{10}C=4$, $log_{10}\gamma=-2$) equal to 86.85. This search refines the search with $log_{10}step=0.25$ yielding maximum in ($log_{10}C=4.25$, $log_{10}\gamma=-2.5$) equal to 86.98. This parameters are used for training of the final classifier.}
+  \caption{Fine-grain search around initial classifier with RBF kernel for the metadata classifier (the color-mapping scheme is not coherent with the previous plots). Initial coarse-grain search yielded the maximum in ($log_{2}C=4$, $log_{2}\gamma=-2$) equal to 86.85. This search refines the search with $log_{2}step=0.25$ yielding maximum in ($log_{2}C=4.25$, $log_{2}\gamma=-2.5$) equal to 86.98. This parameters are used for training of the final classifier.}
   \label{fig:meta_fine}
 \end{figure}
 \end{center}

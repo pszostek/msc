@@ -1,3 +1,4 @@
+\blankpage
 \begin{appendix}
 %\appendixpage
 \noappendicestocpagenum
@@ -177,6 +178,8 @@ YPositionRelativeFeature & \verb+float+ & Ratio of zone's Y coordinate to page's
 \end{longtable}
 
 \chapter{Reading order resolving} \label{appendix:ror}
+Below we include the code for resolution of the reading order. This codes serves as a reference for a potential thesis' reviewer willing to assess author's coding skills.
+\vspace{1cm}
 \begin{lstlisting}
 public class HierarchicalReadingOrderResolver implements ReadingOrderResolver {
 
@@ -510,7 +513,7 @@ GROTOAP2 can be downloaded from the servers of the Center for Open Science (CeON
 Sources of the thesis together with plots, graphics, data and processing scripts can be found on author's Github: \url{https://github.com/pszostek/msc}.
 
 
-\chapter{GROTOAP2 labels distributions}
+\chapter{GROTOAP2 classes distributions}
 \label{app:grotoap2}
 Figures \ref{fig:abstract_histogram}, \ref{fig:acknowledgment_histogram}, \ref{fig:affiliation_histogram}, \ref{fig:bib_info_histogram}, \ref{fig:author_histogram}, \ref{fig:author_title_histogram}, \ref{fig:body_content_histogram}, \ref{fig:conflict_statement_histogram}, \ref{fig:copyright_histogram}, \ref{fig:correspondence_histogram}, \ref{fig:dates_histogram}, \ref{fig:editor_histogram}, \ref{fig:equation_histogram}, \ref{fig:figure_histogram}, \ref{fig:glossary_histogram}, \ref{fig:keywords_histogram}, \ref{fig:page_number_histogram}, \ref{fig:reference_histogram}, \ref{fig:table_histogram}, \ref{fig:title_histogram}, \ref{fig:type_histogram}, \ref{fig:unknown_histogram} show the density of different labels across the data set. One can see that in most of the documents the abstract is enclosed in only one zone. Nevertheless, there is a tail of the distribution going up to 40 zones. This can mean that there are articles where abstract is excessively long or that the segmentation algorithm failed. \\
 \begin{figure}[b!]
