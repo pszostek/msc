@@ -1,0 +1,30 @@
+=== General summary (5 iterations)
++----------------+--------------+----------+----------------+-----------+
+|                | GEN_METADATA | GEN_BODY | GEN_REFERENCES | GEN_OTHER |
++----------------+--------------+----------+----------------+-----------+
+| GEN_METADATA   | 51707        | 2094     | 52             | 392       |
+| GEN_BODY       | 1394         | 167467   | 350            | 769       |
+| GEN_REFERENCES | 45           | 1457     | 9641           | 97        |
+| GEN_OTHER      | 719          | 1724     | 34             | 24202     |
++----------------+--------------+----------+----------------+-----------+
+
+Good recognitions per zone type:
+GEN_METADATA:   51707/54245 (95.3%)
+GEN_BODY:       167467/169980 (98.5%)
+GEN_REFERENCES: 9641/11240 (85.8%)
+GEN_OTHER:      24202/26679 (90.7%)
+
+Good recognitions: 253017/262144 (96.5%)
+Bad recognitions: 9127/262144 (3.5%)
+Accuracy = 96.52
+GEN_METADATA precision = 95.99
+GEN_BODY precision = 96.95
+GEN_REFERENCES precision = 95.67
+GEN_OTHER precision = 95.06
+Precision = 95.92
+GEN_METADATA recall = 95.32
+GEN_BODY recall = 98.52
+GEN_REFERENCES recall = 85.77
+GEN_OTHER recall = 90.72
+Recall = 92.58
+

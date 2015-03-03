@@ -1,0 +1,61 @@
+=== General summary (5 iterations)
++--------------------+--------------+-----------------+------------+--------------+--------------------+-----------+------------+--------------+-----------+----------+---------------+------------------+
+|                    | MET_ABSTRACT | MET_AFFILIATION | MET_AUTHOR | MET_BIB_INFO | MET_CORRESPONDENCE | MET_DATES | MET_EDITOR | MET_KEYWORDS | MET_TITLE | MET_TYPE | MET_COPYRIGHT | MET_AUTHOR_TITLE |
++--------------------+--------------+-----------------+------------+--------------+--------------------+-----------+------------+--------------+-----------+----------+---------------+------------------+
+| MET_ABSTRACT       | 30583        | 27              | 8          | 403          | 42                 | 5         | 2          | 85           | 7         | 25       | 33            | 0                |
+| MET_AFFILIATION    | 40           | 17483           | 39         | 257          | 365                | 26        | 19         | 22           | 3         | 11       | 19            | 1                |
+| MET_AUTHOR         | 12           | 59              | 12116      | 270          | 264                | 2         | 3          | 3            | 6         | 14       | 5             | 5                |
+| MET_BIB_INFO       | 278          | 117             | 98         | 208099       | 117                | 317       | 2          | 133          | 66        | 359      | 496           | 10               |
+| MET_CORRESPONDENCE | 48           | 535             | 62         | 239          | 7783               | 15        | 1          | 12           | 1         | 0        | 12            | 0                |
+| MET_DATES          | 13           | 5               | 2          | 1115         | 6                  | 14026     | 1          | 11           | 4         | 0        | 35            | 1                |
+| MET_EDITOR         | 1            | 34              | 4          | 1            | 0                  | 1         | 2264       | 0            | 0         | 0        | 0             | 0                |
+| MET_KEYWORDS       | 104          | 23              | 21         | 880          | 9                  | 3         | 2          | 4546         | 21        | 23       | 1             | 0                |
+| MET_TITLE          | 17           | 1               | 11         | 66           | 0                  | 1         | 0          | 3            | 11642     | 21       | 4             | 25               |
+| MET_TYPE           | 12           | 0               | 25         | 872          | 0                  | 2         | 0          | 33           | 22        | 7148     | 33            | 0                |
+| MET_COPYRIGHT      | 40           | 13              | 13         | 956          | 58                 | 40        | 0          | 5            | 1         | 25       | 14419         | 14               |
+| MET_AUTHOR_TITLE   | 3            | 0               | 1          | 22           | 0                  | 0         | 0          | 0            | 33        | 0        | 6             | 1560             |
++--------------------+--------------+-----------------+------------+--------------+--------------------+-----------+------------+--------------+-----------+----------+---------------+------------------+
+
+Good recognitions per zone type:
+MET_ABSTRACT:       30583/31220 (98.0%)
+MET_AFFILIATION:    17483/18285 (95.6%)
+MET_AUTHOR:         12116/12759 (95.0%)
+MET_BIB_INFO:       208099/210092 (99.1%)
+MET_CORRESPONDENCE: 7783/8708 (89.4%)
+MET_DATES:          14026/15219 (92.2%)
+MET_EDITOR:         2264/2305 (98.2%)
+MET_KEYWORDS:       4546/5633 (80.7%)
+MET_TITLE:          11642/11791 (98.7%)
+MET_TYPE:           7148/8147 (87.7%)
+MET_COPYRIGHT:      14419/15584 (92.5%)
+MET_AUTHOR_TITLE:   1560/1625 (96.0%)
+
+Good recognitions: 331669/341368 (97.2%)
+Bad recognitions: 9699/341368 (2.8%)
+Accuracy = 97.16
+MET_ABSTRACT precision = 98.18
+MET_AFFILIATION precision = 95.55
+MET_AUTHOR precision = 97.71
+MET_BIB_INFO precision = 97.62
+MET_CORRESPONDENCE precision = 90.04
+MET_DATES precision = 97.15
+MET_EDITOR precision = 98.69
+MET_KEYWORDS precision = 93.67
+MET_TITLE precision = 98.61
+MET_TYPE precision = 93.73
+MET_COPYRIGHT precision = 95.72
+MET_AUTHOR_TITLE precision = 96.53
+Precision = 96.10
+MET_ABSTRACT recall = 97.96
+MET_AFFILIATION recall = 95.61
+MET_AUTHOR recall = 94.96
+MET_BIB_INFO recall = 99.05
+MET_CORRESPONDENCE recall = 89.38
+MET_DATES recall = 92.16
+MET_EDITOR recall = 98.22
+MET_KEYWORDS recall = 80.70
+MET_TITLE recall = 98.74
+MET_TYPE recall = 87.74
+MET_COPYRIGHT recall = 92.52
+MET_AUTHOR_TITLE recall = 96.00
+Recall = 93.59

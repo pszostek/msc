@@ -1,20 +1,20 @@
 \chapter{System architecture}
-CERMINE is implemented in Java. While the choice of the implementation language is an important project decision, when developing our system we were constrained by a legacy of a digital library engine that CERMINE was derived from - Yadda (\cite{Yadda}). Yadda was implemented in Java and CERMINE followed this decision. The motivation behind this choice is an easier integration of both products and a wide choice of tools and libraries for Java facilitating implementation of a complex system.
+CERMINE is implemented in Java. While the choice of the implementation language is an important project decision, when developing our system we were constrained by a legacy of a digital library engine that CERMINE was derived from - Yadda (\cite{Yadda}). Yadda was implemented in Java and CERMINE followed this decision. The motivation behind this choice is an easier integration of both products and a wide choice of tools and libraries for Java facilitating implementation of a complex system. What is more, CERMINE is ment to be run using Hadoop, where JVM-based solutions are the most efficient ones.
 
 \section{CERMINE workflow}
-CERMINE workflow is composed of a multi-part pipeline, out of which every stage is treated as a separate module and can be maintained and developed independently. For implementation of the majority of non-trivial problems we used supervised and unsupervised machine learning algorithms, which gave us a lot of elasticity and allowed adapting to new document layouts.
+CERMINE implements a workflow which is composed of a multi-part pipeline, where every stage is treated as a separate module and can be maintained and developed independently. For implementation of the majority of non-trivial problems we used supervised and unsupervised machine learning algorithms, which gave us a lot of elasticity and allowed adapting to new document layouts.
 
 CERMINE workflow consists of the following distinguishable stages:
 \begin{enumerate}
-    \item \textbf{Character extraction} takes place at the very beginning of metadata extraction process. CERMINE uses \verb+pdfbox+ - an external library for manipulating PDF content - to extract a stream of characters together with their geometrical properties (size and position) from the input files.
-    \item \textbf{Text segmentation} builds up blocks of text from a set of characters using their position and size. This stage uses Docstrum algorithm, coded by Krzysztof Rusek and described in details in \cite{O'Gorman1993}. It is therefore beyond the scope of this work and will not be mentioned hereafter.
-    \item \textbf{Resolution of the reading order} aims figuring out the order in which blocks of text are meant to be read. While this task is trivial to a human reader, it is tricky to implement an elastic algorithm suitable for different article layouts.
-    \item \textbf{Basic structure extraction} takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labeled with one of four general categories: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
-    \item \textbf{Metadata extraction} part analyses parts of the geometric hierarchical structure labeled as \verb+METADATA+ and extracts a rich set of document's metadata from it.
-    \item \textbf{References extraction} part analyses parts of the geometric hierarchical structure labeled as \verb+REFERENCES+ and the result is a list of document's parsed bibliographic references.
-    \item \textbf{Content extraction} part analyses parts of the geometric hierarchical structure labeled as \verb+BODY+ and extracts document's body structure composed of sections, subsections and paragraphs. 
+    \item {Character extraction} - takes place at the very beginning of metadata extraction process. CERMINE uses \verb+pdfbox+ - an external library for manipulating PDF content - to extract a stream of characters together with their geometrical properties (size and position) from the input files.
+    \item {Text segmentation} - builds up blocks of text from a set of characters using their position and size. This stage uses Docstrum algorithm, coded by Krzysztof Rusek and described in details in \cite{O'Gorman1993}. It is therefore beyond the scope of this work and will not be mentioned hereafter.
+    \item {Resolution of the reading order} - aims figuring out the order in which blocks of text are meant to be read. While this task is trivial to a human reader, it is tricky to implement an elastic algorithm suitable for different article layouts.
+    \item {Basic structure extraction} - takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labeled with one of four general categories: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
+    \item {Metadata extraction} - part analyses parts of the geometric hierarchical structure labeled as \verb+METADATA+ and extracts a rich set of document's metadata from it.
+    \item {References extraction} - part analyses parts of the geometric hierarchical structure labeled as \verb+REFERENCES+ and the result is a list of document's parsed bibliographic references.
+    \item {Content extraction} - part analyses parts of the geometric hierarchical structure labeled as \verb+BODY+ and extracts document's body structure composed of sections, subsections and paragraphs. 
 \end{enumerate}
-A diagram of the above mentioned workflow can be found in the figure \ref{fig:pipeline}.
+A diagram of the above-mentioned workflow can be found in the figure \ref{fig:pipeline}.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=14cm]{graphics/pipeline}
@@ -24,7 +24,7 @@ A diagram of the above mentioned workflow can be found in the figure \ref{fig:pi
 
 \section{Structure extraction}
 \subsection{Character extraction}\label{sec:character_extraction}
-PDF document as such consists of a stream of characters, whereas position of each character in the stream doesn't have to be related, and usually is not, to its position in the text. Extraction of the characters is achieved using iText library. This part of the system was entirely implemented by Dominika Tkaczyk and will not be described in this work.
+PDF document as such consists of a stream of characters, whereas position of each character in the stream does not have to be related, and usually is not, to its position in the text. Extraction of the characters is achieved using \verb+iText+ library. This part of the system was entirely implemented by Dominika Tkaczyk and will not be described in this work.
 
 \subsection{Page segmentation}\label{sec:page_segmentation}
 Page segmentation is a task of clustering a set of characters into blocks of text. Implemented system uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on nearest-neighborhood clustering of connected components extracted from the document. $K$-nearest neighbors for each component are found and text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be set based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
@@ -43,7 +43,7 @@ To this end, a bottom-up strategy is applied: firstly characters are sorted with
   \label{fig:reading_order}
 \end{figure}
 \begin{enumerate}
-\item For each pair of zones inside a single page boundaries a free space between them is calculated. On the figure \ref{fig:reading_order} this space is illustrated as the black area between two zones. The full implementation of the algorithm is included in the appendix \ref{appendix:ror}. Below we detail the steps taken.
+\item For each pair of zones inside a single page boundaries the amount of free space between them is calculated. On the figure \ref{fig:reading_order} this space is illustrated as the black area between two zones. The full implementation of the algorithm is included in the appendix \ref{appendix:ror}. Below we detail the steps taken.
 	\begin{enumerate} 
 	\item Formally the free space $S$ can be expressed as $S = A_d - (A_1+A_2)$, where $A_1$ and $A_2$ are areas of the two zones and $A_d$ is area of the smallest rectangle in which two objects can fit. This rectangle has its sides parallel to the X and Y axes.
 	\item To include preference for vertical clustering (and to avoid joining blocks horizontally when working with multi-column layouts) cosine of the angle $\alpha$ between the vector $\vec{v}$ connecting two objects' geometrical centers and vector $\vec{x}$ being a projection of the vector $\vec{v}$ on the X axis is calculated. This was illustrated in the figure \ref{fig:angle_alpha}. The formula $\cos\alpha = \frac{\vec{v} \cdot \vec{x}}{|\vec{v}||\vec{x}|}$ is employed.
@@ -84,8 +84,8 @@ private double distance(BxObject obj1, BxObject obj2) {
 }
 \end{code}
 \section{Initial zone classification}
-Once the workflow stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} are done, the document can undergo two phases of classification. For the sake of clarity, in this document all classes from the first phase of classification will be written in upper case, while those from the second phase will be typed in lower case.
-In CERMINE primarily all the zones are classified to one of the four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform fine-grained analysis on the zones falling into each class. Semantics of these classes is as following
+Once all the workflow stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} are done, the document can undergo two phases of classification. For the sake of clarity, in this document all classes from the first phase of classification will be written in upper case, while those from the second phase will be typed in lower case. Both will be typed using \verb+verbatim+.
+Initially, all the zones are classified to one of the four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform fine-grained analysis on the zones falling into each class. Semantics of these classes is as following
 \begin{itemize}
 \item \verb+METADATA+ contains all the data which do not constitute the proper content. This includes publication elements such as: title, author name, affiliation, bibliographic information, abstract etc.
 \item \verb+BODY+ contains text of the publication. This includes the chapters, figures, tables, equations, plots, acknowledgments, headings, contribution statements, conflict statements and attachments.

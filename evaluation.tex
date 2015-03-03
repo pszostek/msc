@@ -1,46 +1,57 @@
-\chapter{Evaluation}
-\label{chapter:evaluation}
-\section{Results}
+\chapter{Evaluation}\label{chapter:evaluation}
+Evaluation of the final system was performed in an automatic way using GROTOAP2 documents as input. We used a 5-fold cross-validation to better simulate behavior of the classifiers on unknown data and to rule out ``lucky'' division into subsets. In this way we will use all the samples for training and validation. In an $n$-fold cross-validation the data set is randomly partitioned into n subsets. In each of $n$ stages, a single subset is kept as the validation data and the remaining $n-1$ are used as training data. This process is repeated $n$ times and the results are summed up together.
+To quantify goodness of the classification process for every class we will use precision and recall, which are two metrics complementing each other. Precision of classification is the fraction of correctly classified elements from a class to all samples/zones classified as this class. In other words, precision says what is the chance of a sample belonging to class A if it was classified as class A.
+
+Recall of classification is the fraction of correctly classified elements from a class to all samples from the class. It intuitively indicates what fraction of a class was classified properly. 
+
+\section{Initial classification evaluation} 
+For the evaluation of the initial classification we used 262'144 samples. This is much less than available in GROTOAP2 (1'640'258). We needed to limit number of samples to keep the evaluation in a reasonable timescale. With the original number of samples it was not possible since:
+\begin{itemize}
+\item The training process involves matrix inversion, which has $\mathcal{O}(n^3)$ complexity with respect to the training set. This means that for the full documents set from GROTOAP2 it would take around 250 times more time.
+\item \verb+libsvm+ is implemented using a single thread. It's therefore impossible to fully use a multi-core machine with this tool. 
+\end{itemize}
+Table \ref{tab:initial_confusion_matrix} presents results of a 5-fold cross-validation, including a confusion matrix, as well as precision and recall values.
 \begin{table*}[]
 \centering
 \begin{tabular}{|r|c|c|c|c||c|c|}
 \hline
-& \rotatebox{-90}{\textbf{BODY}} & \rotatebox{-90}{\textbf{METADATA}} & \rotatebox{-90}{\textbf{REFERENCES }} & \rotatebox{-90}{\textbf{OTHER}} & \rotatebox{-90}{\textbf{precision}} & \rotatebox{-90}{\textbf{recall}} \\ \hline \hline
-\textbf{BODY} & \textbf{1} & & & & & \\ \hline
-\textbf{METADATA} & & \textbf{2} & & & & \\ \hline
-\textbf{REFERENCES} & & & \textbf{3} & & & \\ \hline
-\textbf{OTHER} & & & & \textbf{4}& & \\ \hline
+& \rotatebox{90}{\textbf{BODY}} & \rotatebox{90}{\textbf{METADATA}} & \rotatebox{90}{\textbf{REFERENCES }} & \rotatebox{90}{\textbf{OTHER}} & \rotatebox{90}{\textbf{precision}} & \rotatebox{90}{\textbf{recall}} \\ \hline \hline
+\textbf{BODY} & \textbf{167467} & 1394 & 350 & 769 & 96.95 & 98.52 \\ \hline
+\textbf{METADATA} & 2094 & \textbf{51707} & 52 & 392 & 95.99 & 95.32  \\ \hline
+\textbf{REFERENCES} & 1457 & 45 & \textbf{9641} & 97 & 95.67 & 87.77 \\ \hline
+\textbf{OTHER} & 1724 & 719 & 34 & \textbf{24202}& 95.06 & 90.72 \\ \hline
 \end{tabular}
-\caption{Confusion matrix for the initial zone classification in GROTOAP2 in a 5-fold cross-validation. Rows and columns contain desired and obtained labels respectively.}
+\caption{Confusion matrix for the initial zone classification in CERMINE obtained in a 5-fold cross-validation. Rows and columns contain desired and obtained labels respectively.}
 \label{tab:initial_confusion_matrix}
 \end{table*}
+\section{Metadata classification evaluation}
+For the evaluation of the metadata classification we used 341'368 samples, therefore all available in GROTOAP2. Table \ref{tab:metadata_confusion_matrix} presents the confusion matrix together with precision and recall values.s
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \newgeometry{margin=1cm}
 \thispagestyle{empty}
-
-\begin{sidewaystable}
+\begin{sidewaystable}[clockwise]
 \centering
-\begin{tabular}{|r||c|c|c|c|c|c|c|c|c|c|c|c|c||c|c|}
-\hline
-& \rotatebox{-90}{\textbf{abstract}} & \rotatebox{-90}{\textbf{affiliation}} & \rotatebox{-90}{\textbf{author}} & \rotatebox{-90}{\textbf{bib\_info}} & \rotatebox{-90}{\textbf{copyright}} & \rotatebox{-90}{\textbf{correspondence  }} & \rotatebox{-90}{\textbf{dates}} & \rotatebox{-90}{\textbf{editor}} & \rotatebox{-90}{\textbf{keywords}} & \rotatebox{-90}{\textbf{title}} & \rotatebox{-90}{\textbf{title\_author}} & \rotatebox{-90}{\textbf{type}} & \rotatebox{-90}{\textbf{unknown}} & \rotatebox{-90}{\textbf{precision}} & \rotatebox{-90}{\textbf{recall}} \\
+\begin{tabular}{|r||c|c|c|c|c|c|c|c|c|c|c|c||c|c|}
+\hline \parbox[b]{\hsize}
+& \rotatebox{65}{\textbf{abstract}} & \rotatebox{65}{\textbf{affiliation}} & \rotatebox{65}{\textbf{author}} & \rotatebox{65}{\textbf{bib\_info}} & \rotatebox{65}{\textbf{copyright}} & \rotatebox{65}{\textbf{correspondence}} & \rotatebox{65}{\textbf{dates}} & \rotatebox{65}{\textbf{editor}} & \rotatebox{65}{\textbf{keywords}} & \rotatebox{65}{\textbf{title}} & \rotatebox{65}{\textbf{title\_author}} & \rotatebox{65}{\textbf{type}} & \rotatebox{65}{\textbf{precision[\%]}} & \rotatebox{65}{\textbf{recall[\%]}} \\
 \hline \hline
-\textbf{abstract} & \textbf{o} & & & & & & & & & & & & & & \\ \hline
-\textbf{affiliation} & & \textbf{o} & & & & & & & & & & & & & \\ \hline
-\textbf{author}  & & & \textbf{o} & & & & & & & & & & & &\\ \hline
-\textbf{bib\_info} & & & & \textbf{o} & & & & & & & & & & &\\ \hline
-\textbf{copyright} & & & & & \textbf{o} & & & & & & & & & &\\ \hline
-\textbf{correspondence} & & & & & & \textbf{o} & & & & & & & & &\\ \hline
-\textbf{dates} & & & & & & & \textbf{o} & & & & & & & &\\ \hline
-\textbf{editor} & & & & & & & & \textbf{o} & & & & & & &\\ \hline
-\textbf{keywords} & & & & & & & & & \textbf{o} & & & & & &\\ \hline
-\textbf{title} & & & & & & & & & & \textbf{o} & & & & &\\ \hline
-\textbf{title\_author} & & & & & & & & & & & \textbf{o} & & & &\\ \hline
-\textbf{type} & & & & & & & & & & & & \textbf{o} & & &\\ \hline
-\textbf{UNKNOWN} & & & & & & & & & & & & & \textbf{o} & &\\ \hline
+\textbf{abstract} & \textbf{30583} & 27 & 8 & 403 & 33 & 42  & 5  & 2 & 85 & 7 & 0 & 25 & 98.18 & 97.96 \\ \hline
+\textbf{affiliation} & 40 & \textbf{17483} & 39 & 257 & 19 & 365 & 26 & 19 & 22 & 3 & 1 & 11 & 95.55 & 97.96 \\ \hline
+\textbf{author}  & 12 & 59 & \textbf{12116} & 270 & 5 & 264 & 2 & 3 & 3 & 6 & 5 & 14 & 97.71 & 94.46 \\ \hline
+\textbf{bib\_info} & 278 & 117 & 98 & \textbf{208099} & 117 & 496 & 317 & 2 & 133 & 66 & 10 & 359 & 97.62 & 99.05\\ \hline
+\textbf{copyright} & 40 & 13 & 13 & 956 & \textbf{14419} & 58 & 40 & 0 & 5 & 1 & 14 & 25 & 95.72 & 92.58 \\ \hline
+\textbf{correspondence} & 48 & 535 & 62 & 239 & 12 & \textbf{7783} & 15 & 1 & 12 & 1 & 0 & 0 & 90.04 & 89.38\\ \hline
+\textbf{dates} & 13 & 5 & 2 & 1115 & 35 & 6 & \textbf{14026} & 1 & 11 & 4 & 1 & 0 & 97.15 & 92.16 \\ \hline
+\textbf{editor} & 1 & 34 & 4 & 1 & 0 & 0 & 1 & \textbf{2264} & 0 & 0 & 0 & 0 & 98.69 & 98.22 \\ \hline
+\textbf{keywords} & 104 & 23 & 21 & 880 & 1 & 9 & 3 & 2 & \textbf{4546} & 21 & 0 & 23 & 93.67 & 80.70 \\ \hline
+\textbf{title} & 17 & 1 & 11 & 66 & 4 & 0 & 1 & 0 & 3 & \textbf{11642} & 25 & 21 & 98.61 & 98.74 \\ \hline
+\textbf{title\_author} & 3 & 0 & 1 & 22 & 6 & 0 & 0 & 0 & 0 & 33 & \textbf{1565} & 0 & 96.53 & 96.00 \\ \hline
+\textbf{type} & 12 & 0 & 25 & 872 & 33 & 0 & 2 & 0 & 33 & 22 & 0 & \textbf{7148} & 93.73 & 87.74 \\ \hline
 \bottomrule
 \end{tabular}
-\caption{Confusion matrix for the initial zone classification in GROTOAP2 in a 5-fold cross-validation. Rows and columns contain desired and obtained labels respectively.}
+\caption{Confusion matrix obtained for classification of the metadata in CERMINE in a 5-fold cross-validation using documents from GROTOAP2. Rows and columns contain desired and obtained labels respectively.}
 \label{tab:metadata_confusion_matrix}
 \end{sidewaystable}
 
