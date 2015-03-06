@@ -1,16 +1,19 @@
 \chapter{Evaluation}\label{chapter:evaluation}
-Evaluation of the final system was performed in an automatic way using GROTOAP2 documents as input. We used a 5-fold cross-validation to better simulate behavior of the classifiers on unknown data and to rule out ``lucky'' division into subsets. In this way we will use all the samples for training and validation. In an $n$-fold cross-validation the data set is randomly partitioned into n subsets. In each of $n$ stages, a single subset is kept as the validation data and the remaining $n-1$ are used as training data. This process is repeated $n$ times and the results are summed up together.
-To quantify goodness of the classification process for every class we will use precision and recall, which are two metrics complementing each other. Precision of classification is the fraction of correctly classified elements from a class to all samples/zones classified as this class. In other words, precision says what is the chance of a sample belonging to class A if it was classified as class A.
+Evaluation of the final system was performed in an automatic way using GROTOAP2 documents as input. We used a 5-fold cross-validation to better simulate behavior of the classifiers on unknown data and to rule out ``lucky'' division into subsets. In this way we employe all the samples for both training and validation. In an $n$-fold cross-validation the data set is randomly partitioned into n subsets. In each of $n$ stages, a single subset is kept as the validation data and the remaining $n-1$ subsets are used as training data. This process is repeated $n$ times and the results are summed up together in a form of a confustion matrix. This matrix summarizes classification by saying what were the recognized and actual classes for the classified objects.
+To quantify goodness of the classification process for every class we use precision and recall, which are two metrics complementing each other.
 
-Recall of classification is the fraction of correctly classified elements from a class to all samples from the class. It intuitively indicates what fraction of a class was classified properly. 
+Precision of classification is the fraction of correctly classified elements from a class to all samples/zones classified as this class. In other words, precision says what is the chance of a sample belonging to some class if it was classified as this class. In the context of confusion matrices \ref{tab:initial_confusion_matrix} and \ref{tab:metadata_confusion_matrix}, precision is the fraction of the number typed in bold to the sum of the whole column.
 
-\section{Initial classification evaluation} 
-For the evaluation of the initial classification we used 262'144 samples. This is much less than available in GROTOAP2 (1'640'258). We needed to limit number of samples to keep the evaluation in a reasonable timescale. With the original number of samples it was not possible since:
+Recall of classification is the fraction of correctly classified elements from a class to all samples from the class. It intuitively indicates what fraction of a class was classified properly. In the context of confusion matrices \ref{tab:initial_confusion_matrix} and \ref{tab:metadata_confusion_matrix}, recall is the fraction of the number typed in bold to the sum of the whole row.
+
+\section{Initial classification evaluation}\label{sec:evaluation_initial}
+For the evaluation of the initial classification we used 262'144 samples. This is much less than available in GROTOAP2, which includes 1'640'258 samples, since we needed to limit number of samples to keep the evaluation in a reasonable timescale. With the original number of samples the evaluation would not be possible, because:
 \begin{itemize}
-\item The training process involves matrix inversion, which has $\mathcal{O}(n^3)$ complexity with respect to the training set. This means that for the full documents set from GROTOAP2 it would take around 250 times more time.
-\item \verb+libsvm+ is implemented using a single thread. It's therefore impossible to fully use a multi-core machine with this tool. 
+\item The training process involves matrix inversion, which has $\mathcal{O}(n^3)$ complexity with respect to the training set. This means that for the full documents set from GROTOAP2 it would take around 250 times more. With the limited number of samples the evaluation was done within 15 hours on a decent server machine.
+\item \verb+libsvm+ has a single-thread implementation only. It is therefore impossible to fully use a multi-core machine with this tool. In our research we tried to use \verb+jlibsvm+, which is multi-threaded implementation of \verb+libsvm+ is Java, but it was not stable enough.
 \end{itemize}
-Table \ref{tab:initial_confusion_matrix} presents results of a 5-fold cross-validation, including a confusion matrix, as well as precision and recall values.
+Table \ref{tab:initial_confusion_matrix} presents results of a 5-fold cross-validation, including a confusion matrix, as well as precision and recall values. We can state, that the first stage of classification yields good results. All the classes have precision over 95\%, which is an extraordinary number. Conversely, recall of the \verb+REFERENCE+ class is equal to 87\%, since a lot of references were classified as body elemments. This issue needs to be addressed in next releases of CERMINE.
+
 \begin{table*}[]
 \centering
 \begin{tabular}{|r|c|c|c|c||c|c|}
@@ -25,7 +28,17 @@ Table \ref{tab:initial_confusion_matrix} presents results of a 5-fold cross-vali
 \label{tab:initial_confusion_matrix}
 \end{table*}
 \section{Metadata classification evaluation}
-For the evaluation of the metadata classification we used 341'368 samples, therefore all available in GROTOAP2. Table \ref{tab:metadata_confusion_matrix} presents the confusion matrix together with precision and recall values.s
+For the evaluation of the metadata classification we used 341'368 samples, this is all the samples available in GROTOAP2. Evaluation of the metadata classification was done independently from the first stage, i.e. from initial classification. We therefore assumed that the first stage is done without errors (precision = recall = 100\%) and all the metadata are passed to this stage. Similarly to what was done in \ref{sec:evaluation_initial}, we performed a 5-fold cross-validation whose results are presented in the table \ref{tab:metadata_confusion_matrix}. All the classes were classified with precision greater than 90\%. The one with the lowest precision is \verb+correspondence+, since often \verb+bib_info+, \verb+author+ and \verb+affiliation+ were classified as this class.
+
+Recall is in most cases held at a high level (over 92\%), with the exception of \verb+type+ and \verb+keywords+. The former is often misclassified as \verb+bib_info+, the latter is misclassified as \verb+bib_info+ and \verb+abstract+. These errors are very likely caused by imprecise segmentation algorithm, as well as errors in GROTOAP2 matching algorithm, what should be addressed in the next release in order to achieve better performance.
+
+In order to evaluate complete CERMINE performance, we need to take into account the fact that not all the zones in the initial classificaton are classified correctly. Let us consider \verb+title+ as an example in this analysis. Only 95\% of all metadata zones are correctly classified and only 95\% of all zones classified as metadata are real metadata. \verb+title+'s recall and precision are equal to 98\%. We might estimate that 93\% of all zones classified as \verb+title+ are real titles, the remaining 7\% are random.
+\vspace{2cm}
+Good classification results have to be considered from two perspectives:
+\begin{itemize}
+\item the results are comparable to the state-of-the-art system presented in \cite{Kern2012}
+\end{itemize}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
@@ -64,7 +77,7 @@ GROTOAP2 is a rich data set created in a semi-automatized way from Open Access p
 \quad
 We believe that GROTOAP2 can be made more versatile by:
 \begin{itemize}
-\item growing its size by an order or two orders of magnitude.
+\item Growing its size by an order or two orders of magnitude.
 \item Improving the algorithm used to assign NML metadata to text zones by tuning the magic constants used there.
 \item Tuning the segmentation algorithm and improving segmentation quality. This would result in removing the \verb+author_title+ tag.
 \item Dividing the \verb+body_content+ into subcategories based on the level of their headers.
@@ -75,7 +88,7 @@ We believe that GROTOAP2 can be made more versatile by:
 Most of the above-mentioned cases are related to loosing as little information as possible from the original Pubmed XML files.
 
 \subsection{CERMINE}
-CERMINE is a robust system for metadata extraction. It can be used to accurately extract fine-grained metadata from scientific articles en masse. CERMINE can be very useful in every digital library application, as it is flexible and doesn't depend on any particular layout. What is more, it can be easily adapted in a semi-automatic way to some particular layout, if such need arises.
+CERMINE is a robust system for metadata extraction. It can be used to accurately extract fine-grained metadata from scientific articles en masse. CERMINE can be very useful in every digital library application, as it is flexible and does not depend on any particular layout. What is more, it can be easily adapted in a semi-automatic way to some particular layout, if such need arises.
 
 
 We consider that there are many ways to improve the system, e.g.:

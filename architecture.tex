@@ -15,7 +15,7 @@ CERMINE workflow consists of the following distinguishable stages:
     \item {Content extraction} - part analyses parts of the geometric hierarchical structure labeled as \verb+BODY+ and extracts document's body structure composed of sections, subsections and paragraphs. 
 \end{enumerate}
 A diagram of the above-mentioned workflow can be found in the figure \ref{fig:pipeline}.
-\begin{figure}[ht]
+\begin{figure}[ht!]
   \centering
   \includegraphics[width=14cm]{graphics/pipeline}
   \caption{A schematic diagram of CERMINE's workflow.}
@@ -27,15 +27,15 @@ A diagram of the above-mentioned workflow can be found in the figure \ref{fig:pi
 PDF document as such consists of a stream of characters, whereas position of each character in the stream does not have to be related, and usually is not, to its position in the text. Extraction of the characters is achieved using \verb+iText+ library. This part of the system was entirely implemented by Dominika Tkaczyk and will not be described in this work.
 
 \subsection{Page segmentation}\label{sec:page_segmentation}
-Page segmentation is a task of clustering a set of characters into blocks of text. Implemented system uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on nearest-neighborhood clustering of connected components extracted from the document. $K$-nearest neighbors for each component are found and text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be set based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
+Page segmentation is a task of clustering a set of characters into blocks of text. Implemented system uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on nearest-neighborhood clustering of connected components extracted from the document. $K$-nearest neighbors for each text chunk are calculated and text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be set based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
 
 \subsection{Reading order resolving}\label{sec:reading_order}
-Resolution of Reading Order is a process aiming to transform text zones from a two-dimensional space (as they are laid out on the paper) to a single-dimensional space, i.e. as they are read by a human. Usually this is done by going from left to right and from top to bottom, but there are a lot of cases that made this na\"\i ve approach less efficient. This includes multi-column layout, page numbers, textual elements of figures, figures' and equations' labels.\\
+Resolution of Reading Order is a process aiming to transform text zones from a two-dimensional space (as they are laid out on the paper) to a single-dimensional space, i.e. as they are read by a human. Usually this is done by going from left to right and from top to bottom, but there are a lot of cases that make this na\"\i ve approach less efficient. This includes multi-column layout, page numbers, textual elements of figures, figures' and equations' labels.\\
 
-As already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, a PDF file contains a stream of characters that undergoes processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements need to be put together in the same order as that would be done by a human reader.\\
+As already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, a PDF file contains a stream of characters that undergoes processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements are meant to be put together in the same order as that would be done by a human reader.\\
 
 To this end, a bottom-up strategy is applied: firstly characters are sorted within words and words within lines in ascending order according to X coordinate value. Afterwards, lines are sorted with Y coordinate as the key. As next we need to figure out zones' order. Below we describe a heuristic responsible for setting order of text zones. Its fundamental principle was borrowed from \cite{Agrawal2009}. A schematic diagram of this phase, together with the symbols used, can be found in the figure \ref{fig:reading_order}.
-\begin{figure}[ht]
+\begin{figure}[ht!]
   \centering
  % \def\svgwidth{1\columnwidth} 
   \includesvg[width=16cm]{graphics/ro}
@@ -46,7 +46,7 @@ To this end, a bottom-up strategy is applied: firstly characters are sorted with
 \item For each pair of zones inside a single page boundaries the amount of free space between them is calculated. On the figure \ref{fig:reading_order} this space is illustrated as the black area between two zones. The full implementation of the algorithm is included in the appendix \ref{appendix:ror}. Below we detail the steps taken.
 	\begin{enumerate} 
 	\item Formally the free space $S$ can be expressed as $S = A_d - (A_1+A_2)$, where $A_1$ and $A_2$ are areas of the two zones and $A_d$ is area of the smallest rectangle in which two objects can fit. This rectangle has its sides parallel to the X and Y axes.
-	\item To include preference for vertical clustering (and to avoid joining blocks horizontally when working with multi-column layouts) cosine of the angle $\alpha$ between the vector $\vec{v}$ connecting two objects' geometrical centers and vector $\vec{x}$ being a projection of the vector $\vec{v}$ on the X axis is calculated. This was illustrated in the figure \ref{fig:angle_alpha}. The formula $\cos\alpha = \frac{\vec{v} \cdot \vec{x}}{|\vec{v}||\vec{x}|}$ is employed.
+	\item To include preference for vertical clustering (and to avoid joining blocks horizontally while working with multi-column layouts) cosine of the angle $\alpha$ between the vector $\vec{v}$ connecting two objects' geometrical centers and vector $\vec{x}$ being a projection of the vector $\vec{v}$ on the X axis is calculated. This was illustrated in the figure \ref{fig:angle_alpha}. The formula $\cos\alpha = \frac{\vec{v} \cdot \vec{x}}{|\vec{v}||\vec{x}|}$ is employed.
 	\item Free space $S$ is multiplied by sum of coefficient $M$ and $\cos\alpha$. Coefficient $M$ is introduced in order to prevent situations where more than two zones have the same width and lay in-line with respect to the Y axes. Then, for each of them the calculated distance would be equal to zero. In such cases we prefer to join these two groups between which the Euclidean distance is minimized.
 	\end{enumerate}
 \item A list $L$ containing triples ($O_1$, $O_2$, $D$) is created (where $O_1$ and $O_2$ are zones on the page and $D$ is the distance between zones). Initially there are $\binom{N}{2}$ elements in the list, where $N$ is the total number of zones on a page.graphics
@@ -85,7 +85,7 @@ private double distance(BxObject obj1, BxObject obj2) {
 \end{code}
 \section{Initial zone classification}
 Once all the workflow stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} are done, the document can undergo two phases of classification. For the sake of clarity, in this document all classes from the first phase of classification will be written in upper case, while those from the second phase will be typed in lower case. Both will be typed using \verb+verbatim+.
-Initially, all the zones are classified to one of the four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform fine-grained analysis on the zones falling into each class. Semantics of these classes is as following
+Initially, all the zones are classified to one of the four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform fine-grained analysis on the zones falling into each class. Semantics of these classes is as following:
 \begin{itemize}
 \item \verb+METADATA+ contains all the data which do not constitute the proper content. This includes publication elements such as: title, author name, affiliation, bibliographic information, abstract etc.
 \item \verb+BODY+ contains text of the publication. This includes the chapters, figures, tables, equations, plots, acknowledgments, headings, contribution statements, conflict statements and attachments.
@@ -96,29 +96,23 @@ Initially, all the zones are classified to one of the four general classes: \ver
 Initial classification uses Support Vector Machines as classification algorithm, with the parameters given in the table \ref{tab:classifier_parameters}. A way to obtain these parameters is described in \ref{sec:svm_optimization}.
 
 \section{Metadata classification}
-Once the initial coarse-grained classification is done, we employ a second classifier which is specialized in classifying metadata, i.e. those zones, which initially got the \verb+METADATA+ label. This class consists of 19 labels:
+Once the initial coarse-grained classification is done, we employ a second classifier which is specialized in classifying metadata, i.e. those zones, which initially got the \verb+METADATA+ label. This class consists of 15 labels:
 \begin{itemize}
     \item \verb+abstract+ - document's abstract, usually one or more zones placed in the first page of the document;
     \item \verb+acknowledgments+ - sections containing information about document's acknowledgments or funding;
     \item \verb+affiliation+ - authors' affiliations sections, which sometimes contain contact information (emails, addresses) as well;
     \item \verb+author+ - a list of document's authors,
     \item \verb+bib_info+ - zones containing all kinds of bibliographic information, such as journal/publisher name, volume, issue, DOI, etc.; often includes pages' headers or footers; headers and footers containing document's title or author names are also labeled as bib\_info;
-    \item \verb+body_content+ - the text content of the document, contains paragraphs and section titles;
     \item \verb+conflict_statement+ - conflict statement declarations;
     \item \verb+copyright+ - copyright or license-related sections;
     \item \verb+correspondence+ - the authors' contact information, such as emails or addresses;
     \item \verb+dates+ -important dates related to the document, such as received, revised, accepted or published dates;
     \item \verb+editor+ - the names of the document's editors;
     \item \verb+equation+ - equations placed in the document;
-    \item \verb+figure+ - zones containing figures' captions and other text fragments belonging to figures;
-    \item \verb+glossary+ - important terms and abbreviations used in the document;
     \item \verb+keywords+ - keywords listed in the document;
-    \item \verb+page+ number -zones containing the numbers of pages;
-    \item \verb+table+ - the text content of tables and table captions;
     \item \verb+title+ - the document's title;
     \item \verb+title_author+ - zones containing both document's title and the list of authors;
     \item \verb+type+ -the type of the document, usually mentioned on the first page near the title, such as \textit{research paper}, \textit{case study} or \textit{editorial};
-    \item \verb+unknown+ - used for all the zones that do not fall in any of the above categories.
 \end{itemize}
 
 \section{References extraction}
