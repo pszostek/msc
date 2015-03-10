@@ -6,6 +6,7 @@ all: $(files)
 		bibtex msc
 		pdflatex --shell-escape msc.tex 
 		pdflatex --shell-escape msc.tex
+		pdftk pdmgr_1-3.pdf msc.pdf output msc_full.pdf
 see:
 	evince msc.pdf
 final: $(files)
