@@ -1,4 +1,4 @@
-files := msc.tex introduction.tex appendices.tex implementation.tex architecture.tex theory.tex
+files := msc.tex introduction.tex appendices.tex classification_workflow.tex system_workflow.tex theory.tex implementation.tex
 all: $(files)
 		#convert mendeley format to bibtex
 		sed -i.bak -e 's/url = {\(.*\)}\(.*\)/howpublished = "\\url\{\1\}"\2/' bibliography.bib

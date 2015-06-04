@@ -1,13 +1,15 @@
-\chapter{Theory}
-CERMINE at its core uses Support Vector Machines - a machine learning approach to classifiy data from the input articles, optimized and trained on an immense set of scholarly publications. Below we describe its theoretical foundations to encourage the reader to get acquainted with the algorithm in details.
+\chapter{Theoretical foundations of SVM classifiers} \label{chapter:theory}
+CERMINE at its core uses Support Vector Machines - a machine learning approach to classify data from the input articles, optimized and trained on an immense set of scholarly publications. Below we describe its theoretical foundations to encourage the reader to get acquainted with the algorithm in details.
+
 \section{Statistical learning}
 The main objective of statistical learning is to find a non-trivial description of dependencies between data gathered by measuring objects and the objects themselves. The measurement, known also as input data, is known for all of the objects under research. The property that is being looked for, on the contrary, is known uniquely for a subset of objects. The main goal of the machine learning is to figure out, in an automated way, an algorithm allowing to reason the values of the properties of interest for all available input objects.
 
 As a classical example of machine learning we might take an application in the medical diagnosis. In this case, the input data are the data obtained by performing medical analysis and medical interview. The outcome of the algorithm is a probability of patient suffering from certain disease.
-\section{Classification as supervised learning method}
-The goal of all classification methods is to determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of $n$-dimensional vectors, where $n$ is the number of explanatory variables, known as well as \textit{features}. Features are values that express some traits of the classified elements. They may be real-numbers (e.g. 1.23, 3.14), interger-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
 
-In the thoery of statistical learning, classification is considered as an example of supervised learning tasks, i.e. learning on the basis of training set for which the categories of elements are available. An example of unsupervised learning task is clustering, which consists in joining input elements into cluster, without any prior knowledge nor training data, using only objects' features and similarities between them. One need to note here that clustering and classifcation can be interchanged with each other.
+\section{Classification as supervised learning method}
+The goal of all classification methods is to determine to which category a new observation belongs, being given a training set consisting of samples belonging to some predefined categories. Training samples have form of $n$-dimensional vectors, where $n$ is the number of explanatory variables, known as well as \textit{features}. Features are values that express some traits of the classified elements. They may be real-numbers (e.g. 1.23, 3.14), integer-numbers (e.g. 1,2,3) or categorical values (e.g. {Circle, Square, Trapezoid}, {Large, Medium, Small}, {1,0} etc. ).
+
+In the theory of statistical learning, classification is considered as an example of supervised learning tasks, i.e. learning on the basis of training set for which the categories of elements are available. An example of unsupervised learning task is clustering, which consists in joining input elements into cluster, without any prior knowledge nor training data, using only objects' features and similarities between them. One need to note here that clustering and classification can be interchanged with each other.
 
 % Building a classifier requires at least:
 % \begin{enumerate}
@@ -17,20 +19,20 @@ In the thoery of statistical learning, classification is considered as an exampl
 % \end{enumerate} 
 
 \section{Support Vector Machines}\label{sec:svm}
-One of the most successful and broadly known techniques in machine learning are Support Vector Machines, whose theory was developped by Cortez and Vapnik in \cite{C.Cortes1995}. The basic idea is being given a set of two classes of N-dimension points to find a hyperplane which seperates an N-dimensional space into two subspaces, so that each of them contains points belonging to only one class. Since the two classes might not always be linearly separable, SVM introduces an idea of kernel-induced space which casts the points into a higher dimensional feature space where the new points are linearly-separable. In the section \ref{subsec:linear_svm} there is a detailed description of the theoretical fundaments. In its original version the SVM classifier is a binary classifier, meaning that each point in the training sets belongs to one and only one of two classes and so the unknown points do. However, many implementations bypass this constraint by using a series of SVM classifiers, for instance $n-1$ classifiers to classify points into $n$ classes. Their approach is as follows: first classifiers classifies points as class $1$ or other (i.e. $2...n$). The second one classifies as $2$ or other (i.e. $3..n$). The classifier $n-1$ classifies points as $n-1$ or $n$.
+One of the most successful and broadly known techniques in machine learning are Support Vector Machines, whose theory was developed by Cortez and Vapnik in \cite{C.Cortes1995}. The basic idea is as follows: being given a set of two classes of N-dimension points find a hyperplane which separates an N-dimensional space into two subspaces, so that each of them contains points belonging to only one class (also called category). Since the two classes might not always be linearly separable, SVM introduces an idea of kernel-induced space which casts the points into a higher dimensional feature space where the new points are linearly-separable. In the section \ref{subsec:linear_svm} there is a detailed description of the theoretical foundations. Originally the SVM classifier is a binary classifier, meaning that each point in the training set, as well as all the unknown sample, belong to one and only one of two object classes. However, many implementations bypass this constraint by using a series of SVM classifiers, for instance $n-1$ classifiers to classify points into $n$ classes. Their approach is as follows: first classifier classifies points as class $1$ or non-class-$1$. If a point is classified as non-class-$1$, it is classified by the second classifier as class $2$ or non-class-$2$ etc. The classifier $n-1$ classifies points as $n-1$ or $n$.
 
 \subsection{Linearly separable Support Vector Machines}
 \label{subsec:linear_svm}
 In the very basic example of SVM, namely a linear SVM, the task is to assign each new sample to one of the two classes, being given a set of learning samples. All the points, both learning samples and the unknown samples, are usually tuples of values of certain features.
 
-Let us assume that we have a set of learning samples $L$, where each sample is labeled $l_i$, whereas $i$ is the index of the learning sample and $I$ is the set of these indices. Each training sample has $d$ values, so is a $d$-dimensional tuple ($x_i \in \mathbb{R}^d$) and a class label $y_i$ being one of two values ${-1, 1}$. We can sum up these definitions with the following equation:
+Let us assume that we have a set of learning samples $L$, where each sample is labeled $l_i$, whereas $i$ is the index of the learning sample and $I$ is the set of these indices. Each training sample has $d$ values, meaning that it is a $d$-dimensional tuple ($x_i \in \mathbb{R}^d$) and a class label $y_i$ being one of two values ${-1, 1}$. We can sum up these definitions with the following equation:
 \begin{equation}
 \forall{i \in I} \quad \left(x_i, y_i\right) : x_i \in \mathbb{R}^d, y_i \in \{-1, 1\}
 \end{equation} 
 
-For the sake of simplicity let us assume that the set of learning samples is linearly separable i.e. for two groups of points $X_{-1}$ and $X_1$, belonging to decision classes $-1$ and $1$ respectively, there exist $d+1$ real numbers, such that every point $x \in X_{0}$ satisfies $\sum^{n}_{i=1}w_ix_i > k$ and every point $x \in X_{1}$ satisfies $\sum^{n}_{i=1}w_ix_i < k$, where $x_i$ is the $i$-th component of $x$. The property of linear separability can be easily visualized in a 2-dimensional space - the points are linearly seperable if there exists a line that divides a plane so that one group of points is on one side and the other group is on the other side.
+For the sake of simplicity let us assume that the set of learning samples is linearly separable i.e. for two groups of points $X_{-1}$ and $X_1$, belonging to decision classes $-1$ and $1$ respectively, there exist $d+1$ real numbers, such that every point $x \in X_{0}$ satisfies $\sum^{n}_{i=1}w_ix_i > k$ and every point $x \in X_{1}$ satisfies $\sum^{n}_{i=1}w_ix_i < k$, where $x_i$ is the $i$-th component of $x$. The property of linear separability can be easily visualized in a 2-dimensional space - the points are linearly separable if there exists a line that divides a plane so that one group of points is on one side and the other group is on the other side.
 
- We will label the separating hyperplane as $H$. Obiously, in a general case there is an infinite number of such hyper-planes what is shown in the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
+ We will label the separating hyperplane as $H$. Clearly, in a general case there is an infinite number of such hyper-planes what is shown in the figures \ref{fig:inf_hyperplanes} (in this case $I=5$ and $d=2$) and \ref{fig:optimal_and_suboptimal}. The two dimensions are marked as $x[0]$ and $x[1]$.
 
 \begin{figure}[t!]
 \centering
@@ -49,7 +51,7 @@ For the sake of simplicity let us assume that the set of learning samples is lin
 \end{minipage}
 \end{figure}
 
-We can describe a hyperplane $H$ with a general formula:
+We can define the hyperplane $H$ with a general formula:
 \begin{equation}
 w \cdot x+b = 0
 \end{equation}
@@ -63,25 +65,25 @@ Noticeably, the number of such hyperplanes is infinite. In addition, let us cons
 \end{figure}
 
 
-We can describe them with the following equations:
+They can be characterized with the following equations:
 \begin{equation}
 w^T x_i+b = 1
 \end{equation}
 \begin{equation}
 w^T x_i+b = -1
 \end{equation}
-Because $H_{-1}$ and $H_{+1}$ are decision boundaries, there are no points in between them what can be summarized in the following equations:
+Because $H_{-1}$ and $H_{+1}$ are decision boundaries, there are no points in between them. This can be summarized in the following equations:
 \begin{equation} \label{eq:plus_one}
 w^T x_i+b \ge 1 \quad \forall \left(x_i, y_i\right) : y_i=1
 \end{equation}
 \begin{equation} \label{eq:minus_one}
 w^T x_i+b \le -1 \quad \forall \left(x_i, y_i\right) : y_i=-1
 \end{equation}
-We can unify equations \ref{eq:plus_one} and \ref{eq:minus_one} by a generalized equation:
+We can unify equations \ref{eq:plus_one} and \ref{eq:minus_one} by one generalized equation:
 \begin{equation}
 y_i\left(w^T x_i+b\right)-1 \ge 0
 \end{equation}
-For each data point we might caclulate the distance to any of the hyperplanes:
+For each data point we might calculate the distance to any of the hyperplanes:
 \begin{equation} \label{eq:distance}
 d\left(\left(w,b\right), x_i\right) = \frac{y_i\left(x_i\cdot w + b\right)}{||w||} \ge \frac{1}{||w||}
 \end{equation}
@@ -114,7 +116,7 @@ This equation can be used to define a dual problem:
 The problem above is a quadratic programming problem that always has a solution. Points $x_i$ with non-zero $\alpha_i$ are called support vectors. These are the points that determine the decision boundary.
 
 \subsection{Non-linearly separable Support Vector Machines}
-The assumption regarding linear separability of training points cannot be always met. In the section below we will present an approach that does not require points to be linearly separable. The basic idea here is to allow misclassification, but also to minimize the classification error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the \textit{wrong} side of the hyperplane by introducing a penalty function.
+The assumption regarding linear separability of training points defined in \ref{subsec:linear_svm} cannot be always met. In the section below we will present an approach that does not require points to be linearly separable. The basic idea is to allow misclassification, i.e. wrong classification, but also to minimize the classification error on the same time. This method is known as Cost-SVM or soft margin method. In general, it allows the points to be on the \textit{wrong} side of the hyperplane by introducing a penalty function.
 Let us label with $\xi_i$ the error of classification of the $i$-th point, i.e. its distance to the classification plane in case when it is misclassified. This variable is called \textit{error variable} or \textit{slack variable}. In addition, let us label with $C$ a trade-off parameter between the error and the margin. Now, the minimized function is expressed as follows:
 \begin{equation}
 \frac{1}{2}||w||^2 + C \cdot \sum_{i=1}^{n}\xi_i
@@ -135,17 +137,17 @@ So far we considered only linear SVM, i.e. those with linear decision boundaries
 \begin{figure}[htbp]
   \centering
   \includesvg[width=10cm]{graphics/2dto3d}
-  \caption{An example of a transformation from a two-dimensional to a three-dimensional space. In the original space the points are clearly not linearly separable. After applying a tranformation kernel, they can be separated with a plane marked with yellow color. With SVM several common kinds of kernels are applied to find the best way of transforming the input data into a problem with distinct borders. }
+  \caption{An example of a transformation from a two-dimensional to a three-dimensional space. In the original space the points are clearly not linearly separable. After applying a transformation kernel, they can be separated with a plane marked with yellow color. With SVM several common kinds of kernels are applied to find the best way of transforming the input data into a problem with distinct borders. }
   \label{fig:2dto3d}
 \end{figure}
 
 If we come back to the equation \ref{eq:svm_dual} we will see that the data points appear only as inner products ($x_i^Tx_j$). This means that there is need to know the mapping to the higher dimensional feature space explicitly. \\
-Let us define the kernel funtion $\mathcal{K}$ as follows:
+Let us define the kernel function $\mathcal{K}$ as follows:
 \begin{equation}
 \mathcal{K}(x_i, x_j) = \phi(x_i)^T \cdot \phi{x_j}
 \end{equation}
 
-Under certain circumstances it is feasible to obtain analytically $\phi$ being given $\mathcal{K}$. As an example let's take $\mathcal{K}(u, v) = (1+u^Tv)^2$. Then when $n=2$, i.e. $u=(u_1,u_2)$ and $v=(v_1, v_2)$ we get:
+Under certain circumstances it is feasible to obtain $\phi$ analytically being given $\mathcal{K}$. As an example let's take $\mathcal{K}(u, v) = (1+u^Tv)^2$. Then when $n=2$, i.e. $u=(u_1,u_2)$ and $v=(v_1, v_2)$ we get:
 \begin{align*}
 \mathcal{K}(u, v) & = & (1+u^Tv)^2 \\
 & = & 1 + u_1^2v_1^2+2u_1v_1u_2v_2+u_2^2v_2^2+2u_1v_1+2u_2v_2 \\
@@ -153,7 +155,7 @@ Under certain circumstances it is feasible to obtain analytically $\phi$ being g
 & = & \phi(u)^T\phi(v)
 \end{align*}
 A kernel function $\mathcal{K}$ must be symmetric, continuous and have a positive definite Gramian Matrix. If the kernel function does not satisfies these conditions, then the dual problem might have no solutions.
-We can distinguish three most commonly used kernel functions families: polynomial, sigmoid and radial (called also RBF).
+We can distinguish three most commonly used kernel function families: polynomial, sigmoid and radial (called also RBF).
 A polynomial kernel is expressed as follows:
 \begin{equation}
 \mathcal{K}(x_i, x_j) = (\gamma x_i^Tx_j + c)^d \\
@@ -164,7 +166,7 @@ where the parameters are:
 \item $d$ is the degree of the polynomial,
 \item $\gamma$ is a generic coefficient used to parametrize the kernel.
 \end{itemize}
-When $d=1$ we say that a kernel is linear. This case has been described in the section \ref{subsec:linear_svm}.
+When $d=1$ we say that a kernel is linear. This case has been referred to in the section \ref{subsec:linear_svm}.
 \\
 The most common variant of radial kernels is a gaussian distribution:
 \begin{equation}

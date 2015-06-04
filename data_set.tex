@@ -1,11 +1,15 @@
-\chapter{Dataset}
+\chapter{Dataset}\label{sec:dataset}
 \section{Motivation}
-Despite a strong need of performing automated analyses of scholarly publications, there are no big and reliable open access datasets of annotated publications available publicly. Such a dataset would greatly facilitate the process of building a automated systems for automatic metadata extraction, which, even when boiled down to scientific publishing, is error prone and not trivial. By far this is caused by two factors:
+Despite a strong need of performing automated analyses of scholarly publications, there are no big and reliable open access datasets of annotated publications publicly available. Such a dataset would greatly facilitate the process of building automated systems for metadata extraction, which, even when boiled down to scientific publishing, is error prone and not trivial.
+
+By far this is caused by two factors:
 \begin{itemize}
-\item scientific publishing is inherently \textit{blessed} with richness of layouts, formats and designs. No one is to be blamed for this variety which is to the most extreme degree natural. Any tool that aims to be reliable needs to take this diversity of styles into account;
-\item PDF, being a \textit{de facto} standard in the scientific publishing, is a format designed to carry content as it displayed. However, it is not suitable for carrying metadata. Its main design goal was to hold geometrical metadata allowing a faithful reproduction of the source document's display with different tools and platforms. It holds no relevant metadata and the structure of the input document is broken down to the level of single characters.
+\item scientific publishing is inherently characterized by richness of layouts, formats and designs. No one is to be blamed for this variety which is to the most extreme degree natural. Any tool that aims at being reliable needs to take this diversity of styles into account;
+
+\item PDF, being a \textit{de facto} standard in the scientific publishing, is a format designed to hold its content together with geometrical data. However, it is not suitable for carrying content's metadata. Its main design goal was to hold geometrical metadata only allowing a faithful reproduction in various environments (tools, platforms etc.) of how the source document was displayed. It holds no relevant metadata and the structure of the input document is broken down to the level of single characters.
 \end{itemize}
-Each publisher and even each journal follows its own layout. For instance, in the Open Access subset of PubMed Central there are more than 800 publishers, each of them very likely following a different layout. We need to keep in mind that the articles included there are biology-related which is only a fraction of scientific publishing. It is safe to assume that there are thousands of publishers worldwide. We decided to put together a diverse set of articles that could serve as a basis for automatic approach for content analysis. 
+
+Each publisher and even each journal follows its own layout. For instance, in the Open Access subset of PubMed Central there are more than 800 publishers, each of them very likely following a different layout. One has to keep in mind that the articles included in PMC are biology-related which is only a small fraction of scientific publishing. It is safe to assume that there are thousands of publishers worldwide. We decided to put together a diverse set of articles that could serve as a basis for automatic approach for content analysis. 
 
 \section{Related work}
 The vast majority of the data sets publicly available are based on images, i.e. there are no born-digital documents available. As an example here we might give MARG, which contains scanned first pages of biomedical articles. This makes its usability in our case very limited. PRImA is a data set containing images of various documents, whose category goes beyond scientific publishing. Again, these are images which are not helpful in case of chosen architecture. Conversely, The UW-III data set contains both articles' images and born-digital data. It is not available freely, though. What is more, we preferred to focus in our work on pure scientific articles as those are the target input of the designed system.
@@ -64,7 +68,7 @@ After the matching stage we obtained initial set of TrueViz files whose quality 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=12cm]{plots/zone_coverage_grotoap2}
-  \caption{The histogram presents distribution of succesful zone coverage after mapping NLM metadata to PDF files in the Open Access Subset of PubMed. Coverage different than 100\% can be caused by imperfect metadata, wrong PDF segmentation or inefficient mapping algorithm. Image source: \cite{DominikaTkaczykPaweSzostek2014}.}
+  \caption{The histogram presents distribution of successful zone coverage after mapping NLM metadata to PDF files in the Open Access Subset of PubMed. Coverage different than 100\% can be caused by imperfect metadata, wrong PDF segmentation or inefficient mapping algorithm. Image source: \cite{DominikaTkaczykPaweSzostek2014}.}
   \label{fig:trueviz_match_histogram}
 \end{figure}
 \begin{enumerate}
@@ -104,7 +108,7 @@ Each of the text zones in a document is labeled with one out of 22 categories:
     \item \verb+type+ - the type of the document, usually mentioned on the first page near the title, such as \textit{research paper}, \textit{case study} or \textit{editorial};
     \item \verb+unknown+ - used for the text zones that couldn't be assigned to any other category. This might be because they are very rare or couldn't be matched to any metadata.
 \end{itemize}
-This list is richer than the set of labels used by CERMINE, as we were not targeting such a fine-grained granularity in the system output. On the other hand, Pubmed XMLs are very rich and contain a huge number of metadata elements. It would be a pity to create a data set which would loose silently these data. This is why we decided to keep extended set of categories in GROTOAP2. In the appendix \ref{app:grotoap2} one can see distributions of these catogories for the chosen documents.
+This list is richer than the set of labels used by CERMINE, as we were not targeting such a fine-grained granularity in the system output. On the other hand, Pubmed XMLs are very rich and contain a huge number of metadata elements. It would be a pity to create a data set which would loose silently these data. This is why we decided to keep extended set of categories in GROTOAP2. In the appendix \ref{app:grotoap2} one can see distributions of these categories for the chosen documents.
 
 The \verb+acknowledgment+ section has a very similar distribution, \verb+affiliation+ is mostly focused in two or three zones with a pretty short tail, \verb+author+ section has a very narrow distribution with most of the articles having only one such zone. On the contrary, \verb+author_title+ is in most cases represented by 4 or 5 zones. \verb+editor+ is, as expected, in the majority of cases present in only one zone per document. It is interesting to see what is the distribution of \verb+unknown+ zones, i.e. those whose content couldn't be matched with the data from Pubmed XML. The most numerous bins are \verb+1+ and \verb+2+, containing in total more than 12000 documents. This can be seen as an indicator of good quality of the data set.
 

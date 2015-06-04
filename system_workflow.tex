@@ -1,14 +1,12 @@
-\chapter{System architecture}
-CERMINE is implemented in Java. While the choice of the implementation language is an important project decision, when developing our system we were constrained by a legacy of a digital library engine that CERMINE was derived from - Yadda (\cite{Yadda}). Yadda was implemented in Java and CERMINE followed this decision. The motivation behind this choice is an easier integration of both products and a wide choice of tools and libraries for Java facilitating implementation of a complex system. What is more, CERMINE is ment to be run using Hadoop, where JVM-based solutions are the most efficient ones.
+\chapter{System worfklow}
 
-\section{CERMINE workflow}
 CERMINE implements a workflow which is composed of a multi-part pipeline, where every stage is treated as a separate module and can be maintained and developed independently. For implementation of the majority of non-trivial problems we used supervised and unsupervised machine learning algorithms, which gave us a lot of elasticity and allowed adapting to new document layouts.
 
 CERMINE workflow consists of the following distinguishable stages:
 \begin{enumerate}
-    \item {Character extraction} - takes place at the very beginning of metadata extraction process. CERMINE uses \verb+pdfbox+ - an external library for manipulating PDF content - to extract a stream of characters together with their geometrical properties (size and position) from the input files.
+    \item {Character extraction} - takes place at the very beginning of metadata extraction process. CERMINE uses \verb+iText+ - an external library for manipulating PDF content - to extract a stream of characters together with their geometrical properties (size and position) from the input files.
     \item {Text segmentation} - builds up blocks of text from a set of characters using their position and size. This stage uses Docstrum algorithm, coded by Krzysztof Rusek and described in details in \cite{O'Gorman1993}. It is therefore beyond the scope of this work and will not be mentioned hereafter.
-    \item {Resolution of the reading order} - aims figuring out the order in which blocks of text are meant to be read. While this task is trivial to a human reader, it is tricky to implement an elastic algorithm suitable for different article layouts.
+    \item {Resolution of the reading order} - figures out the order in which blocks of text are meant to be read. While this task is trivial to a human reader, it is tricky to implement an elastic algorithm suitable for different article layouts.
     \item {Basic structure extraction} - takes a PDF file on the input and produces a geometric hierarchical structure representing the document. The structure is composed of pages, zones, lines, words and characters. The reading order of all elements is determined. Every zone is labeled with one of four general categories: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+.
     \item {Metadata extraction} - part analyses parts of the geometric hierarchical structure labeled as \verb+METADATA+ and extracts a rich set of document's metadata from it.
     \item {References extraction} - part analyses parts of the geometric hierarchical structure labeled as \verb+REFERENCES+ and the result is a list of document's parsed bibliographic references.
@@ -22,19 +20,23 @@ A diagram of the above-mentioned workflow can be found in the figure \ref{fig:pi
   \label{fig:pipeline}
 \end{figure}
 
+\section{The input}
+CERMINE uses TrueViz documents as an input for the classification training workflow. We motivate choice of this format in \ref{sec:trueviz_file_format}. As depicted in \ref{lst:trueviz_sample} TrueViz files consist of document's text together with its geometrical properties and classification label. The text is divided hierarchically into: pages, zones, lines, words and chunks of test. 
+
 \section{Structure extraction}
+Below we characterize superficially the consequent stages of the CERMINE workflow, from PDF files as input to ready-to-use metadata as output.
+
 \subsection{Character extraction}\label{sec:character_extraction}
-PDF document as such consists of a stream of characters, whereas position of each character in the stream does not have to be related, and usually is not, to its position in the text. Extraction of the characters is achieved using \verb+iText+ library. This part of the system was entirely implemented by Dominika Tkaczyk and will not be described in this work.
+PDF format as such consists of a stream of characters and their geometrical properties. Order of the character in the stream does not have to be related, and usually is not, to its position in the text. Extraction of the characters is implemented using \verb+iText+ library and consists in obtaining a set of characters together with their geometrical properties from an input document. This part of the system was entirely implemented by Dominika Tkaczyk and will not be characterized in this work.
 
 \subsection{Page segmentation}\label{sec:page_segmentation}
-Page segmentation is a task of clustering a set of characters into blocks of text. Implemented system uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on nearest-neighborhood clustering of connected components extracted from the document. $K$-nearest neighbors for each text chunk are calculated and text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be set based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
+Page segmentation is a task of clustering a set of characters into blocks of text. CERMINE uses internally the Docstrum algorithm, described in details in \cite{O'Gorman1993}. It is a bottom-up approach based on nearest-neighborhood clustering of connected components extracted from the document. The text lines are found based on a threshold of the angle between component centroids. Then, histograms of components spacing are used to detect inter-character distance in a word and between words. The algorithm has a set of thresholds that have to be estimated based on experiments with various documents. The algorithm was implemented by Krzysztof Rusek and tuned by Dominika Tkaczyk and therefore will not be described in this document in details.
 
 \subsection{Reading order resolving}\label{sec:reading_order}
-Resolution of Reading Order is a process aiming to transform text zones from a two-dimensional space (as they are laid out on the paper) to a single-dimensional space, i.e. as they are read by a human. Usually this is done by going from left to right and from top to bottom, but there are a lot of cases that make this na\"\i ve approach less efficient. This includes multi-column layout, page numbers, textual elements of figures, figures' and equations' labels.\\
+Resolution of Reading Order is a process aiming at transforming text zones from a two-dimensional space, i.e. as they are laid out on the paper, to a single-dimensional space, i.e. in an order meant by its author and as they are read by a human. Intuitively, this is done by going from left to right and from top to bottom. However, there are a lot of corner cases that make this na\"\i ve approach inaccurate, e.g. multi-column layouts, mixed single-multi column layouts, page numbers, textual elements of figures, tables, figures' and equations' labels.\\
 
-As already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, a PDF file contains a stream of characters that undergoes processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements are meant to be put together in the same order as that would be done by a human reader.\\
+As we already described in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}, an input PDF file contains a stream of characters that undergo processes of extraction and segmentation. This results in a list of pages consisting of zones, lines, words and chunks of text. These elements are meant to be put together in the same order as that would be done by a human reader.
 
-To this end, a bottom-up strategy is applied: firstly characters are sorted within words and words within lines in ascending order according to X coordinate value. Afterwards, lines are sorted with Y coordinate as the key. As next we need to figure out zones' order. Below we describe a heuristic responsible for setting order of text zones. Its fundamental principle was borrowed from \cite{Agrawal2009}. A schematic diagram of this phase, together with the symbols used, can be found in the figure \ref{fig:reading_order}.
 \begin{figure}[ht!]
   \centering
  % \def\svgwidth{1\columnwidth} 
@@ -42,8 +44,12 @@ To this end, a bottom-up strategy is applied: firstly characters are sorted with
   \caption{A schematic diagram of reading order resolving. Firstly, distances between text zones are calculated. Then, zones are hierarchically grouped according to distances between them. Finally, the tree is in-order traversed and a list of zones in created.}
   \label{fig:reading_order}
 \end{figure}
+
+\subsubsection{Algorithm for resolution of the reading order}
+Below a heuristic responsible for setting order of text zones is characterized. The full implementation of the algorithm is included in the appendix \ref{appendix:ror}.
+
 \begin{enumerate}
-\item For each pair of zones inside a single page boundaries the amount of free space between them is calculated. On the figure \ref{fig:reading_order} this space is illustrated as the black area between two zones. The full implementation of the algorithm is included in the appendix \ref{appendix:ror}. Below we detail the steps taken.
+\item For each pair of zones inside a single page boundaries the amount of free space between them is calculated. On the figure \ref{fig:reading_order} this space is illustrated as the black area between two zones. 
 	\begin{enumerate} 
 	\item Formally the free space $S$ can be expressed as $S = A_d - (A_1+A_2)$, where $A_1$ and $A_2$ are areas of the two zones and $A_d$ is area of the smallest rectangle in which two objects can fit. This rectangle has its sides parallel to the X and Y axes.
 	\item To include preference for vertical clustering (and to avoid joining blocks horizontally while working with multi-column layouts) cosine of the angle $\alpha$ between the vector $\vec{v}$ connecting two objects' geometrical centers and vector $\vec{x}$ being a projection of the vector $\vec{v}$ on the X axis is calculated. This was illustrated in the figure \ref{fig:angle_alpha}. The formula $\cos\alpha = \frac{\vec{v} \cdot \vec{x}}{|\vec{v}||\vec{x}|}$ is employed.
@@ -61,42 +67,23 @@ To this end, a bottom-up strategy is applied: firstly characters are sorted with
   \caption{An example of calculating distance between two zones. To include preference for vertical clustering a cosine of the angle $\alpha$ between the vector $\vec{v}$ and vector $\vec{x}$ (horizontal axis) is calculated. Parameter $M$ is used to prevent zeroing of the distance for zones laying in the same vertical axis.}
   \label{fig:angle_alpha}
 \end{figure}
-\begin{code}[caption=Listing of the function measuring distance between two zones or zone groups.]
 
-private double distance(BxObject obj1, BxObject obj2) {
-
-    double x0 = Math.min(obj1.getX(), obj2.getX());
-    double y0 = Math.min(obj1.getY(), obj2.getY());
-    double x1 = Math.max(obj1.getX() + obj1.getWidth(),
-            obj2.getX() + obj2.getWidth());
-    double y1 = Math.max(obj1.getY() + obj1.getHeight(),
-            obj2.getY() + obj2.getHeight());
-    double dist = ((x1 - x0) * (y1 - y0) - obj1.getArea() - obj2.getArea());
-
-    double obj1CenterX = obj1.getX();
-    double obj1CenterY = obj1.getY() + obj1.getHeight() / 2;
-    double obj2CenterX = obj2.getX();
-    double obj2CenterY = obj2.getY() + obj2.getHeight() / 2;
-
-    double obj1obj2VectorCosineAbs = Math.abs((obj2CenterX - obj1CenterX) / Math.sqrt((obj2CenterX - obj1CenterX) * (obj2CenterX - obj1CenterX) + (obj2CenterY - obj1CenterY) * (obj2CenterY - obj1CenterY)));
-    final double M_COEFF = 0.5;
-    return dist * (M_COEFF + obj1obj2VectorCosineAbs);
-}
-\end{code}
 \section{Initial zone classification}
-Once all the workflow stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} are done, the document can undergo two phases of classification. For the sake of clarity, in this document all classes from the first phase of classification will be written in upper case, while those from the second phase will be typed in lower case. Both will be typed using \verb+verbatim+.
-Initially, all the zones are classified to one of the four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform fine-grained analysis on the zones falling into each class. Semantics of these classes is as following:
+Once the workflow stages described in sections \ref{sec:character_extraction}, \ref{sec:page_segmentation} and \ref{sec:reading_order} are done, the document can undergo two phases of classification. For the sake of clarity, in the remaining part of this document all labels from the first classification phase will be typed in upper case, while those from the second phase will be typed in lower case. Both will be typed using \verb+verbatim+.
+
+In the first phase, all the zones are classified into one of four general classes: \verb+METADATA+, \verb+REFERENCES+, \verb+BODY+ and \verb+OTHER+. After this stage, more specific classifiers and algorithms can perform fine-grained analysis on the zones falling into each class. Semantics of these classes is as following:
+
 \begin{itemize}
 \item \verb+METADATA+ contains all the data which do not constitute the proper content. This includes publication elements such as: title, author name, affiliation, bibliographic information, abstract etc.
 \item \verb+BODY+ contains text of the publication. This includes the chapters, figures, tables, equations, plots, acknowledgments, headings, contribution statements, conflict statements and attachments.
 \item \verb+REFERENCES+ contains article's references,
-\item \verb+OTHER+ contains misclassified zones and page numbers. It is a result of a non-ideal dataset, being tagged only to some extent. When training the classifier, those unclassified zones are labeled as \verb+OTHER+. This in turn introduces some kind on additional noise. We decided that it is better to exclude a handful of zones from the further processing and classify them as \verb+OTHER+, rather than to classify them incorrectly to one of the remaining classes. Employed dataset contains 3.6\% of unknown labels, therefore we might expect a similar number of zones classified to \verb+OTHER+ in the classifier's output.
+\item \verb+OTHER+ contains misclassified zones and page numbers. This class is a result of a non-ideal dataset, which tagged only to some extent, while some text zones are not classified to any class. When training the classifier, those unclassified zones are labeled as \verb+OTHER+. This in turn introduces some kind on additional noise. We decided that in it is better to exclude a handful of zones from the further processing and classify them as \verb+OTHER+, rather than to classify them incorrectly to one of the remaining classes. Employed dataset contains 3.6\% of unknown labels, therefore we might expect a similar number of zones classified to \verb+OTHER+ in the classifier's output.
 \end{itemize}
 \quad
-Initial classification uses Support Vector Machines as classification algorithm, with the parameters given in the table \ref{tab:classifier_parameters}. A way to obtain these parameters is described in \ref{sec:svm_optimization}.
+Initial classification uses Support Vector Machines as classification algorithm, with the parameters given in the table \ref{tab:classifier_parameters}. A method for obtaining these parameters is reported hgin \ref{sec:svm_optimization}.
 
 \section{Metadata classification}
-Once the initial coarse-grained classification is done, we employ a second classifier which is specialized in classifying metadata, i.e. those zones, which initially got the \verb+METADATA+ label. This class consists of 15 labels:
+Once the initial coarse-grained classification is done, we employ another classifier, which is specialized in classifying metadata. Its input is made of those zones which were classified in the first stage as \verb+METADATA+. This class consists of 15 labels:
 \begin{itemize}
     \item \verb+abstract+ - document's abstract, usually one or more zones placed in the first page of the document;
     \item \verb+acknowledgments+ - sections containing information about document's acknowledgments or funding;
@@ -122,7 +109,7 @@ To this end, the blocks of text are divided into strings containing one bibliogr
 
 Afterwards, individual references are parsed and corresponding bibliographical data are yield back. This algorithm is based on Conditional Random Fields, thus a supervised learning algorithm, and is implemented on the top of GRMM and Mallet packages.
 
-Reference extraction was implemented by Mateusz Fedoryszak and is described in details in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}.
+Reference extraction was implemented by Mateusz Fedoryszak and reported in \cite{DominikaTkaczykPaweSzostekMateuszFedoryszakPiotrJanDendek2014}.
 \section{Content extraction}
 CERMINE is capable of extracting article's raw text. To this end, it processes all the zones labeled by the initial classifier as \verb+BODY+ and outputs the text that they contain according to the reading order. 
 
