@@ -1,0 +1,191 @@
+\documentclass{beamer}
+
+\usepackage{beamerthemesplit}
+\usepackage{color}
+\title{Machine Learning empowered by Python}
+\author{Francis Pieraut
+  \\fpieraut@gmail.com
+  \\http://fraka6.blogspot.com/
+}
+\date{14 april 2009
+  \\Python-Montreal
+  \\http://montrealpython.org/
+}
+
+\begin{document}
+\frame{\titlepage}
+
+\frame{
+  \frametitle{Hand writing digit recognition}
+  \begin{center}
+  \includegraphics[scale=0.5]{homer-yannick.jpg}
+  \end{center} 
+}
+
+\section[Outline]{}
+
+\frame{\tableofcontents}
+
+\section{Why a talk about machine learning and python?}
+\frame{
+  \frametitle{Why Machine Learning empowered by Python?}
+  \begin{center}
+    \begin{itemize}
+    \item Integrated real live prototypes $\Rightarrow$ Probability(success) $\Uparrow$
+    \item Python allows extreme prototyping
+    \end{itemize}
+
+ \includegraphics[scale=0.4]{mlboost.jpg} 
+
+  \end{center}
+}
+
+\frame{
+  \frametitle{Speaker: Francis Pieraut, eng. M.Sc.A.}
+  \begin{center}
+    \includegraphics[scale=0.15] {poly.jpg}
+    \begin{itemize}
+    \item Master@LISA - Statistical Machine Learning - udm
+      \\(flayers: C++ Neural Networks lib) 
+      \begin{center}
+        \includegraphics[scale=0.075]{lisa.png}
+      \end{center}
+    \item Industry - 6 years in Machine Learning/AI startups 
+      \\(mlboost: Python Machine Learning Boost lib)
+    \end{itemize}
+    \includegraphics[scale=0.3]{mlboost.jpg}
+  \end{center}
+}
+
+\section{Machine Learning 101}
+\frame{
+ \frametitle{AI and Machine Learning}
+ \begin{center}
+   \includegraphics[scale=0.27]{AI-machine-learning.png}
+ \end{center}
+}
+
+\frame{
+  \frametitle{Machine Learning}
+  
+  \begin{itemize}
+  \item Learning from data 
+  \item Classification vs Clustering
+  \item Applications: Fraud detection, Vision, Target-Marketing, Search Engine, Insurance (Risk) etc.
+  \end{itemize}
+  \begin{center}
+    \includegraphics[scale=0.3]{AI-stupidity.png}
+  \end{center}
+}
+
+\subsection{Supervised Learning (classification)}
+\frame{ 
+  \frametitle{Supervised Learning (need class tag for each example)}
+  \begin{center}
+    \includegraphics[scale=0.6]{supervised_learning.png}
+  \end{center}
+}
+
+\subsection{Important Concepts}
+\frame{
+  \frametitle{Important Concepts}
+  \begin{itemize}
+  \item Datasets (features + class) 
+  \item Generalization vs Overfitting
+  \item Classification vs Clustering      
+  \item Features Quality \emph{(invariant and informative)}
+  \end{itemize}
+  
+  \begin{center}
+    \includegraphics[scale=0.2]{example.png}
+  \end{center}
+}
+
+\section{Let's dive into an example}
+\subsection{Why Python?}
+\frame{
+  \frametitle{Why Python? Prototyping Extreme Efficiency}
+   \begin{itemize}
+     \item C++, sed, awk...$\Rightarrow$ N years
+     \item Python $\Rightarrow$ N weeks
+   \end{itemize}
+  \begin{center}
+    \includegraphics[scale=0.25]{ml-python.png}
+  \end{center}
+}
+\subsection{Data example}
+\frame{
+  \frametitle{Hand writing digit recognition - Data examples}
+  \begin{center}
+  \includegraphics[scale=0.25]{digits-sample-zoom-target.png}
+  \end{center} 
+}
+
+\subsection{Training and Testing (python-mlboost)}
+\frame{
+  \frametitle{Hand writing digit recognition - Training}
+  \begin{center}
+    \includegraphics[scale=0.30]{learning.png}
+  \end{center}
+  
+}
+
+\frame{
+  \frametitle{Digit recognition (Demo)}
+  \begin{itemize}
+  \item Naive Machine Learning: Training on raw pixels
+  \item Testing example visualization
+  \item Real-time demo
+  \item Naive machine learning limitations
+  \item Feature extraction visualisation
+  \item Training on new features 
+  \item Real-time demo
+  \end{itemize}
+
+}
+
+\frame{
+  \frametitle{Want to try the Demo or contribute?}
+  \begin{center}
+    \includegraphics[scale=0.6]{bitbucket.png}
+  \end{center}
+  \begin{itemize}
+  \item try it easy\_install digipy (soon)  
+  \item http://bitbucket.org/fraka6/digipy/
+  \item http://bitbucket.org/fraka6/mlboost
+  \item http://bitbucket.org/fraka6/flayers
+\end{itemize}
+}
+
+\section{Conclusion}
+\frame{
+  \frametitle{What you should remember?}
+  \begin{itemize}
+  \item Machine learning algorithms applications $\Uparrow$
+  \item \textcolor{red} {goal = generalization$\Rightarrow$good prediction} (DON'T OVERFIT)
+  \item 80-90\% pre or post-processing + data visualization
+  \item Python provide amazing integration
+  \item try it, easy\_install digipy  
+\end{itemize}
+}
+
+\section{Questions?}
+\frame{
+Any questions?
+\\...
+\\A special thanks to Yannick Gingras help for the UI and the packaging, Pierre-Alexandre Fournier and Jeremy Barnes feedbacks and Caroline patience
+\\easy\_install digipy 
+\\http://fraka6.blogspot.com/
+\\icml2009 - Internation Conference on Machine Learning 
+\\(June 14-18, Montreal 2009)
+\\..
+\\Thanks,
+\\Francis Pieraut - alias Fraka6
+\\fpieraut@gmail.com
+\begin{center}
+  \includegraphics[scale=0.15]{pigeon.jpg}
+\end{center}
+}
+\end{document}
+
+
